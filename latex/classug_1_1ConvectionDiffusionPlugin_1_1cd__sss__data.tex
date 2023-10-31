@@ -1,0 +1,91 @@
+\hypertarget{classug_1_1ConvectionDiffusionPlugin_1_1cd__sss__data}{}\doxysection{ug\+::Convection\+Diffusion\+Plugin\+::cd\+\_\+sss\+\_\+data\texorpdfstring{$<$}{<} dim \texorpdfstring{$>$}{>} Class Template Reference}
+\label{classug_1_1ConvectionDiffusionPlugin_1_1cd__sss__data}\index{ug::ConvectionDiffusionPlugin::cd\_sss\_data$<$ dim $>$@{ug::ConvectionDiffusionPlugin::cd\_sss\_data$<$ dim $>$}}
+
+
+class for data for all the CD plugin sources and sinks  
+
+
+
+
+{\ttfamily \#include $<$convection\+\_\+diffusion\+\_\+sss.\+h$>$}
+
+Inheritance diagram for ug\+::Convection\+Diffusion\+Plugin\+::cd\+\_\+sss\+\_\+data\texorpdfstring{$<$}{<} dim \texorpdfstring{$>$}{>}\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=1.637427cm]{classug_1_1ConvectionDiffusionPlugin_1_1cd__sss__data}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classug_1_1ConvectionDiffusionPlugin_1_1cd__sss__data_a8fccf0bf579d0996db4e77d32fed16ea}\label{classug_1_1ConvectionDiffusionPlugin_1_1cd__sss__data_a8fccf0bf579d0996db4e77d32fed16ea}} 
+typedef Smart\+Ptr$<$ Cpl\+User\+Data$<$ number, dim $>$ $>$ {\bfseries user\+\_\+data\+\_\+type}
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classug_1_1ConvectionDiffusionPlugin_1_1cd__sss__data_a47461cc115cf0cb4616359dfc827aa36}\label{classug_1_1ConvectionDiffusionPlugin_1_1cd__sss__data_a47461cc115cf0cb4616359dfc827aa36}} 
+{\bfseries cd\+\_\+sss\+\_\+data} ()
+\begin{DoxyCompactList}\small\item\em class construction (there must exist a \textquotesingle{}dummy\textquotesingle{} constructor!) \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classug_1_1ConvectionDiffusionPlugin_1_1cd__sss__data_a76b184d076012eb58687324ec767ed95}\label{classug_1_1ConvectionDiffusionPlugin_1_1cd__sss__data_a76b184d076012eb58687324ec767ed95}} 
+number {\bfseries flux} ()
+\begin{DoxyCompactList}\small\item\em returns the flux \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1cd__sss__data_a07f5e82db5c3b46a42a1cccfc386fa8c}{compute}} (const Math\+Vector$<$ dim $>$ \&x, number time, int si)
+\begin{DoxyCompactList}\small\item\em computes the data from the user data object \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classug_1_1ConvectionDiffusionPlugin_1_1cd__sss__data_ab6c28228fff5a356ad66fd90888ff803}\label{classug_1_1ConvectionDiffusionPlugin_1_1cd__sss__data_ab6c28228fff5a356ad66fd90888ff803}} 
+void {\bfseries set} (number \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1cd__sss__data_a76b184d076012eb58687324ec767ed95}{flux}})
+\begin{DoxyCompactList}\small\item\em sets the data \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classug_1_1ConvectionDiffusionPlugin_1_1cd__sss__data_a7ba4eb10419a89bb6fd4ed3ba8caa9c6}\label{classug_1_1ConvectionDiffusionPlugin_1_1cd__sss__data_a7ba4eb10419a89bb6fd4ed3ba8caa9c6}} 
+void {\bfseries set} (user\+\_\+data\+\_\+type sp\+Data)
+\begin{DoxyCompactList}\small\item\em sets the data by an object \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+number \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1cd__sss__data_a117f1ddc68369551fd68f15ae0a3ee69}{m\+\_\+values}}
+\item 
+\mbox{\Hypertarget{classug_1_1ConvectionDiffusionPlugin_1_1cd__sss__data_a26fa9aabfbfa53f5c410c651eb490475}\label{classug_1_1ConvectionDiffusionPlugin_1_1cd__sss__data_a26fa9aabfbfa53f5c410c651eb490475}} 
+user\+\_\+data\+\_\+type {\bfseries m\+\_\+sp\+Data}
+\begin{DoxyCompactList}\small\item\em an alternative method to specify the data \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\subsubsection*{template$<$int dim$>$\newline
+class ug\+::\+Convection\+Diffusion\+Plugin\+::cd\+\_\+sss\+\_\+data$<$ dim $>$}
+class for data for all the CD plugin sources and sinks 
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classug_1_1ConvectionDiffusionPlugin_1_1cd__sss__data_a07f5e82db5c3b46a42a1cccfc386fa8c}\label{classug_1_1ConvectionDiffusionPlugin_1_1cd__sss__data_a07f5e82db5c3b46a42a1cccfc386fa8c}} 
+\index{ug::ConvectionDiffusionPlugin::cd\_sss\_data$<$ dim $>$@{ug::ConvectionDiffusionPlugin::cd\_sss\_data$<$ dim $>$}!compute@{compute}}
+\index{compute@{compute}!ug::ConvectionDiffusionPlugin::cd\_sss\_data$<$ dim $>$@{ug::ConvectionDiffusionPlugin::cd\_sss\_data$<$ dim $>$}}
+\doxysubsubsection{\texorpdfstring{compute()}{compute()}}
+{\footnotesize\ttfamily template$<$int dim$>$ \\
+void \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1cd__sss__data}{ug\+::\+Convection\+Diffusion\+Plugin\+::cd\+\_\+sss\+\_\+data}}$<$ dim $>$\+::compute (\begin{DoxyParamCaption}\item[{const Math\+Vector$<$ dim $>$ \&}]{x,  }\item[{number}]{time,  }\item[{int}]{si }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+computes the data from the user data object 
+
+
+\begin{DoxyParams}{Parameters}
+{\em x} & point where to evaluate\\
+\hline
+{\em time} & time argument for the evaluation\\
+\hline
+{\em si} & subset where to evaluate \\
+\hline
+\end{DoxyParams}
+
+
+\doxysubsection{Member Data Documentation}
+\mbox{\Hypertarget{classug_1_1ConvectionDiffusionPlugin_1_1cd__sss__data_a117f1ddc68369551fd68f15ae0a3ee69}\label{classug_1_1ConvectionDiffusionPlugin_1_1cd__sss__data_a117f1ddc68369551fd68f15ae0a3ee69}} 
+\index{ug::ConvectionDiffusionPlugin::cd\_sss\_data$<$ dim $>$@{ug::ConvectionDiffusionPlugin::cd\_sss\_data$<$ dim $>$}!m\_values@{m\_values}}
+\index{m\_values@{m\_values}!ug::ConvectionDiffusionPlugin::cd\_sss\_data$<$ dim $>$@{ug::ConvectionDiffusionPlugin::cd\_sss\_data$<$ dim $>$}}
+\doxysubsubsection{\texorpdfstring{m\_values}{m\_values}}
+{\footnotesize\ttfamily template$<$int dim$>$ \\
+number \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1cd__sss__data}{ug\+::\+Convection\+Diffusion\+Plugin\+::cd\+\_\+sss\+\_\+data}}$<$ dim $>$\+::m\+\_\+values\hspace{0.3cm}{\ttfamily [protected]}}
+
+the data for the source/sink\+: \mbox{[}0\mbox{]}\+: total contaminant flux through the point 
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+convection\+\_\+diffusion\+\_\+sss.\+h\end{DoxyCompactItemize}

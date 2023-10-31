@@ -1,0 +1,331 @@
+\hypertarget{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase}{}\doxysection{ug\+::Convection\+Diffusion\+Plugin\+::Convection\+Diffusion\+Base\texorpdfstring{$<$}{<} TDomain \texorpdfstring{$>$}{>} Class Template Reference}
+\label{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase}\index{ug::ConvectionDiffusionPlugin::ConvectionDiffusionBase$<$ TDomain $>$@{ug::ConvectionDiffusionPlugin::ConvectionDiffusionBase$<$ TDomain $>$}}
+
+
+Discretization for the Convection-\/\+Diffusion Equation.  
+
+
+
+
+{\ttfamily \#include $<$convection\+\_\+diffusion\+\_\+base.\+h$>$}
+
+Inheritance diagram for ug\+::Convection\+Diffusion\+Plugin\+::Convection\+Diffusion\+Base\texorpdfstring{$<$}{<} TDomain \texorpdfstring{$>$}{>}\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_a26bc00d96c636ed4dca6bea0670588f6}\label{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_a26bc00d96c636ed4dca6bea0670588f6}} 
+typedef Smart\+Ptr$<$ Cpl\+User\+Data$<$ number, \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_af2084a0a706fa33d8723a2b6f4d3faab}{dim}} $>$ $>$ {\bfseries Number\+Export}
+\item 
+\mbox{\Hypertarget{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_a0f0d09630999820e5118779e058b7e02}\label{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_a0f0d09630999820e5118779e058b7e02}} 
+typedef Smart\+Ptr$<$ Cpl\+User\+Data$<$ Math\+Vector$<$ \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_af2084a0a706fa33d8723a2b6f4d3faab}{dim}} $>$, \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_af2084a0a706fa33d8723a2b6f4d3faab}{dim}} $>$ $>$ {\bfseries Grad\+Export}
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_aae39d6a4c86f16db973de48182c3ca02}\label{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_aae39d6a4c86f16db973de48182c3ca02}} 
+{\bfseries Convection\+Diffusion\+Base} (const char $\ast$functions, const char $\ast$subsets)
+\begin{DoxyCompactList}\small\item\em Constructor. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_a3a350c42e1c0104d3c5a4d6bc65a0846}\label{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_a3a350c42e1c0104d3c5a4d6bc65a0846}} 
+void {\bfseries set\+\_\+reaction\+\_\+rate\+\_\+explicit} (Smart\+Ptr$<$ Cpl\+User\+Data$<$ number, \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_af2084a0a706fa33d8723a2b6f4d3faab}{dim}} $>$ $>$ user)
+\item 
+\mbox{\Hypertarget{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_a1ebf54cce15c7d80c1ac2d62b07adb69}\label{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_a1ebf54cce15c7d80c1ac2d62b07adb69}} 
+void {\bfseries set\+\_\+reaction\+\_\+rate\+\_\+explicit} (number val)
+\item 
+\mbox{\Hypertarget{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_ad3999a42fb0bf88d4f40ed57361ffb9d}\label{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_ad3999a42fb0bf88d4f40ed57361ffb9d}} 
+void {\bfseries set\+\_\+reaction\+\_\+explicit} (Smart\+Ptr$<$ Cpl\+User\+Data$<$ number, \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_af2084a0a706fa33d8723a2b6f4d3faab}{dim}} $>$ $>$ user)
+\item 
+\mbox{\Hypertarget{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_a53a76c5294af10dfd3debc8515ca0c35}\label{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_a53a76c5294af10dfd3debc8515ca0c35}} 
+void {\bfseries set\+\_\+reaction\+\_\+explicit} (number val)
+\item 
+\mbox{\Hypertarget{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_af934010524cb446881e46e4272875628}\label{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_af934010524cb446881e46e4272875628}} 
+void {\bfseries set\+\_\+source\+\_\+explicit} (Smart\+Ptr$<$ Cpl\+User\+Data$<$ number, \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_af2084a0a706fa33d8723a2b6f4d3faab}{dim}} $>$ $>$ user)
+\item 
+\mbox{\Hypertarget{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_a2416dba73c0faa0c683637011fd78956}\label{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_a2416dba73c0faa0c683637011fd78956}} 
+void {\bfseries set\+\_\+source\+\_\+explicit} (number val)
+\item 
+\mbox{\Hypertarget{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_a609d6032d568655d9df107b67da41904}\label{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_a609d6032d568655d9df107b67da41904}} 
+virtual Smart\+Ptr$<$ Cpl\+User\+Data$<$ number, \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_af2084a0a706fa33d8723a2b6f4d3faab}{dim}} $>$ $>$ {\bfseries value} ()
+\begin{DoxyCompactList}\small\item\em returns the export of the value of associated unknown function \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_a4297b533b66779c623b90401986d42a5}\label{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_a4297b533b66779c623b90401986d42a5}} 
+virtual Smart\+Ptr$<$ Cpl\+User\+Data$<$ Math\+Vector$<$ \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_af2084a0a706fa33d8723a2b6f4d3faab}{dim}} $>$, \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_af2084a0a706fa33d8723a2b6f4d3faab}{dim}} $>$ $>$ {\bfseries gradient} ()
+\begin{DoxyCompactList}\small\item\em returns the export of the gradient of associated unknown function \end{DoxyCompactList}\end{DoxyCompactItemize}
+\textbf{ }\par
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_a08c5f1883d6908f82f5ae48d27665f0c}{set\+\_\+diffusion}} (Smart\+Ptr$<$ Cpl\+User\+Data$<$ Math\+Matrix$<$ \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_af2084a0a706fa33d8723a2b6f4d3faab}{dim}}, \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_af2084a0a706fa33d8723a2b6f4d3faab}{dim}} $>$, \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_af2084a0a706fa33d8723a2b6f4d3faab}{dim}} $>$ $>$ user)
+\begin{DoxyCompactList}\small\item\em sets the diffusion tensor \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_a4cb4e88cebb6f9a2e4eebb4ef656824b}\label{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_a4cb4e88cebb6f9a2e4eebb4ef656824b}} 
+void {\bfseries set\+\_\+diffusion} (number val)
+\end{DoxyCompactItemize}
+
+\textbf{ }\par
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_a8e5d997f603d14ab3bd84ef87195a272}{set\+\_\+velocity}} (Smart\+Ptr$<$ Cpl\+User\+Data$<$ Math\+Vector$<$ \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_af2084a0a706fa33d8723a2b6f4d3faab}{dim}} $>$, \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_af2084a0a706fa33d8723a2b6f4d3faab}{dim}} $>$ $>$ user)
+\begin{DoxyCompactList}\small\item\em sets the velocity field \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_a9497dc8356329a125ddde7619f20b1ba}\label{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_a9497dc8356329a125ddde7619f20b1ba}} 
+void {\bfseries set\+\_\+velocity} (const std\+::vector$<$ number $>$ \&v\+Vel)
+\end{DoxyCompactItemize}
+
+\textbf{ }\par
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_a94f06c07b278ccf55ed95fb0645c9627}{set\+\_\+flux}} (Smart\+Ptr$<$ Cpl\+User\+Data$<$ Math\+Vector$<$ \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_af2084a0a706fa33d8723a2b6f4d3faab}{dim}} $>$, \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_af2084a0a706fa33d8723a2b6f4d3faab}{dim}} $>$ $>$ user)
+\begin{DoxyCompactList}\small\item\em sets the flux \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_a93c1985ea58dd9fb3c32befcc097dd8b}\label{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_a93c1985ea58dd9fb3c32befcc097dd8b}} 
+void {\bfseries set\+\_\+flux} (const std\+::vector$<$ number $>$ \&v\+Vel)
+\end{DoxyCompactItemize}
+
+\textbf{ }\par
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_a41324e5e7178249f6237a3ab28c36c55}{set\+\_\+reaction\+\_\+rate}} (Smart\+Ptr$<$ Cpl\+User\+Data$<$ number, \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_af2084a0a706fa33d8723a2b6f4d3faab}{dim}} $>$ $>$ user)
+\begin{DoxyCompactList}\small\item\em sets the reaction rate \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_ac56273e577aa6ebd73b048f57490986b}\label{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_ac56273e577aa6ebd73b048f57490986b}} 
+void {\bfseries set\+\_\+reaction\+\_\+rate} (number val)
+\end{DoxyCompactItemize}
+
+\textbf{ }\par
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_a6b19b073129b62a309cd070f301c7029}{set\+\_\+reaction}} (Smart\+Ptr$<$ Cpl\+User\+Data$<$ number, \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_af2084a0a706fa33d8723a2b6f4d3faab}{dim}} $>$ $>$ user)
+\begin{DoxyCompactList}\small\item\em sets the reaction \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_a17ddf2bd4028f74d24d2787b92f7b6d9}\label{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_a17ddf2bd4028f74d24d2787b92f7b6d9}} 
+void {\bfseries set\+\_\+reaction} (number val)
+\end{DoxyCompactItemize}
+
+\textbf{ }\par
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_a93d69a592c416b0cc92022dc9c3e1ac0}{set\+\_\+source}} (Smart\+Ptr$<$ Cpl\+User\+Data$<$ number, \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_af2084a0a706fa33d8723a2b6f4d3faab}{dim}} $>$ $>$ user)
+\begin{DoxyCompactList}\small\item\em sets the source / sink term \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_af9f1d9ad5688f92a3c89c06c9d64119d}\label{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_af9f1d9ad5688f92a3c89c06c9d64119d}} 
+void {\bfseries set\+\_\+source} (number val)
+\end{DoxyCompactItemize}
+
+\textbf{ }\par
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_ab6d29d9a250a2d73c05a38f77db1f098}{set\+\_\+vector\+\_\+source}} (Smart\+Ptr$<$ Cpl\+User\+Data$<$ Math\+Vector$<$ \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_af2084a0a706fa33d8723a2b6f4d3faab}{dim}} $>$, \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_af2084a0a706fa33d8723a2b6f4d3faab}{dim}} $>$ $>$ user)
+\begin{DoxyCompactList}\small\item\em sets the vector source term \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_a51694e8f1a1b2d910d42dc99673928ba}\label{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_a51694e8f1a1b2d910d42dc99673928ba}} 
+void {\bfseries set\+\_\+vector\+\_\+source} (const std\+::vector$<$ number $>$ \&v\+Vel)
+\end{DoxyCompactItemize}
+
+\textbf{ }\par
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_a92e85c5f26d0eb772d95da0c4a47e420}{set\+\_\+mass\+\_\+scale}} (Smart\+Ptr$<$ Cpl\+User\+Data$<$ number, \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_af2084a0a706fa33d8723a2b6f4d3faab}{dim}} $>$ $>$ user)
+\begin{DoxyCompactList}\small\item\em sets mass scale \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_a30a8268c65337f31133c79a490c59018}\label{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_a30a8268c65337f31133c79a490c59018}} 
+void {\bfseries set\+\_\+mass\+\_\+scale} (number val)
+\end{DoxyCompactItemize}
+
+\textbf{ }\par
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_ab7c6a515bac338fc5ad68a1669190fae}{set\+\_\+mass}} (Smart\+Ptr$<$ Cpl\+User\+Data$<$ number, \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_af2084a0a706fa33d8723a2b6f4d3faab}{dim}} $>$ $>$ user)
+\begin{DoxyCompactList}\small\item\em sets mass \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_a7ed43a74b8434b7e02fed66d9f3a0d0b}\label{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_a7ed43a74b8434b7e02fed66d9f3a0d0b}} 
+void {\bfseries set\+\_\+mass} (number val)
+\end{DoxyCompactItemize}
+
+\doxysubsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_af2084a0a706fa33d8723a2b6f4d3faab}\label{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_af2084a0a706fa33d8723a2b6f4d3faab}} 
+static const int {\bfseries dim} = base\+\_\+type\+::dim
+\begin{DoxyCompactList}\small\item\em World dimension. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_a965fb3b3cb9679649c3d4648df64b922}\label{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_a965fb3b3cb9679649c3d4648df64b922}} 
+void {\bfseries init\+\_\+imports} ()
+\end{DoxyCompactItemize}
+\doxysubsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_a8ccbb71ce4481248f677f9a9f8db2162}\label{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_a8ccbb71ce4481248f677f9a9f8db2162}} 
+Data\+Import$<$ Math\+Matrix$<$ \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_af2084a0a706fa33d8723a2b6f4d3faab}{dim}}, \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_af2084a0a706fa33d8723a2b6f4d3faab}{dim}} $>$, \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_af2084a0a706fa33d8723a2b6f4d3faab}{dim}} $>$ {\bfseries m\+\_\+im\+Diffusion}
+\begin{DoxyCompactList}\small\item\em Data import for Diffusion. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_ab1abc101b5995f0c78f0bb2f0c496582}\label{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_ab1abc101b5995f0c78f0bb2f0c496582}} 
+Data\+Import$<$ Math\+Vector$<$ \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_af2084a0a706fa33d8723a2b6f4d3faab}{dim}} $>$, \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_af2084a0a706fa33d8723a2b6f4d3faab}{dim}} $>$ {\bfseries m\+\_\+im\+Velocity}
+\begin{DoxyCompactList}\small\item\em Data import for the Velocity field. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_a8198dd51c91613d222dd55d80aea8871}\label{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_a8198dd51c91613d222dd55d80aea8871}} 
+Data\+Import$<$ Math\+Vector$<$ \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_af2084a0a706fa33d8723a2b6f4d3faab}{dim}} $>$, \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_af2084a0a706fa33d8723a2b6f4d3faab}{dim}} $>$ {\bfseries m\+\_\+im\+Flux}
+\begin{DoxyCompactList}\small\item\em Data import for the Flux. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_a024dceb0685d845bd892ff7b6dcfb2f7}\label{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_a024dceb0685d845bd892ff7b6dcfb2f7}} 
+Data\+Import$<$ number, \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_af2084a0a706fa33d8723a2b6f4d3faab}{dim}} $>$ {\bfseries m\+\_\+im\+Reaction\+Rate}
+\begin{DoxyCompactList}\small\item\em Data import for the reaction term. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_acbbcf1c765f6c4bbc7f30e4a236d04ea}\label{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_acbbcf1c765f6c4bbc7f30e4a236d04ea}} 
+Data\+Import$<$ number, \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_af2084a0a706fa33d8723a2b6f4d3faab}{dim}} $>$ {\bfseries m\+\_\+im\+Reaction}
+\begin{DoxyCompactList}\small\item\em Data import for the reaction term. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_ae92c78aa1ed3ff4770c22b9461bdb1a7}\label{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_ae92c78aa1ed3ff4770c22b9461bdb1a7}} 
+Data\+Import$<$ number, \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_af2084a0a706fa33d8723a2b6f4d3faab}{dim}} $>$ {\bfseries m\+\_\+im\+Reaction\+Rate\+Expl}
+\begin{DoxyCompactList}\small\item\em Data import for the reaction\+\_\+rate term explicit. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_a068b3f0fcbc80e8f11ff8209def6cc5a}\label{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_a068b3f0fcbc80e8f11ff8209def6cc5a}} 
+Data\+Import$<$ number, \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_af2084a0a706fa33d8723a2b6f4d3faab}{dim}} $>$ {\bfseries m\+\_\+im\+Reaction\+Expl}
+\begin{DoxyCompactList}\small\item\em Data import for the reaction term explicit. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_a1068f20175ba5017f56dfdb44fedfef8}\label{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_a1068f20175ba5017f56dfdb44fedfef8}} 
+Data\+Import$<$ number, \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_af2084a0a706fa33d8723a2b6f4d3faab}{dim}} $>$ {\bfseries m\+\_\+im\+Source\+Expl}
+\begin{DoxyCompactList}\small\item\em Data import for the source term explicit. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_a0305ac4d19910090f4e1dca5a4b248de}\label{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_a0305ac4d19910090f4e1dca5a4b248de}} 
+Data\+Import$<$ number, \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_af2084a0a706fa33d8723a2b6f4d3faab}{dim}} $>$ {\bfseries m\+\_\+im\+Source}
+\begin{DoxyCompactList}\small\item\em Data import for the right-\/hand side (volume) \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_a3480b7de3952f6dc33879d31747a09c6}\label{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_a3480b7de3952f6dc33879d31747a09c6}} 
+Data\+Import$<$ Math\+Vector$<$ \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_af2084a0a706fa33d8723a2b6f4d3faab}{dim}} $>$, \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_af2084a0a706fa33d8723a2b6f4d3faab}{dim}} $>$ {\bfseries m\+\_\+im\+Vector\+Source}
+\begin{DoxyCompactList}\small\item\em Data import for the right-\/hand side (vector) \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_ab9d19009ccdb63d9a60ddf5eb33ca262}\label{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_ab9d19009ccdb63d9a60ddf5eb33ca262}} 
+Data\+Import$<$ number, \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_af2084a0a706fa33d8723a2b6f4d3faab}{dim}} $>$ {\bfseries m\+\_\+im\+Mass\+Scale}
+\begin{DoxyCompactList}\small\item\em Data import for the mass scale. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_a184ca451a713c47a04d47356397decad}\label{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_a184ca451a713c47a04d47356397decad}} 
+Data\+Import$<$ number, \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_af2084a0a706fa33d8723a2b6f4d3faab}{dim}} $>$ {\bfseries m\+\_\+im\+Mass}
+\begin{DoxyCompactList}\small\item\em Data import for the mass scale. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_a7b583f4df638ba32a347f9bf0e670feb}\label{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_a7b583f4df638ba32a347f9bf0e670feb}} 
+Smart\+Ptr$<$ Data\+Export$<$ number, \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_af2084a0a706fa33d8723a2b6f4d3faab}{dim}} $>$ $>$ {\bfseries m\+\_\+ex\+Value}
+\begin{DoxyCompactList}\small\item\em Export for the concentration. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_ad36d5d822d0be7d6fa6b7afcdac695fa}\label{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_ad36d5d822d0be7d6fa6b7afcdac695fa}} 
+Smart\+Ptr$<$ Data\+Export$<$ Math\+Vector$<$ \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_af2084a0a706fa33d8723a2b6f4d3faab}{dim}} $>$, \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_af2084a0a706fa33d8723a2b6f4d3faab}{dim}} $>$ $>$ {\bfseries m\+\_\+ex\+Grad}
+\begin{DoxyCompactList}\small\item\em Export for the gradient of concentration. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\subsubsection*{template$<$typename TDomain$>$\newline
+class ug\+::\+Convection\+Diffusion\+Plugin\+::\+Convection\+Diffusion\+Base$<$ TDomain $>$}
+Discretization for the Convection-\/\+Diffusion Equation. 
+
+This class implements the IElem\+Disc interface to provide element local assemblings for the convection diffusion equation. The Equation has the form  \[
+    \partial_t (m_1 c + m_2) - \nabla \cdot \left ( D \nabla c - \vec{v} c - \vec{F} \right )
+        + r_1 \cdot c + r_2 = f + \nabla \cdot \vec{f}_2
+\] with 
+\begin{DoxyItemize}
+\item $ c $ is the unknown solution 
+\item $ m_1 \equiv m_1(\vec{x},t) $ is the Mass Scaling Term 
+\item $ m_2 \equiv m_1(\vec{x},t) $ is the Mass Term 
+\item $ D \equiv D(\vec{x},t) $ is the Diffusion Tensor 
+\item $ v \equiv \vec{v}(\vec{x},t) $ is the Velocity Field 
+\item $ F \equiv \vec{F}(\vec{x},t) $ is the Flux 
+\item $ r_1 \equiv r_1(\vec{x},t) $ is the Reaction Rate 
+\item $ r_2 \equiv r_2(\vec{x},t) $ is a Reaction Term 
+\item $ f \equiv f(\vec{x},t) $ is a Source Term 
+\item $ \vec{f}_2 \equiv \vec{f}_2(\vec{x},t) $ is a Vector Source Term 
+\end{DoxyItemize}
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em TDomain} & Domain \\
+\hline
+\end{DoxyTemplParams}
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_a08c5f1883d6908f82f5ae48d27665f0c}\label{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_a08c5f1883d6908f82f5ae48d27665f0c}} 
+\index{ug::ConvectionDiffusionPlugin::ConvectionDiffusionBase$<$ TDomain $>$@{ug::ConvectionDiffusionPlugin::ConvectionDiffusionBase$<$ TDomain $>$}!set\_diffusion@{set\_diffusion}}
+\index{set\_diffusion@{set\_diffusion}!ug::ConvectionDiffusionPlugin::ConvectionDiffusionBase$<$ TDomain $>$@{ug::ConvectionDiffusionPlugin::ConvectionDiffusionBase$<$ TDomain $>$}}
+\doxysubsubsection{\texorpdfstring{set\_diffusion()}{set\_diffusion()}}
+{\footnotesize\ttfamily template$<$typename TDomain $>$ \\
+void \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase}{ug\+::\+Convection\+Diffusion\+Plugin\+::\+Convection\+Diffusion\+Base}}$<$ TDomain $>$\+::set\+\_\+diffusion (\begin{DoxyParamCaption}\item[{Smart\+Ptr$<$ Cpl\+User\+Data$<$ Math\+Matrix$<$ \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_af2084a0a706fa33d8723a2b6f4d3faab}{dim}}, \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_af2084a0a706fa33d8723a2b6f4d3faab}{dim}} $>$, \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_af2084a0a706fa33d8723a2b6f4d3faab}{dim}} $>$ $>$}]{user }\end{DoxyParamCaption})}
+
+
+
+sets the diffusion tensor 
+
+This method sets the Diffusion tensor used in computations. If no Tensor is set, a zero value is assumed. \mbox{\Hypertarget{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_a94f06c07b278ccf55ed95fb0645c9627}\label{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_a94f06c07b278ccf55ed95fb0645c9627}} 
+\index{ug::ConvectionDiffusionPlugin::ConvectionDiffusionBase$<$ TDomain $>$@{ug::ConvectionDiffusionPlugin::ConvectionDiffusionBase$<$ TDomain $>$}!set\_flux@{set\_flux}}
+\index{set\_flux@{set\_flux}!ug::ConvectionDiffusionPlugin::ConvectionDiffusionBase$<$ TDomain $>$@{ug::ConvectionDiffusionPlugin::ConvectionDiffusionBase$<$ TDomain $>$}}
+\doxysubsubsection{\texorpdfstring{set\_flux()}{set\_flux()}}
+{\footnotesize\ttfamily template$<$typename TDomain $>$ \\
+void \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase}{ug\+::\+Convection\+Diffusion\+Plugin\+::\+Convection\+Diffusion\+Base}}$<$ TDomain $>$\+::set\+\_\+flux (\begin{DoxyParamCaption}\item[{Smart\+Ptr$<$ Cpl\+User\+Data$<$ Math\+Vector$<$ \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_af2084a0a706fa33d8723a2b6f4d3faab}{dim}} $>$, \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_af2084a0a706fa33d8723a2b6f4d3faab}{dim}} $>$ $>$}]{user }\end{DoxyParamCaption})}
+
+
+
+sets the flux 
+
+This method sets the Flux. If no field is provided a zero value is assumed. \mbox{\Hypertarget{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_ab7c6a515bac338fc5ad68a1669190fae}\label{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_ab7c6a515bac338fc5ad68a1669190fae}} 
+\index{ug::ConvectionDiffusionPlugin::ConvectionDiffusionBase$<$ TDomain $>$@{ug::ConvectionDiffusionPlugin::ConvectionDiffusionBase$<$ TDomain $>$}!set\_mass@{set\_mass}}
+\index{set\_mass@{set\_mass}!ug::ConvectionDiffusionPlugin::ConvectionDiffusionBase$<$ TDomain $>$@{ug::ConvectionDiffusionPlugin::ConvectionDiffusionBase$<$ TDomain $>$}}
+\doxysubsubsection{\texorpdfstring{set\_mass()}{set\_mass()}}
+{\footnotesize\ttfamily template$<$typename TDomain $>$ \\
+void \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase}{ug\+::\+Convection\+Diffusion\+Plugin\+::\+Convection\+Diffusion\+Base}}$<$ TDomain $>$\+::set\+\_\+mass (\begin{DoxyParamCaption}\item[{Smart\+Ptr$<$ Cpl\+User\+Data$<$ number, \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_af2084a0a706fa33d8723a2b6f4d3faab}{dim}} $>$ $>$}]{user }\end{DoxyParamCaption})}
+
+
+
+sets mass 
+
+This method sets the mass value. The default value is 0.\+0. \mbox{\Hypertarget{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_a92e85c5f26d0eb772d95da0c4a47e420}\label{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_a92e85c5f26d0eb772d95da0c4a47e420}} 
+\index{ug::ConvectionDiffusionPlugin::ConvectionDiffusionBase$<$ TDomain $>$@{ug::ConvectionDiffusionPlugin::ConvectionDiffusionBase$<$ TDomain $>$}!set\_mass\_scale@{set\_mass\_scale}}
+\index{set\_mass\_scale@{set\_mass\_scale}!ug::ConvectionDiffusionPlugin::ConvectionDiffusionBase$<$ TDomain $>$@{ug::ConvectionDiffusionPlugin::ConvectionDiffusionBase$<$ TDomain $>$}}
+\doxysubsubsection{\texorpdfstring{set\_mass\_scale()}{set\_mass\_scale()}}
+{\footnotesize\ttfamily template$<$typename TDomain $>$ \\
+void \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase}{ug\+::\+Convection\+Diffusion\+Plugin\+::\+Convection\+Diffusion\+Base}}$<$ TDomain $>$\+::set\+\_\+mass\+\_\+scale (\begin{DoxyParamCaption}\item[{Smart\+Ptr$<$ Cpl\+User\+Data$<$ number, \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_af2084a0a706fa33d8723a2b6f4d3faab}{dim}} $>$ $>$}]{user }\end{DoxyParamCaption})}
+
+
+
+sets mass scale 
+
+This method sets the mass scale value. The default value is 1.\+0. \mbox{\Hypertarget{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_a6b19b073129b62a309cd070f301c7029}\label{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_a6b19b073129b62a309cd070f301c7029}} 
+\index{ug::ConvectionDiffusionPlugin::ConvectionDiffusionBase$<$ TDomain $>$@{ug::ConvectionDiffusionPlugin::ConvectionDiffusionBase$<$ TDomain $>$}!set\_reaction@{set\_reaction}}
+\index{set\_reaction@{set\_reaction}!ug::ConvectionDiffusionPlugin::ConvectionDiffusionBase$<$ TDomain $>$@{ug::ConvectionDiffusionPlugin::ConvectionDiffusionBase$<$ TDomain $>$}}
+\doxysubsubsection{\texorpdfstring{set\_reaction()}{set\_reaction()}}
+{\footnotesize\ttfamily template$<$typename TDomain $>$ \\
+void \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase}{ug\+::\+Convection\+Diffusion\+Plugin\+::\+Convection\+Diffusion\+Base}}$<$ TDomain $>$\+::set\+\_\+reaction (\begin{DoxyParamCaption}\item[{Smart\+Ptr$<$ Cpl\+User\+Data$<$ number, \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_af2084a0a706fa33d8723a2b6f4d3faab}{dim}} $>$ $>$}]{user }\end{DoxyParamCaption})}
+
+
+
+sets the reaction 
+
+This method sets the Reaction. A zero value is assumed as default. \mbox{\Hypertarget{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_a41324e5e7178249f6237a3ab28c36c55}\label{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_a41324e5e7178249f6237a3ab28c36c55}} 
+\index{ug::ConvectionDiffusionPlugin::ConvectionDiffusionBase$<$ TDomain $>$@{ug::ConvectionDiffusionPlugin::ConvectionDiffusionBase$<$ TDomain $>$}!set\_reaction\_rate@{set\_reaction\_rate}}
+\index{set\_reaction\_rate@{set\_reaction\_rate}!ug::ConvectionDiffusionPlugin::ConvectionDiffusionBase$<$ TDomain $>$@{ug::ConvectionDiffusionPlugin::ConvectionDiffusionBase$<$ TDomain $>$}}
+\doxysubsubsection{\texorpdfstring{set\_reaction\_rate()}{set\_reaction\_rate()}}
+{\footnotesize\ttfamily template$<$typename TDomain $>$ \\
+void \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase}{ug\+::\+Convection\+Diffusion\+Plugin\+::\+Convection\+Diffusion\+Base}}$<$ TDomain $>$\+::set\+\_\+reaction\+\_\+rate (\begin{DoxyParamCaption}\item[{Smart\+Ptr$<$ Cpl\+User\+Data$<$ number, \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_af2084a0a706fa33d8723a2b6f4d3faab}{dim}} $>$ $>$}]{user }\end{DoxyParamCaption})}
+
+
+
+sets the reaction rate 
+
+This method sets the Reaction Rate. A zero value is assumed as default. \mbox{\Hypertarget{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_a93d69a592c416b0cc92022dc9c3e1ac0}\label{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_a93d69a592c416b0cc92022dc9c3e1ac0}} 
+\index{ug::ConvectionDiffusionPlugin::ConvectionDiffusionBase$<$ TDomain $>$@{ug::ConvectionDiffusionPlugin::ConvectionDiffusionBase$<$ TDomain $>$}!set\_source@{set\_source}}
+\index{set\_source@{set\_source}!ug::ConvectionDiffusionPlugin::ConvectionDiffusionBase$<$ TDomain $>$@{ug::ConvectionDiffusionPlugin::ConvectionDiffusionBase$<$ TDomain $>$}}
+\doxysubsubsection{\texorpdfstring{set\_source()}{set\_source()}}
+{\footnotesize\ttfamily template$<$typename TDomain $>$ \\
+void \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase}{ug\+::\+Convection\+Diffusion\+Plugin\+::\+Convection\+Diffusion\+Base}}$<$ TDomain $>$\+::set\+\_\+source (\begin{DoxyParamCaption}\item[{Smart\+Ptr$<$ Cpl\+User\+Data$<$ number, \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_af2084a0a706fa33d8723a2b6f4d3faab}{dim}} $>$ $>$}]{user }\end{DoxyParamCaption})}
+
+
+
+sets the source / sink term 
+
+This method sets the source/sink value. A zero value is assumed as default. \mbox{\Hypertarget{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_ab6d29d9a250a2d73c05a38f77db1f098}\label{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_ab6d29d9a250a2d73c05a38f77db1f098}} 
+\index{ug::ConvectionDiffusionPlugin::ConvectionDiffusionBase$<$ TDomain $>$@{ug::ConvectionDiffusionPlugin::ConvectionDiffusionBase$<$ TDomain $>$}!set\_vector\_source@{set\_vector\_source}}
+\index{set\_vector\_source@{set\_vector\_source}!ug::ConvectionDiffusionPlugin::ConvectionDiffusionBase$<$ TDomain $>$@{ug::ConvectionDiffusionPlugin::ConvectionDiffusionBase$<$ TDomain $>$}}
+\doxysubsubsection{\texorpdfstring{set\_vector\_source()}{set\_vector\_source()}}
+{\footnotesize\ttfamily template$<$typename TDomain $>$ \\
+void \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase}{ug\+::\+Convection\+Diffusion\+Plugin\+::\+Convection\+Diffusion\+Base}}$<$ TDomain $>$\+::set\+\_\+vector\+\_\+source (\begin{DoxyParamCaption}\item[{Smart\+Ptr$<$ Cpl\+User\+Data$<$ Math\+Vector$<$ \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_af2084a0a706fa33d8723a2b6f4d3faab}{dim}} $>$, \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_af2084a0a706fa33d8723a2b6f4d3faab}{dim}} $>$ $>$}]{user }\end{DoxyParamCaption})}
+
+
+
+sets the vector source term 
+
+This method sets the divergence of the source as an effect of an external field. A zero value is assumed as default, thus this term is ignored then. \mbox{\Hypertarget{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_a8e5d997f603d14ab3bd84ef87195a272}\label{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_a8e5d997f603d14ab3bd84ef87195a272}} 
+\index{ug::ConvectionDiffusionPlugin::ConvectionDiffusionBase$<$ TDomain $>$@{ug::ConvectionDiffusionPlugin::ConvectionDiffusionBase$<$ TDomain $>$}!set\_velocity@{set\_velocity}}
+\index{set\_velocity@{set\_velocity}!ug::ConvectionDiffusionPlugin::ConvectionDiffusionBase$<$ TDomain $>$@{ug::ConvectionDiffusionPlugin::ConvectionDiffusionBase$<$ TDomain $>$}}
+\doxysubsubsection{\texorpdfstring{set\_velocity()}{set\_velocity()}}
+{\footnotesize\ttfamily template$<$typename TDomain $>$ \\
+void \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase}{ug\+::\+Convection\+Diffusion\+Plugin\+::\+Convection\+Diffusion\+Base}}$<$ TDomain $>$\+::set\+\_\+velocity (\begin{DoxyParamCaption}\item[{Smart\+Ptr$<$ Cpl\+User\+Data$<$ Math\+Vector$<$ \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_af2084a0a706fa33d8723a2b6f4d3faab}{dim}} $>$, \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_af2084a0a706fa33d8723a2b6f4d3faab}{dim}} $>$ $>$}]{user }\end{DoxyParamCaption})}
+
+
+
+sets the velocity field 
+
+This method sets the Velocity field. If no field is provided a zero value is assumed. 
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+convection\+\_\+diffusion\+\_\+base.\+h\item 
+convection\+\_\+diffusion\+\_\+base.\+cpp\end{DoxyCompactItemize}

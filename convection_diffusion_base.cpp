@@ -73,6 +73,36 @@ void ConvectionDiffusionBase<TDomain>::set_diffusion(LuaFunctionHandle fct)
 }
 #endif
 
+//////// Diffusion_Sw
+
+template<typename TDomain>
+void ConvectionDiffusionBase<TDomain>::
+set_diffusion_Sw(SmartPtr<CplUserData<MathMatrix<dim, dim>, dim> > user)
+{
+	m_imDiffusion_Sw.set_data(user);
+	m_imDiffusion_Sw.set_comp_lin_defect(false);
+}
+
+template<typename TDomain>
+void ConvectionDiffusionBase<TDomain>::set_diffusion_Sw(number val)
+{
+	if(val == 0.0) set_diffusion_Sw(SmartPtr<CplUserData<MathMatrix<dim, dim>, dim> >());
+	else set_diffusion_Sw(make_sp(new ConstUserMatrix<dim>(val)));
+}
+
+#ifdef UG_FOR_LUA
+template<typename TDomain>
+void ConvectionDiffusionBase<TDomain>::set_diffusion_Sw(const char* fctName)
+{
+	set_diffusion_Sw(LuaUserDataFactory<MathMatrix<dim,dim>, dim>::create(fctName));
+}
+template<typename TDomain>
+void ConvectionDiffusionBase<TDomain>::set_diffusion_Sw(LuaFunctionHandle fct)
+{
+	set_diffusion_Sw(make_sp(new LuaUserData<MathMatrix<dim,dim>, dim>(fct)));
+}
+#endif
+
 //////// Velocity
 
 template<typename TDomain>
@@ -108,6 +138,214 @@ set_velocity(LuaFunctionHandle fct)
 	set_velocity(make_sp(new LuaUserData<MathVector<dim>,dim>(fct)));
 }
 #endif
+
+
+//////// darcyW
+
+template<typename TDomain>
+void ConvectionDiffusionBase<TDomain>::
+set_darcyW(SmartPtr<CplUserData<MathVector<dim>, dim> > user)
+{
+	m_imDarcyW.set_data(user);
+}
+
+template<typename TDomain>
+void ConvectionDiffusionBase<TDomain>::set_darcyW(const std::vector<number>& vVel)
+{
+	bool bZero = true;
+	for(size_t i = 0; i < vVel.size(); ++i){
+		if(vVel[i] != 0.0) bZero = false;
+	}
+
+	if(bZero) set_darcyW(SmartPtr<CplUserData<MathVector<dim>, dim> >());
+	else set_darcyW(SmartPtr<ConstUserVector<dim> >(new ConstUserVector<dim>(vVel)));
+}
+
+#ifdef UG_FOR_LUA
+template<typename TDomain>
+void ConvectionDiffusionBase<TDomain>::
+set_darcyW(const char* fctName)
+{
+	set_darcyW(LuaUserDataFactory<MathVector<dim>,dim>::create(fctName));
+}
+template<typename TDomain>
+void ConvectionDiffusionBase<TDomain>::
+set_darcyW(LuaFunctionHandle fct)
+{
+	set_darcyW(make_sp(new LuaUserData<MathVector<dim>,dim>(fct)));
+}
+#endif
+
+//////// darcyN
+template<typename TDomain>
+void ConvectionDiffusionBase<TDomain>::
+set_darcyN(SmartPtr<CplUserData<MathVector<dim>, dim> > user)
+{
+	m_imDarcyN.set_data(user);
+}
+
+template<typename TDomain>
+void ConvectionDiffusionBase<TDomain>::set_darcyN(const std::vector<number>& vVel)
+{
+	bool bZero = true;
+	for(size_t i = 0; i < vVel.size(); ++i){
+		if(vVel[i] != 0.0) bZero = false;
+	}
+
+	if(bZero) set_darcyN(SmartPtr<CplUserData<MathVector<dim>, dim> >());
+	else set_darcyN(SmartPtr<ConstUserVector<dim> >(new ConstUserVector<dim>(vVel)));
+}
+
+#ifdef UG_FOR_LUA
+template<typename TDomain>
+void ConvectionDiffusionBase<TDomain>::
+set_darcyN(const char* fctName)
+{
+	set_darcyN(LuaUserDataFactory<MathVector<dim>,dim>::create(fctName));
+}
+template<typename TDomain>
+void ConvectionDiffusionBase<TDomain>::
+set_darcyN(LuaFunctionHandle fct)
+{
+	set_darcyN(make_sp(new LuaUserData<MathVector<dim>,dim>(fct)));
+}
+#endif
+
+//////// SaturationW
+
+template<typename TDomain>
+void ConvectionDiffusionBase<TDomain>::
+set_saturationW(SmartPtr<CplUserData<number, dim> > user)
+{
+	m_imSaturationW.set_data(user);
+	m_imSaturationW.set_comp_lin_defect(false);
+}
+
+template<typename TDomain>
+void ConvectionDiffusionBase<TDomain>::
+set_saturationW(number val)
+{
+	if(val == 0.0) set_saturationW(SmartPtr<CplUserData<number, dim> >());
+	else set_saturationW(make_sp(new ConstUserNumber<dim>(val)));
+}
+
+#ifdef UG_FOR_LUA
+template<typename TDomain>
+void ConvectionDiffusionBase<TDomain>::
+set_saturationW(const char* fctName)
+{
+	set_saturationW(LuaUserDataFactory<number,dim>::create(fctName));
+}
+template<typename TDomain>
+void ConvectionDiffusionBase<TDomain>::
+set_saturationW(LuaFunctionHandle fct)
+{
+	set_saturationW(make_sp(new LuaUserData<number,dim>(fct)));
+}
+#endif
+
+//////// MassFractionWc
+
+template<typename TDomain>
+void ConvectionDiffusionBase<TDomain>::
+set_MassFractionWc(SmartPtr<CplUserData<number, dim> > user)
+{
+	m_imMassFractionWc.set_data(user);
+	m_imMassFractionWc.set_comp_lin_defect(false);
+}
+
+template<typename TDomain>
+void ConvectionDiffusionBase<TDomain>::
+set_MassFractionWc(number val)
+{
+	if(val == 0.0) set_MassFractionWc(SmartPtr<CplUserData<number, dim> >());
+	else set_MassFractionWc(make_sp(new ConstUserNumber<dim>(val)));
+}
+
+#ifdef UG_FOR_LUA
+template<typename TDomain>
+void ConvectionDiffusionBase<TDomain>::
+set_MassFractionWc(const char* fctName)
+{
+	set_MassFractionWc(LuaUserDataFactory<number,dim>::create(fctName));
+}
+template<typename TDomain>
+void ConvectionDiffusionBase<TDomain>::
+set_MassFractionWc(LuaFunctionHandle fct)
+{
+	set_MassFractionWc(make_sp(new LuaUserData<number,dim>(fct)));
+}
+#endif
+
+
+
+//////// Permeability
+
+template<typename TDomain>
+void ConvectionDiffusionBase<TDomain>::
+set_permeability(SmartPtr<CplUserData<number, dim> > user)
+{
+	m_imPermeability.set_data(user);
+	m_imPermeability.set_comp_lin_defect(false);
+}
+
+template<typename TDomain>
+void ConvectionDiffusionBase<TDomain>::
+set_permeability(number val)
+{
+	if(val == 0.0) set_permeability(SmartPtr<CplUserData<number, dim> >());
+	else set_permeability(make_sp(new ConstUserNumber<dim>(val)));
+}
+
+#ifdef UG_FOR_LUA
+template<typename TDomain>
+void ConvectionDiffusionBase<TDomain>::
+set_permeability(const char* fctName)
+{
+	set_permeability(LuaUserDataFactory<number,dim>::create(fctName));
+}
+template<typename TDomain>
+void ConvectionDiffusionBase<TDomain>::
+set_permeability(LuaFunctionHandle fct)
+{
+	set_permeability(make_sp(new LuaUserData<number,dim>(fct)));
+}
+#endif
+
+//////// MinPd
+
+template<typename TDomain>
+void ConvectionDiffusionBase<TDomain>::
+set_minPd(SmartPtr<CplUserData<number, dim> > user)
+{
+	m_imMinPd.set_data(user);
+	m_imMinPd.set_comp_lin_defect(false);
+}
+
+template<typename TDomain>
+void ConvectionDiffusionBase<TDomain>::
+set_minPd(number val)
+{
+	if(val == 0.0) set_minPd(SmartPtr<CplUserData<number, dim> >());
+	else set_minPd(make_sp(new ConstUserNumber<dim>(val)));
+}
+
+#ifdef UG_FOR_LUA
+template<typename TDomain>
+void ConvectionDiffusionBase<TDomain>::
+set_minPd(const char* fctName)
+{
+	set_minPd(LuaUserDataFactory<number,dim>::create(fctName));
+}
+template<typename TDomain>
+void ConvectionDiffusionBase<TDomain>::
+set_minPd(LuaFunctionHandle fct)
+{
+	set_minPd(make_sp(new LuaUserData<number,dim>(fct)));
+}
+#endif
+
+
 
 //////// Flux
 
@@ -428,8 +666,12 @@ set_mass(LuaFunctionHandle fct)
 template <typename TDomain>
 typename ConvectionDiffusionBase<TDomain>::NumberExport
 ConvectionDiffusionBase<TDomain>::
-value() {return m_exValue;}
+modifiedvalue() {return m_exModifiedValue;}
 
+template <typename TDomain>
+typename ConvectionDiffusionBase<TDomain>::NumberExport
+ConvectionDiffusionBase<TDomain>::
+value() {return m_exValue;}
 
 template <typename TDomain>
 typename ConvectionDiffusionBase<TDomain>::GradExport
@@ -447,6 +689,16 @@ init_imports()
 	//	register imports
 		this->register_import(m_imDiffusion);
 		this->register_import(m_imVelocity);
+		
+		this->register_import(m_imDarcyW);
+		this->register_import(m_imDarcyN);
+		this->register_import(m_imSaturationW);
+		this->register_import(m_imDiffusion_Sw);
+		this->register_import(m_imMassFractionWc);
+		
+		this->register_import(m_imPermeability);
+		this->register_import(m_imMinPd);
+		
 		this->register_import(m_imFlux);
 		this->register_import(m_imReactionRate);
 		this->register_import(m_imReaction);
@@ -471,6 +723,7 @@ template<typename TDomain>
 ConvectionDiffusionBase<TDomain>::
 ConvectionDiffusionBase(const char* functions, const char* subsets)
  : IElemDisc<TDomain>(functions,subsets),
+   m_exModifiedValue(new DataExport<number, dim>(functions)),
    m_exValue(new DataExport<number, dim>(functions)),
    m_exGrad(new DataExport<MathVector<dim>, dim>(functions))
 {

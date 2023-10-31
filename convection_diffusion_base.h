@@ -105,6 +105,20 @@ class ConvectionDiffusionBase
 #endif
 	///	\}
 
+	///	sets the diffusion_Sw tensor
+	/**
+	 * This method sets the Diffusion tensor used in computations. If no
+	 * Tensor is set, a zero value is assumed.
+	 */
+	///	\{
+		void set_diffusion_Sw(SmartPtr<CplUserData<MathMatrix<dim, dim>, dim> > user);
+		void set_diffusion_Sw(number val);
+#ifdef UG_FOR_LUA
+		void set_diffusion_Sw(const char* fctName);
+		void set_diffusion_Sw(LuaFunctionHandle fct);
+#endif
+	///	\}
+	
 	///	sets the velocity field
 	/**
 	 * This method sets the Velocity field. If no field is provided a zero
@@ -119,6 +133,90 @@ class ConvectionDiffusionBase
 #endif
 	/// \}
 
+	///	sets the set_darcyW field
+	/**
+	 * This method sets the Velocity field. If no field is provided a zero
+	 * value is assumed.
+	 */
+	/// \{
+		void set_darcyW(SmartPtr<CplUserData<MathVector<dim>, dim> > user);
+		void set_darcyW(const std::vector<number>& vVel);
+#ifdef UG_FOR_LUA
+		void set_darcyW(const char* fctName);
+		void set_darcyW(LuaFunctionHandle fct);
+#endif
+	/// \}
+
+	///	sets the set_darcyN field
+	/**
+	 * This method sets the Velocity field. If no field is provided a zero
+	 * value is assumed.
+	 */
+	/// \{
+		void set_darcyN(SmartPtr<CplUserData<MathVector<dim>, dim> > user);
+		void set_darcyN(const std::vector<number>& vVel);
+#ifdef UG_FOR_LUA
+		void set_darcyN(const char* fctName);
+		void set_darcyN(LuaFunctionHandle fct);
+#endif
+	/// \}
+
+	///	sets saturation
+	/**
+	 * This method sets the saturation value. The default value is 0.0.
+	 */
+	///	\{
+		void set_saturationW(SmartPtr<CplUserData<number, dim> > user);
+		void set_saturationW(number val);
+#ifdef UG_FOR_LUA
+		void set_saturationW(const char* fctName);
+		void set_saturationW(LuaFunctionHandle fct);
+#endif
+	///	\}
+	
+		///	sets mass fraction Wc
+	/**
+	 * This method sets the mass fraction Wc value. The default value is 0.0.
+	 */
+	///	\{
+		void set_MassFractionWc(SmartPtr<CplUserData<number, dim> > user);
+		void set_MassFractionWc(number val);
+#ifdef UG_FOR_LUA
+		void set_MassFractionWc(const char* fctName);
+		void set_MassFractionWc(LuaFunctionHandle fct);
+#endif
+	///	\}
+	
+	
+	
+		///	sets permeability
+	/**
+	 * This method sets the permeability value. The default value is 0.0.
+	 */
+	///	\{
+		void set_permeability(SmartPtr<CplUserData<number, dim> > user);
+		void set_permeability(number val);
+#ifdef UG_FOR_LUA
+		void set_permeability(const char* fctName);
+		void set_permeability(LuaFunctionHandle fct);
+#endif
+	///	\}
+	
+		///	sets minPd
+	/**
+	 * This method sets the minPd value. The default value is 0.0.
+	 */
+	///	\{
+		void set_minPd(SmartPtr<CplUserData<number, dim> > user);
+		void set_minPd(number val);
+#ifdef UG_FOR_LUA
+		void set_minPd(const char* fctName);
+		void set_minPd(LuaFunctionHandle fct);
+#endif
+	///	\}
+	
+	
+	
 	///	sets the flux
 	/**
 	 * This method sets the Flux. If no field is provided a zero
@@ -238,7 +336,31 @@ class ConvectionDiffusionBase
 
 	///	Data import for the Velocity field
 		DataImport<MathVector<dim>, dim > m_imVelocity;
-
+		
+		
+	///	Data import for the Darcy Velocity field of wetting phase
+		DataImport<MathVector<dim>, dim > m_imDarcyW;
+		
+	///	Data import for the Darcy Velocity field of non-wetting phase
+		DataImport<MathVector<dim>, dim > m_imDarcyN;
+		
+	///	Data import for the saturationW
+		DataImport<number, dim> m_imSaturationW;
+	
+	///	Data import for Diffusion_Sw
+		DataImport<MathMatrix<dim,dim>, dim> m_imDiffusion_Sw;
+	
+	///	Data import for the mass fraction Wc
+		DataImport<number, dim> m_imMassFractionWc;
+		
+		
+	///	Data import for the Permeability
+		DataImport<number, dim> m_imPermeability;	
+		
+	///	Data import for the MinPd
+		DataImport<number, dim> m_imMinPd;
+	
+		
 	///	Data import for the Flux
 		DataImport<MathVector<dim>, dim > m_imFlux;
 
@@ -266,7 +388,7 @@ class ConvectionDiffusionBase
 	///	Data import for the mass scale
 		DataImport<number, dim> m_imMassScale;
 
-	///	Data import for the mass scale
+	///	Data import for the mass
 		DataImport<number, dim> m_imMass;
 
 	private:
@@ -276,7 +398,10 @@ class ConvectionDiffusionBase
 	public:
 		typedef SmartPtr<CplUserData<number, dim> > NumberExport;
 		typedef SmartPtr<CplUserData<MathVector<dim>, dim> > GradExport;
-
+		
+	///	returns the export of the value of associated unknown function
+		virtual SmartPtr<CplUserData<number, dim> > modifiedvalue();
+		
 	///	returns the export of the value of associated unknown function
 		virtual SmartPtr<CplUserData<number, dim> > value();
 
@@ -285,8 +410,11 @@ class ConvectionDiffusionBase
 
 	protected:
 	///	Export for the concentration
-		SmartPtr<DataExport<number, dim> > m_exValue;
+		SmartPtr<DataExport<number, dim> > m_exModifiedValue;
 
+	///	Export for the concentration
+		SmartPtr<DataExport<number, dim> > m_exValue;
+		
 	///	Export for the gradient of concentration
 		SmartPtr<DataExport<MathVector<dim>, dim> > m_exGrad;
 };

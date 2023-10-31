@@ -39,6 +39,7 @@
 #include "convection_diffusion_base.h"
 #include "convection_diffusion_sss.h"
 #include "fv1/convection_diffusion_fv1.h"
+#include "mp/convection_diffusion_mp.h"
 #include "fe/convection_diffusion_fe.h"
 #include "fe/convection_diffusion_stab_fe.h"
 #include "fvcr/convection_diffusion_fvcr.h"
@@ -96,12 +97,63 @@ static void Domain(TRegistry& reg, string grp)
 			.add_method("set_diffusion", static_cast<void (T::*)(LuaFunctionHandle)>(&T::set_diffusion), "", "Diffusion")
 #endif
 
+			.add_method("set_diffusion_Sw", static_cast<void (T::*)(SmartPtr<CplUserData<MathMatrix<dim, dim>, dim> >)>(&T::set_diffusion_Sw), "", "Diffusion_Sw")
+			.add_method("set_diffusion_Sw", static_cast<void (T::*)(number)>(&T::set_diffusion_Sw), "", "Diagonal Diffusion_Sw")
+#ifdef UG_FOR_LUA
+			.add_method("set_diffusion_Sw", static_cast<void (T::*)(const char*)>(&T::set_diffusion_Sw), "", "Diffusion_Sw")
+			.add_method("set_diffusion_Sw", static_cast<void (T::*)(LuaFunctionHandle)>(&T::set_diffusion_Sw), "", "Diffusion_Sw")
+#endif
+
 			.add_method("set_velocity", static_cast<void (T::*)(SmartPtr<CplUserData<MathVector<dim>, dim> >)>(&T::set_velocity), "", "Velocity Field")
 			.add_method("set_velocity", static_cast<void (T::*)(const std::vector<number>&)>(&T::set_velocity), "", "Velocity Field")
 #ifdef UG_FOR_LUA
 			.add_method("set_velocity", static_cast<void (T::*)(const char*)>(&T::set_velocity), "", "Velocity Field")
 			.add_method("set_velocity", static_cast<void (T::*)(LuaFunctionHandle)>(&T::set_velocity), "", "Velocity Field")
 #endif
+
+			.add_method("set_darcyW", static_cast<void (T::*)(SmartPtr<CplUserData<MathVector<dim>, dim> >)>(&T::set_darcyW), "", "DarcyW Field")
+			.add_method("set_darcyW", static_cast<void (T::*)(const std::vector<number>&)>(&T::set_darcyW), "", "DarcyW Field")
+#ifdef UG_FOR_LUA
+			.add_method("set_darcyW", static_cast<void (T::*)(const char*)>(&T::set_darcyW), "", "DarcyW Field")
+			.add_method("set_darcyW", static_cast<void (T::*)(LuaFunctionHandle)>(&T::set_darcyW), "", "DarcyW Field")
+#endif
+
+			.add_method("set_darcyN", static_cast<void (T::*)(SmartPtr<CplUserData<MathVector<dim>, dim> >)>(&T::set_darcyN), "", "DarcyN Field")
+			.add_method("set_darcyN", static_cast<void (T::*)(const std::vector<number>&)>(&T::set_darcyN), "", "DarcyN Field")
+#ifdef UG_FOR_LUA
+			.add_method("set_darcyN", static_cast<void (T::*)(const char*)>(&T::set_darcyN), "", "DarcyN Field")
+			.add_method("set_darcyN", static_cast<void (T::*)(LuaFunctionHandle)>(&T::set_darcyN), "", "DarcyN Field")
+#endif
+
+
+			.add_method("set_saturationW", static_cast<void (T::*)(SmartPtr<CplUserData<number, dim> >)>(&T::set_saturationW), "", "SaturationW")
+			.add_method("set_saturationW", static_cast<void (T::*)(number)>(&T::set_saturationW), "", "SaturationW")
+#ifdef UG_FOR_LUA
+			.add_method("set_saturationW", static_cast<void (T::*)(const char*)>(&T::set_saturationW), "", "SaturationW")
+			.add_method("set_saturationW", static_cast<void (T::*)(LuaFunctionHandle)>(&T::set_saturationW), "", "SaturationW")
+#endif
+
+			.add_method("set_MassFractionWc", static_cast<void (T::*)(SmartPtr<CplUserData<number, dim> >)>(&T::set_MassFractionWc), "", "MassFractionWc")
+			.add_method("set_MassFractionWc", static_cast<void (T::*)(number)>(&T::set_MassFractionWc), "", "MassFractionWc")
+#ifdef UG_FOR_LUA
+			.add_method("set_MassFractionWc", static_cast<void (T::*)(const char*)>(&T::set_MassFractionWc), "", "MassFractionWc")
+			.add_method("set_MassFractionWc", static_cast<void (T::*)(LuaFunctionHandle)>(&T::set_MassFractionWc), "", "MassFractionWc")
+#endif
+
+
+			.add_method("set_permeability", static_cast<void (T::*)(SmartPtr<CplUserData<number, dim> >)>(&T::set_permeability), "", "Permeability")
+			.add_method("set_permeability", static_cast<void (T::*)(number)>(&T::set_permeability), "", "Permeability")
+#ifdef UG_FOR_LUA
+			.add_method("set_permeability", static_cast<void (T::*)(const char*)>(&T::set_permeability), "", "Permeability")
+			.add_method("set_permeability", static_cast<void (T::*)(LuaFunctionHandle)>(&T::set_permeability), "", "Permeability")
+#endif
+			.add_method("set_minPd", static_cast<void (T::*)(SmartPtr<CplUserData<number, dim> >)>(&T::set_minPd), "", "MinPd")
+			.add_method("set_minPd", static_cast<void (T::*)(number)>(&T::set_minPd), "", "MinPd")
+#ifdef UG_FOR_LUA
+			.add_method("set_minPd", static_cast<void (T::*)(const char*)>(&T::set_minPd), "", "MinPd")
+			.add_method("set_minPd", static_cast<void (T::*)(LuaFunctionHandle)>(&T::set_minPd), "", "MinPd")
+#endif
+
 
 			.add_method("set_flux", static_cast<void (T::*)(SmartPtr<CplUserData<MathVector<dim>, dim> >)>(&T::set_flux), "", "Flux")
 			.add_method("set_flux", static_cast<void (T::*)(const std::vector<number>&)>(&T::set_flux), "", "Flux")
@@ -169,6 +221,7 @@ static void Domain(TRegistry& reg, string grp)
 			.add_method("set_mass", static_cast<void (T::*)(LuaFunctionHandle)>(&T::set_mass), "", "Mass")
 #endif
 
+			.add_method("modifiedvalue", &T::modifiedvalue)
 			.add_method("value", &T::value)
 		  .add_method("gradient", &T::gradient);
 		  /*
@@ -192,6 +245,21 @@ static void Domain(TRegistry& reg, string grp)
 			.add_method("singular_sources_and_sinks", &T::sss_manager, "", "Returns the singular sources and sinks manager")
 			.set_construct_as_smart_pointer(true);
 		reg.add_class_to_group(name, "ConvectionDiffusionFV1", tag);
+	}
+	
+//	Convection Diffusion MP
+	{
+		typedef ConvectionDiffusionMP<TDomain> T;
+		typedef ConvectionDiffusionBase<TDomain> TBase;
+		string name = string("ConvectionDiffusionMP").append(suffix);
+		reg.template add_class_<T, TBase >(name, grp)
+			.template add_constructor<void (*)(const char*,const char*)>("Function(s)#Subset(s)")
+			.add_method("set_condensed_FV", &T::set_condensed_FV, "", "[De-]Activates the condensed FV scvf ip's")
+			.add_method("set_upwind", &T::set_upwind, "", "Sets the upwind type for the convective terms")
+			.add_method("set_singular_sources_and_sinks", &T::set_sss_manager, "", "Sets the singular sources and sinks manager")
+			.add_method("singular_sources_and_sinks", &T::sss_manager, "", "Returns the singular sources and sinks manager")
+			.set_construct_as_smart_pointer(true);
+		reg.add_class_to_group(name, "ConvectionDiffusionMP", tag);
 	}
 
 //	Convection Diffusion FE
