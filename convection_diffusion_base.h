@@ -187,6 +187,18 @@ class ConvectionDiffusionBase
 #endif
 	///	\}
 	
+		///	sets pressure of nowetting phase Pn
+	/**
+	 * This method sets the pressure of nowetting phase Pn value. The default value is 0.0.
+	 */
+	///	\{
+		void set_PressurePn(SmartPtr<CplUserData<number, dim> > user);
+		void set_PressurePn(number val);
+#ifdef UG_FOR_LUA
+		void set_PressurePn(const char* fctName);
+		void set_PressurePn(LuaFunctionHandle fct);
+#endif
+	///	\}
 	
 	
 		///	sets permeability
@@ -201,6 +213,21 @@ class ConvectionDiffusionBase
 		void set_permeability(LuaFunctionHandle fct);
 #endif
 	///	\}
+	
+	
+		///	sets porosity
+	/**
+	 * This method sets the porosity value. The default value is 0.0.
+	 */
+	///	\{
+		void set_porosity(SmartPtr<CplUserData<number, dim> > user);
+		void set_porosity(number val);
+#ifdef UG_FOR_LUA
+		void set_porosity(const char* fctName);
+		void set_porosity(LuaFunctionHandle fct);
+#endif
+	///	\}
+	
 	
 		///	sets minPd
 	/**
@@ -353,9 +380,15 @@ class ConvectionDiffusionBase
 	///	Data import for the mass fraction Wc
 		DataImport<number, dim> m_imMassFractionWc;
 		
+	///	Data import for the pressure of nowetting phase Pn
+		DataImport<number, dim> m_imPressurePn;
+		
 		
 	///	Data import for the Permeability
-		DataImport<number, dim> m_imPermeability;	
+		DataImport<number, dim> m_imPermeability;
+
+	///	Data import for the Porosity
+		DataImport<number, dim> m_imPorosity;	
 		
 	///	Data import for the MinPd
 		DataImport<number, dim> m_imMinPd;
@@ -407,6 +440,9 @@ class ConvectionDiffusionBase
 
 	///	returns the export of the gradient of associated unknown function
 		virtual SmartPtr<CplUserData<MathVector<dim>, dim> > gradient();
+		
+	///	returns the export of the gradient of associated unknown function
+		virtual SmartPtr<CplUserData<MathVector<dim>, dim> > gradient_pd();
 
 	protected:
 	///	Export for the concentration
@@ -417,6 +453,9 @@ class ConvectionDiffusionBase
 		
 	///	Export for the gradient of concentration
 		SmartPtr<DataExport<MathVector<dim>, dim> > m_exGrad;
+		
+	///	Export for the gradient of concentration * pd
+		SmartPtr<DataExport<MathVector<dim>, dim> > m_exGrad_pd;
 };
 
 // end group convection_diffusion

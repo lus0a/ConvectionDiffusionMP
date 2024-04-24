@@ -140,6 +140,12 @@ static void Domain(TRegistry& reg, string grp)
 			.add_method("set_MassFractionWc", static_cast<void (T::*)(LuaFunctionHandle)>(&T::set_MassFractionWc), "", "MassFractionWc")
 #endif
 
+			.add_method("set_PressurePn", static_cast<void (T::*)(SmartPtr<CplUserData<number, dim> >)>(&T::set_PressurePn), "", "PressurePn")
+			.add_method("set_PressurePn", static_cast<void (T::*)(number)>(&T::set_PressurePn), "", "PressurePn")
+#ifdef UG_FOR_LUA
+			.add_method("set_PressurePn", static_cast<void (T::*)(const char*)>(&T::set_PressurePn), "", "PressurePn")
+			.add_method("set_PressurePn", static_cast<void (T::*)(LuaFunctionHandle)>(&T::set_PressurePn), "", "PressurePn")
+#endif
 
 			.add_method("set_permeability", static_cast<void (T::*)(SmartPtr<CplUserData<number, dim> >)>(&T::set_permeability), "", "Permeability")
 			.add_method("set_permeability", static_cast<void (T::*)(number)>(&T::set_permeability), "", "Permeability")
@@ -147,6 +153,13 @@ static void Domain(TRegistry& reg, string grp)
 			.add_method("set_permeability", static_cast<void (T::*)(const char*)>(&T::set_permeability), "", "Permeability")
 			.add_method("set_permeability", static_cast<void (T::*)(LuaFunctionHandle)>(&T::set_permeability), "", "Permeability")
 #endif
+			.add_method("set_porosity", static_cast<void (T::*)(SmartPtr<CplUserData<number, dim> >)>(&T::set_porosity), "", "Porosity")
+			.add_method("set_porosity", static_cast<void (T::*)(number)>(&T::set_porosity), "", "Porosity")
+#ifdef UG_FOR_LUA
+			.add_method("set_porosity", static_cast<void (T::*)(const char*)>(&T::set_porosity), "", "Porosity")
+			.add_method("set_porosity", static_cast<void (T::*)(LuaFunctionHandle)>(&T::set_porosity), "", "Porosity")
+#endif
+
 			.add_method("set_minPd", static_cast<void (T::*)(SmartPtr<CplUserData<number, dim> >)>(&T::set_minPd), "", "MinPd")
 			.add_method("set_minPd", static_cast<void (T::*)(number)>(&T::set_minPd), "", "MinPd")
 #ifdef UG_FOR_LUA
@@ -223,7 +236,8 @@ static void Domain(TRegistry& reg, string grp)
 
 			.add_method("modifiedvalue", &T::modifiedvalue)
 			.add_method("value", &T::value)
-		  .add_method("gradient", &T::gradient);
+		  .add_method("gradient", &T::gradient)
+		  .add_method("gradient_pd", &T::gradient_pd);
 		  /*
 			.add_method("set_partial_velocity", &T::set_partial_velocity)
 			.add_method("set_partial_flux", &T::set_partial_flux)

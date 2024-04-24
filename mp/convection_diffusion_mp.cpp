@@ -49,12 +49,8 @@ DebugID DID_CONV_DIFF_MP("CONV_DIFF_MP");
 static number krw_max = 0.9;
 static number krn_max = 0.5;
 static number m = 2;
-static number n = 1;
-
-//static number DensityW = 1000;
-static number DensityH = 1000;
-static number DensityC = 700;
-static number DensityHC = 1200;
+static number n = 2;
+//static number n = 1;
 
 //static number Permeability = 4.845e-13;
 static number ViscosityW = 1e-3;
@@ -63,11 +59,12 @@ static number swr = 0.0;
 static number snr = 0.0;
 //static number swr = 0.2;
 //static number snr = 0.1;
+
 //static number lambda = 4.2;
 
-///*
 static number lambda = 2.0;
 
+/*
 static number krw(number sw)
 {
 	number sw_eff = (sw - swr) / (1-snr-swr);
@@ -100,9 +97,81 @@ static number krn(number sw)
 	else
 		return 1;
 }
-//*/
+*/
 
 /*
+// For Extended Buckley Leverett
+static number krw1(number sw)
+{
+	number sw_eff = (sw - swr) / (1-snr-swr);
+	if (sw_eff>0 && sw_eff<1)
+		return 1.831*pow(sw_eff, 4);
+	else if (sw_eff<=0)
+		return 0;
+	else
+		return 1.831;
+}
+
+static number D_krw1(number sw)
+{
+	number sw_eff = (sw - swr) / (1-snr-swr);
+	if (sw_eff>0 && sw_eff<1)
+		return 1.831*4*pow(sw_eff, 3)/(1-snr-swr);
+	else if (sw_eff<=0)
+		return 0;
+	else
+		return 1.831*4;
+}
+
+static number krn1(number sw)
+{
+    number sw_eff = (sw - swr) / (1-snr-swr);
+	if (sw_eff>0 && sw_eff<1)
+		return 0.75*pow(1-1.25*sw_eff, 2)* (1-1.652*pow(sw_eff, 2));
+	else if (sw_eff>=1)
+		return 0.75*pow(-0.25, 2)* (-0.652);
+	else
+		return 0.75;
+}
+
+static number krw2(number sw)
+{
+	number sw_eff = (sw - swr) / (1-snr-swr);
+	if (sw_eff>0 && sw_eff<1)
+		return 0.4687*pow(sw_eff, 2);
+	else if (sw_eff<=0)
+		return 0;
+	else
+		return 0.4687;
+}
+
+static number D_krw2(number sw)
+{
+	number sw_eff = (sw - swr) / (1-snr-swr);
+	if (sw_eff>0 && sw_eff<1)
+		return 0.4687*2*sw_eff;
+	else if (sw_eff<=0)
+		return 0;
+	else
+		return 0.4687*2;
+}
+
+static number krn2(number sw)
+{
+    number sw_eff = (sw - swr) / (1-snr-swr);
+	if (sw_eff>0 && sw_eff<1)
+		return 0.25 * pow(1-1.25*sw_eff, 2);
+	else if (sw_eff>=1)
+		return 0.25 * pow(-0.25, 2);
+	else
+		return 0.25;
+}
+*/
+
+
+
+
+///*
 static number krw(number sw)
 {
 	number sw_eff = (sw - swr) / (1-snr-swr);
@@ -135,13 +204,28 @@ static number krn(number sw)
 	else
 		return krn_max;
 }
-*/
+//*/
 
-static number DensityW(number wc)
+
+///*
+static number DensityW(number wC, number pN)
 {
-	return 1/(wc/DensityHC + (1-wc)/DensityH);
+	pN=pN/10000000;
+	//int pN=5;
+	number result = (1005+307.5*wC-6.98*3
+		-589.8*wC*wC+52.53*wC*pN); //For Pn in [25,35]Mpa
+	//number result = (1000+259.3*wC
+	//	-446.8*wC*wC+30.83*wC*pN);
+	//number result = (1006+259.3*wC-2.853*pN
+	//	-446.8*wC*wC+30.83*wC*pN);
+	/*
+	number result = (988.1+473.2*wC-6.628*pN
+		-797.3*wC*wC+17.55*wC*pN+1.672*pN*pN
+		-82.44*wC*wC*wC+98.26*wC*wC*pN-8.403*wC*pN*pN);
+	*/
+	return result;
 }
-
+//*/
 
 // Leverett J
 static number LeverJ(number sw_eff) {
@@ -157,47 +241,47 @@ static number InverseLeverJ(number J) {
 	return pow(J, -lambda);
 }
 
-/*
-static number Pd(number perm)
+///*
+static number Pd(number perm, number poro)
 {
-	return 7.37 * pow(1/perm,0.43);
+	return 7.37 * pow(poro/perm,0.43);
 }
-static number D_diffusion_Sw(number sw, number perm)
+static number D_diffusion_Sw(number sw, number perm, number poro)
 {
 	number sw_eff = (sw - swr) / (1-snr-swr);
 	if (sw_eff>0 && sw_eff<1)
-		return -perm/ViscosityW *Pd(perm)*(-1/lambda)*krw_max* (m-1/lambda-1) * pow(sw_eff, (m-1/lambda-2)) / pow(1-snr-swr, 2);
+		return -perm/ViscosityW *Pd(perm, poro)*(-1/lambda)*krw_max* (m-1/lambda-1) * pow(sw_eff, (m-1/lambda-2)) / pow(1-snr-swr, 2);
 	else if (sw_eff>=1)
-		return -perm/ViscosityW *Pd(perm)*(-1/lambda)*krw_max* (m-1/lambda-1) / pow(1-snr-swr, 2);
+		return -perm/ViscosityW *Pd(perm, poro)*(-1/lambda)*krw_max* (m-1/lambda-1) / pow(1-snr-swr, 2);
 	else
 		return 0;
-	return 
 }
-*/
+//*/
 
-///*
-static number Pd(number perm)
+/*
+static number Pd(number perm, number poro)
 {
 	return 1000;
+	//return 0.10;
 	//return 7.37 * pow(1/perm,0.43);
 }
-static number D_diffusion_Sw(number sw, number perm)
+static number D_diffusion_Sw(number sw, number perm, number poro)
 {
 	number sw_eff = (sw - swr) / (1-snr-swr);
 	if (sw_eff>0 && sw_eff<1)
-		return -perm/ViscosityW *Pd(perm)*(-1/lambda)* (1/lambda+2) * pow(sw_eff, (1/lambda+1)) / pow(1-snr-swr, 2);
+		return -perm/ViscosityW *Pd(perm, poro)*(-1/lambda)* (1/lambda+2) * pow(sw_eff, (1/lambda+1)) / pow(1-snr-swr, 2);
 	else if (sw_eff>=1)
-		return -perm/ViscosityW *Pd(perm)*(-1/lambda)* (1/lambda+2) / pow(1-snr-swr, 2);
+		return -perm/ViscosityW *Pd(perm, poro)*(-1/lambda)* (1/lambda+2) / pow(1-snr-swr, 2);
 	else
 		return 0;
 		
 }
-//*/
+*/
 
-static number Modify_sw(number sw, number minPd, number perm)
+static number Modify_sw(number sw, number minPd, number perm, number poro)
 {	
-	number elePd = Pd(perm);
-	if ( abs(minPd - elePd) < 0.1 ){
+	number elePd = Pd(perm, poro);
+	if ( abs(minPd - elePd) < 1 ){
 		return sw;
 	}
 	number sw_eff = (sw - swr) / (1-snr-swr);
@@ -285,9 +369,11 @@ prep_elem_loop(const ReferenceObjectID roid, const int si)
 		m_imDarcyN.template 		set_local_ips<refDim>(vSCVFip,numSCVFip, false);
 		m_imSaturationW.template 	set_local_ips<refDim>(vSCVip,numSCVip, false);
 		m_imDiffusion_Sw.template 	set_local_ips<refDim>(vSCVFip,numSCVFip, false);
-		m_imMassFractionWc.template set_local_ips<refDim>(vSCVFip,numSCVFip, false);
+		m_imMassFractionWc.template set_local_ips<refDim>(vSCVip,numSCVip, false);
+		m_imPressurePn.template 	set_local_ips<refDim>(vSCVip,numSCVip, false);
 		
 		m_imPermeability.template 	set_local_ips<refDim>(vSCVip,numSCVip, false);
+		m_imPorosity.template 		set_local_ips<refDim>(vSCVip,numSCVip, false);
 		m_imMinPd.template 			set_local_ips<refDim>(vSCVip,numSCVip, false);
 		
 		m_imFlux.template 			set_local_ips<refDim>(vSCVFip,numSCVFip, false);
@@ -372,9 +458,11 @@ prep_elem(const LocalVector& u, GridObject* elem, const ReferenceObjectID roid, 
 	m_imDarcyN.				set_global_ips(vSCVFip, numSCVFip);
 	m_imSaturationW.		set_global_ips(vSCVip, numSCVip);
 	m_imDiffusion_Sw.		set_global_ips(vSCVFip, numSCVFip);
-	m_imMassFractionWc.		set_global_ips(vSCVFip, numSCVFip);
+	m_imMassFractionWc.		set_global_ips(vSCVip, numSCVip);
+	m_imPressurePn.			set_global_ips(vSCVip, numSCVip);
 	
 	m_imPermeability.		set_global_ips(vSCVip, numSCVip);
+	m_imPorosity.			set_global_ips(vSCVip, numSCVip);
 	m_imMinPd.				set_global_ips(vSCVip, numSCVip);
 	
 	m_imFlux.				set_global_ips(vSCVFip, numSCVFip);
@@ -451,7 +539,7 @@ add_jac_A_elem(LocalMatrix& J, const LocalVector& u, GridObject* elem, const Mat
 	number u_modified[convShape.num_sh()];
 	if ( m_imPermeability.data_given() && m_imMinPd.data_given() ){
 		for (size_t i = 0; i < convShape.num_sh(); ++i){
-			u_modified[i] = Modify_sw(u(_C_, i), m_imMinPd[i], m_imPermeability[i]);
+			u_modified[i] = Modify_sw(u(_C_, i), m_imMinPd[i], m_imPermeability[i], m_imPorosity[i]);
 		}
 	}
 	else{
@@ -518,7 +606,7 @@ add_jac_A_elem(LocalMatrix& J, const LocalVector& u, GridObject* elem, const Mat
 				for(size_t sh = 0; sh < scvf.num_sh(); ++sh)
 				{
 					MathMatrix<dim,dim> Real_Diffusion_Sw;
-					MatScale(Real_Diffusion_Sw, m_imPermeability[0]*Pd(m_imPermeability[0]), m_imDiffusion_Sw[ip]);
+					MatScale(Real_Diffusion_Sw, m_imPermeability[0]*Pd(m_imPermeability[0], m_imPorosity[0]), m_imDiffusion_Sw[ip]);
 				// 	Compute Diffusion Tensor times Gradient
 					MatVecMult(Dgrad, Real_Diffusion_Sw, scvf.global_grad(sh));
 					
@@ -538,10 +626,24 @@ add_jac_A_elem(LocalMatrix& J, const LocalVector& u, GridObject* elem, const Mat
 						for (size_t k = 0; k < dim; ++k)
 						{
 							if (j == k)
-								if (m_imMassFractionWc.data_given())
-									D_diffusion_Sw_Mat(j,k) = DensityW(m_imMassFractionWc[ip]) * D_diffusion_Sw(sw_integ, m_imPermeability[0]);
-								else
-									D_diffusion_Sw_Mat(j,k) = DensityW(0) * D_diffusion_Sw(sw_integ, m_imPermeability[0]);
+							{
+								if (m_imMassFractionWc.data_given() && m_imPressurePn.data_given())
+									D_diffusion_Sw_Mat(j,k) = DensityW(m_imMassFractionWc[ip], m_imPressurePn[ip]) * D_diffusion_Sw(sw_integ, m_imPermeability[0], m_imPorosity[0]);
+									//D_diffusion_Sw_Mat(j,k) = DensityW(m_imMassFractionWc[ip]) * D_diffusion_Sw(sw_integ, m_imPermeability[0], m_imPorosity[0]);
+								else if (m_imPressurePn.data_given())
+									D_diffusion_Sw_Mat(j,k) = DensityW(0, m_imPressurePn[ip]) * D_diffusion_Sw(sw_integ, m_imPermeability[0], m_imPorosity[0]);
+									//D_diffusion_Sw_Mat(j,k) = DensityW(0) * D_diffusion_Sw(sw_integ, m_imPermeability[0], m_imPorosity[0]);
+								else //immiscible & incompressible, densityW=1000
+									D_diffusion_Sw_Mat(j,k) = 1000 * D_diffusion_Sw(sw_integ, m_imPermeability[0], m_imPorosity[0]);
+								/*
+								//Shuai, Debug
+								if (D_diffusion_Sw_Mat(j,k)<0)
+								{
+									number xxxx= 0;
+									xxxx =D_diffusion_Sw_Mat(j,k);
+								}
+								*/
+							}
 							else
 								D_diffusion_Sw_Mat(j,k) = 0.0;
 						}
@@ -557,7 +659,8 @@ add_jac_A_elem(LocalMatrix& J, const LocalVector& u, GridObject* elem, const Mat
 					UG_ASSERT((scvf.from() < J.num_row_dof(_C_)) && (scvf.to() < J.num_col_dof(_C_)),
 							  "Bad local dof-index on element with object-id " << elem->base_object_id()
 							  << " with center: " << CalculateCenter(elem, vCornerCoords));
-
+					
+					
 					J(_C_, scvf.from(), _C_, sh) -= D_diff_flux_Sw;
 					J(_C_, scvf.to()  , _C_, sh) += D_diff_flux_Sw;
 
@@ -589,21 +692,37 @@ add_jac_A_elem(LocalMatrix& J, const LocalVector& u, GridObject* elem, const Mat
 			if(m_imDarcyW.data_given())
 			{
 			//	Add Flux contribution
-				number sw = 0.0;
+			
+			/* This is the old implementation of upwind
+				number D_krw_up = 0.0;
 				number factor = 0.0;
 				// 	loop shape functions
 				for(size_t sh = 0; sh < convShape.num_sh(); ++sh)
 				{
-					sw += u_modified[sh] * convShape(ip, sh);
+					D_krw_up += D_krw( u_modified[sh] )* convShape(ip, sh);
 					factor += convShape(ip, sh);
 				}
-				if (factor != 0)
-					sw = sw / factor;
+				//Shuai, debugging
+				sw = sw / factor;
+			*/		
 				
 				for(size_t sh = 0; sh < convShape.num_sh(); ++sh)
 				{
-					const number D_conv_flux = D_krw(sw) * convShape(ip, sh);
-
+					/*//For Extended Buckley Leverett
+					number D_krw_value = 0.0;
+					if (m_imPermeability.data_given())
+					{
+						if (m_imPermeability[0]>5*pow(10,-14))
+							D_krw_value = D_krw1( u_modified[sh] );
+						else
+							D_krw_value = D_krw2( u_modified[sh] );
+					}
+					const number D_conv_flux = D_krw_value * convShape(ip, sh);
+					*/
+					
+					const number D_conv_flux = D_krw( u_modified[sh] ) * convShape(ip, sh);
+					
+	
 				//	Add flux term to local matrix
 					J(_C_, scvf.from(), _C_, sh) += D_conv_flux;
 					J(_C_, scvf.to(),   _C_, sh) -= D_conv_flux;
@@ -729,7 +848,7 @@ add_sss_def_elem
 	//	Consider capillary trapping	or not
 	number u_modified;
 	if ( m_imPermeability.data_given() && m_imMinPd.data_given() ){
-		u_modified = Modify_sw(u(_C_, co), m_imMinPd[co], m_imPermeability[co]);
+		u_modified = Modify_sw(u(_C_, co), m_imMinPd[co], m_imPermeability[co], m_imPorosity[co]);
 	}
 	else{
 		u_modified = u(_C_, co);
@@ -763,7 +882,7 @@ add_def_A_elem(LocalVector& d, const LocalVector& u, GridObject* elem, const Mat
 	number u_modified[convShape.num_sh()];
 	if ( m_imPermeability.data_given() && m_imMinPd.data_given() ){
 		for (size_t i = 0; i < convShape.num_sh(); ++i)
-			u_modified[i] = Modify_sw(u(_C_, i), m_imMinPd[i], m_imPermeability[i]);
+			u_modified[i] = Modify_sw(u(_C_, i), m_imMinPd[i], m_imPermeability[i], m_imPorosity[i]);
 	}
 	else{
 		for (size_t i = 0; i < convShape.num_sh(); ++i)
@@ -818,7 +937,7 @@ add_def_A_elem(LocalVector& d, const LocalVector& u, GridObject* elem, const Mat
 
 				MathMatrix<dim,dim> Real_Diffusion_Sw;
 				if (m_imPermeability.data_given())
-					MatScale(Real_Diffusion_Sw, m_imPermeability[0]*Pd(m_imPermeability[0]), m_imDiffusion_Sw[ip]);
+					MatScale(Real_Diffusion_Sw, m_imPermeability[0]*Pd(m_imPermeability[0], m_imPorosity[0]), m_imDiffusion_Sw[ip]);
 				else
 					MatScale(Real_Diffusion_Sw, 1, m_imDiffusion_Sw[ip]);
 			//	scale by diffusion tensor
@@ -840,7 +959,11 @@ add_def_A_elem(LocalVector& d, const LocalVector& u, GridObject* elem, const Mat
 			//	sum up convective flux using convection shapes
 				number conv_flux = 0.0;
 				for(size_t sh = 0; sh < convShape.num_sh(); ++sh)
+				{
 					conv_flux += u_modified[sh] * convShape(ip, sh);
+
+				}
+					
 
 			//  add to local defect
 				d(_C_, scvf.from()) += conv_flux;
@@ -852,20 +975,22 @@ add_def_A_elem(LocalVector& d, const LocalVector& u, GridObject* elem, const Mat
 				
 			//	sum up convective flux using convection shapes
 				number conv_flux = 0.0;
-				number sw = 0.0;
-				number factor = 0.0;
-				// 	loop shape functions
 				for(size_t sh = 0; sh < convShape.num_sh(); ++sh)
 				{
-					sw += u_modified[sh] * convShape(ip, sh);
-					factor += convShape(ip, sh);
+					/*//For Extended Buckley Leverett
+					if (m_imPermeability.data_given())
+					{
+						if (m_imPermeability[0]>5*pow(10,-14))
+							conv_flux += krw1( u_modified[sh] ) * convShape(ip, sh);
+						else
+							conv_flux += krw2( u_modified[sh] ) * convShape(ip, sh);
+					}
+					*/
+					
+					conv_flux += krw( u_modified[sh] ) * convShape(ip, sh);
+						
 				}
-				if (factor != 0)
-					sw = sw / factor;
-				
-				for(size_t sh = 0; sh < convShape.num_sh(); ++sh)
-					conv_flux += krw(sw) * convShape(ip, sh);
-
+					
 			//  add to local defect
 				d(_C_, scvf.from()) += conv_flux;
 				d(_C_, scvf.to()  ) -= conv_flux;
@@ -877,19 +1002,23 @@ add_def_A_elem(LocalVector& d, const LocalVector& u, GridObject* elem, const Mat
 			{
 			//	sum up convective flux using convection shapes
 				number conv_flux = 0.0;
-				number sw_upwind = 0.0;
-				number factor = 0.0;
-				
-				// Nothing to change, since m_imSaturationW is modified before import
-				for(size_t sh = 0; sh < convShape.num_sh(); ++sh){
-					sw_upwind += m_imSaturationW[sh] * convShape(ip, sh);
-					factor += convShape(ip, sh);
-				}
-				if (factor != 0)
-					sw_upwind = sw_upwind / factor;
-
 				for(size_t sh = 0; sh < convShape.num_sh(); ++sh)
-					conv_flux += krn(sw_upwind) * convShape(ip, sh);
+				{
+					/*//For Extended Buckley Leverett
+					if (m_imPermeability.data_given())
+					{
+						if (m_imPermeability[0]>5*pow(10,-14))
+							conv_flux += krn1( m_imSaturationW[sh] ) * convShape(ip, sh);
+						else
+							conv_flux += krn2( m_imSaturationW[sh] ) * convShape(ip, sh);
+					}
+					*/
+					
+					// Nothing to change, since m_imSaturationW is modified before import
+					conv_flux += krn( m_imSaturationW[sh] ) * convShape(ip, sh);
+					
+				}
+					
 				//  add to local defect
 				d(_C_, scvf.from()) += conv_flux;
 				d(_C_, scvf.to()  ) -= conv_flux;
@@ -1016,7 +1145,7 @@ add_def_A_expl_elem(LocalVector& d, const LocalVector& u, GridObject* elem, cons
 		//	Consider capillary trapping	or not
 			number u_modified;
 			if ( m_imPermeability.data_given() && m_imMinPd.data_given() ){
-				u_modified = Modify_sw(u(_C_, co), m_imMinPd[co], m_imPermeability[co]);
+				u_modified = Modify_sw(u(_C_, co), m_imMinPd[co], m_imPermeability[co], m_imPorosity[co]);
 			}
 			else{
 				u_modified = u(_C_, co);
@@ -1083,7 +1212,7 @@ add_def_M_elem(LocalVector& d, const LocalVector& u, GridObject* elem, const Mat
 	//	Consider capillary trapping	or not
 		number u_modified;
 		if ( m_imPermeability.data_given() && m_imMinPd.data_given() ){
-			u_modified = Modify_sw(u(_C_, co), m_imMinPd[co], m_imPermeability[co]);
+			u_modified = Modify_sw(u(_C_, co), m_imMinPd[co], m_imPermeability[co], m_imPorosity[co]);
 		}
 		else{
 			u_modified = u(_C_, co);
@@ -1636,7 +1765,7 @@ lin_def_velocity(const LocalVector& u,
 	number u_modified[convShape.num_sh()];
 	if ( m_imPermeability.data_given() && m_imMinPd.data_given() ){
 		for (size_t i = 0; i < convShape.num_sh(); ++i)
-			u_modified[i] = Modify_sw(u(_C_, i), m_imMinPd[i], m_imPermeability[i]);
+			u_modified[i] = Modify_sw(u(_C_, i), m_imMinPd[i], m_imPermeability[i], m_imPorosity[i]);
 	}
 	else{
 		for (size_t i = 0; i < convShape.num_sh(); ++i)
@@ -1685,7 +1814,7 @@ lin_def_darcyW(const LocalVector& u,
 	number u_modified[convShape.num_sh()];
 	if ( m_imPermeability.data_given() && m_imMinPd.data_given() ){
 		for (size_t i = 0; i < convShape.num_sh(); ++i)
-			u_modified[i] = Modify_sw(u(_C_, i), m_imMinPd[i], m_imPermeability[i]);
+			u_modified[i] = Modify_sw(u(_C_, i), m_imMinPd[i], m_imPermeability[i], m_imPorosity[i]);
 	}
 	else{
 		for (size_t i = 0; i < convShape.num_sh(); ++i)
@@ -1704,20 +1833,24 @@ lin_def_darcyW(const LocalVector& u,
 	// get current SCVF
 		const typename TFVGeom::SCVF& scvf = geo.scvf(ip);
 		
-	// 	loop shape functions to get sW at the upwinding node
-		number sw = 0.0;
-		number factor = 0.0;
-		for(size_t sh = 0; sh < convShape.num_sh(); ++sh)
-		{
-			sw += u_modified[sh] * convShape(ip, sh);
-			factor += convShape(ip, sh);
-		}
-		if (factor != 0)
-			sw = sw / factor;
 	//	sum up contributions of convection shapes
 		MathVector<dim> linDefect;
 		VecSet(linDefect, 0.0);
-		VecScaleAppend(linDefect, krw(sw), scvf.normal());
+		
+		for(size_t sh = 0; sh < scvf.num_sh(); ++sh)
+		{
+			VecScaleAppend(linDefect, krw( u_modified[sh] ), convShape.D_vel(ip, sh));
+		/*//For Extended Buckley Leverett
+		if (m_imPermeability.data_given())
+		{
+			if (m_imPermeability[0]>5*pow(10,-14))
+				VecScaleAppend(linDefect, krw1( u_modified[sh] ), convShape.D_vel(ip, sh));
+			else
+				VecScaleAppend(linDefect, krw2( u_modified[sh] ), convShape.D_vel(ip, sh));
+		}
+		*/
+		}
+		
 	//	add parts for both sides of scvf
 		vvvLinDef[ip][_C_][scvf.from()] += linDefect;
 		vvvLinDef[ip][_C_][scvf.to()] -= linDefect;
@@ -1749,22 +1882,25 @@ lin_def_darcyN(const LocalVector& u,
 	{
 	// get current SCVF
 		const typename TFVGeom::SCVF& scvf = geo.scvf(ip);
-		
-	// 	m_imSaturationW is modified before import
-	// 	loop shape functions to get sW at the upwinding node
-		number sw = 0.0;
-		number factor = 0.0;
-		for(size_t sh = 0; sh < convShape.num_sh(); ++sh)
-		{
-			sw += m_imSaturationW[sh] * convShape(ip, sh);
-			factor += convShape(ip, sh);
-		}
-		if (factor != 0)
-			sw = sw / factor;
+
 	//	sum up contributions of convection shapes
 		MathVector<dim> linDefect;
 		VecSet(linDefect, 0.0);
-		VecScaleAppend(linDefect, krn(sw), scvf.normal());
+		for(size_t sh = 0; sh < scvf.num_sh(); ++sh)
+		{
+			// 	m_imSaturationW is modified before import
+			VecScaleAppend(linDefect, krn( m_imSaturationW[sh] ), convShape.D_vel(ip, sh));
+		
+		/*//For Extended Buckley Leverett
+		if (m_imPermeability.data_given())
+		{
+			if (m_imPermeability[0]>5*pow(10,-14))
+				VecScaleAppend(linDefect, krn1( m_imSaturationW[sh] ), convShape.D_vel(ip, sh));
+			else
+				VecScaleAppend(linDefect, krn2( m_imSaturationW[sh] ), convShape.D_vel(ip, sh));
+		}
+		*/
+		}
 	//	add parts for both sides of scvf
 		vvvLinDef[ip][_C_][scvf.from()] += linDefect;
 		vvvLinDef[ip][_C_][scvf.to()] -= linDefect;
@@ -1791,7 +1927,7 @@ lin_def_diffusion(const LocalVector& u,
 	number u_modified[convShape.num_sh()];
 	if ( m_imPermeability.data_given() && m_imMinPd.data_given() ){
 		for (size_t i = 0; i < convShape.num_sh(); ++i)
-			u_modified[i] = Modify_sw(u(_C_, i), m_imMinPd[i], m_imPermeability[i]);
+			u_modified[i] = Modify_sw(u(_C_, i), m_imMinPd[i], m_imPermeability[i], m_imPorosity[i]);
 	}
 	else{
 		for (size_t i = 0; i < convShape.num_sh(); ++i)
@@ -1885,7 +2021,7 @@ lin_def_reaction_rate(const LocalVector& u,
 	//	Consider capillary trapping	or not
 		number u_modified;
 		if ( m_imPermeability.data_given() && m_imMinPd.data_given() ){
-			u_modified = Modify_sw(u(_C_, co), m_imMinPd[co], m_imPermeability[co]);
+			u_modified = Modify_sw(u(_C_, co), m_imMinPd[co], m_imPermeability[co], m_imPorosity[co]);
 		}
 		else{
 			u_modified = u(_C_, co);
@@ -1989,7 +2125,7 @@ lin_def_mass_scale(const LocalVector& u,
 	number u_modified[geo.num_scv()];
 	if ( m_imPermeability.data_given() && m_imMinPd.data_given() ){
 		for (size_t i = 0; i < geo.num_scv(); ++i)
-			u_modified[i] = Modify_sw(u(_C_, i), m_imMinPd[i], m_imPermeability[i]);
+			u_modified[i] = Modify_sw(u(_C_, i), m_imMinPd[i], m_imPermeability[i], m_imPorosity[i]);
 	}
 	else{
 		for (size_t i = 0; i < geo.num_scv(); ++i)
@@ -2065,7 +2201,7 @@ ex_modified_value(number vValue[],
 	number u_modified[numSH];
 	if ( m_imPermeability.data_given() && m_imMinPd.data_given() && (nip != 1) ){
 		for (size_t i = 0; i < numSH; ++i)
-			u_modified[i] = Modify_sw(u(_C_, i), m_imMinPd[i], m_imPermeability[i]);
+			u_modified[i] = Modify_sw(u(_C_, i), m_imMinPd[i], m_imPermeability[i], m_imPorosity[i]);
 	}
 	else{
 		for (size_t i = 0; i < numSH; ++i)
@@ -2306,7 +2442,7 @@ ex_grad(MathVector<dim> vValue[],
 	number u_modified[numSH];
 	if ( m_imPermeability.data_given() && m_imMinPd.data_given() && (nip != 1) ){
 		for (size_t i = 0; i < numSH; ++i)
-			u_modified[i] = Modify_sw(u(_C_, i), m_imMinPd[i], m_imPermeability[i]);
+			u_modified[i] = Modify_sw(u(_C_, i), m_imMinPd[i], m_imPermeability[i], m_imPorosity[i]);
 	}
 	else{
 		for (size_t i = 0; i < numSH; ++i)
@@ -2385,6 +2521,118 @@ ex_grad(MathVector<dim> vValue[],
 	}
 };
 
+
+// grad_Sw output is needed in Wc equation
+template<typename TDomain>
+template <typename TElem, typename TFVGeom>
+void ConvectionDiffusionMP<TDomain>::
+ex_grad_pd(MathVector<dim> vValue[],
+        const MathVector<dim> vGlobIP[],
+        number time, int si,
+        const LocalVector& u,
+        GridObject* elem,
+        const MathVector<dim> vCornerCoords[],
+        const MathVector<TFVGeom::dim> vLocIP[],
+        const size_t nip,
+        bool bDeriv,
+        std::vector<std::vector<MathVector<dim> > > vvvDeriv[])
+{
+// 	Get finite volume geometry
+	static const TFVGeom& geo = GeomProvider<TFVGeom>::get();
+
+//	reference element
+	typedef typename reference_element_traits<TElem>::reference_element_type
+			ref_elem_type;
+
+//	reference dimension
+	static const int refDim = ref_elem_type::dim;
+
+//	number of shape functions
+	static const size_t numSH =	ref_elem_type::numCorners;
+
+	number u_modified[numSH];
+	if ( m_imPermeability.data_given() && m_imMinPd.data_given() && (nip != 1) ){
+		for (size_t i = 0; i < numSH; ++i)
+			u_modified[i] = Pd(m_imPermeability[i], m_imPorosity[i]) * Modify_sw(u(_C_, i), m_imMinPd[i], m_imPermeability[i], m_imPorosity[i]);
+	}
+	else{
+		for (size_t i = 0; i < numSH; ++i)
+			u_modified[i] = Pd(m_imPermeability[i], m_imPorosity[i]) * u(_C_, i);
+	}
+
+//	FV1 SCVF ip
+	if(vLocIP == geo.scvf_local_ips())
+	{
+	//	Loop Sub Control Volume Faces (SCVF)
+		for(size_t ip = 0; ip < geo.num_scvf(); ++ip)
+		{
+		// 	Get current SCVF
+			const typename TFVGeom::SCVF& scvf = geo.scvf(ip);
+
+			VecSet(vValue[ip], 0.0);
+
+			for(size_t sh = 0; sh < scvf.num_sh(); ++sh)
+				VecScaleAppend(vValue[ip], u_modified[sh], scvf.global_grad(sh));
+				//VecScaleAppend(vValue[ip], u(_C_, sh), scvf.global_grad(sh));
+
+			if(bDeriv)
+			{
+				for(size_t sh = 0; sh < scvf.num_sh(); ++sh)
+					vvvDeriv[ip][_C_][sh] = scvf.global_grad(sh);
+
+				// beware of hanging nodes!
+				size_t ndof = vvvDeriv[ip][_C_].size();
+				for (size_t sh = scvf.num_sh(); sh < ndof; ++sh)
+					vvvDeriv[ip][_C_][sh] = 0.0;
+			}
+		}
+	}
+// 	general case
+	else
+	{
+	//	get trial space
+		LagrangeP1<ref_elem_type>& rTrialSpace = Provider<LagrangeP1<ref_elem_type> >::get();
+
+	//	storage for shape function at ip
+		MathVector<refDim> vLocGrad[numSH];
+		MathVector<refDim> locGrad;
+
+	//	Reference Mapping
+		MathMatrix<dim, refDim> JTInv;
+		ReferenceMapping<ref_elem_type, dim> mapping(vCornerCoords);
+
+	//	loop ips
+		for(size_t ip = 0; ip < nip; ++ip)
+		{
+		//	evaluate at shapes at ip
+			rTrialSpace.grads(vLocGrad, vLocIP[ip]);
+
+		//	compute grad at ip
+			VecSet(locGrad, 0.0);
+			for(size_t sh = 0; sh < numSH; ++sh)
+				VecScaleAppend(locGrad, u_modified[sh], vLocGrad[sh]);
+				//VecScaleAppend(locGrad, u(_C_, sh), vLocGrad[sh]);
+
+		//	compute global grad
+			mapping.jacobian_transposed_inverse(JTInv, vLocIP[ip]);
+			MatVecMult(vValue[ip], JTInv, locGrad);
+
+		//	compute derivative w.r.t. to unknowns iff needed
+			if(bDeriv)
+			{
+				for(size_t sh = 0; sh < numSH; ++sh)
+					MatVecMult(vvvDeriv[ip][_C_][sh], JTInv, vLocGrad[sh]);
+
+				// beware of hanging nodes!
+				size_t ndof = vvvDeriv[ip][_C_].size();
+				for (size_t sh = numSH; sh < ndof; ++sh)
+					vvvDeriv[ip][_C_][sh] = 0.0;
+			}
+		}
+	}
+};
+
+
 ////////////////////////////////////////////////////////////////////////////////
 //	upwind
 ////////////////////////////////////////////////////////////////////////////////
@@ -2402,6 +2650,25 @@ get_updated_conv_shapes(const FVGeometryBase& geo, bool compute_deriv)
 //	compute upwind shapes for transport equation
 //	\todo: we should move this computation into the preparation part of the
 //			disc, to only compute the shapes once, reusing them several times.
+
+/*
+	if(m_imVelocity.data_given() && m_imDarcyW.data_given())//for upwind Wc
+	{
+		//	get diffusion at ips
+		const MathMatrix<dim, dim>* vDiffusion = NULL;
+		if(m_imDiffusion.data_given()) vDiffusion = m_imDiffusion.values();
+		
+		MathVector<dim> Uw = m_imDarcyW[ip];
+		VecScaleAppend(Uw, m_imPermeability[0]*Pd(m_imPermeability[0]), m_imVelocity[ip]);
+
+		if(!m_spConvShape->update(&geo, Uw, vDiffusion, compute_deriv))
+		{
+			UG_LOG("ERROR in 'ConvectionDiffusionMP::get_updated_conv_shapes': "
+					"Cannot compute convection shapes.\n");
+		}
+	}
+*/
+
 	if(m_imVelocity.data_given())
 	{
 	//	get diffusion at ips
@@ -2540,6 +2807,7 @@ register_func()
 	m_exModifiedValue->		template set_fct<T,refDim>(id, this, &T::template ex_modified_value<TElem, TFVGeom>);
 	m_exValue->		template set_fct<T,refDim>(id, this, &T::template ex_value<TElem, TFVGeom>);
 	m_exGrad->		template set_fct<T,refDim>(id, this, &T::template ex_grad<TElem, TFVGeom>);
+	m_exGrad_pd->		template set_fct<T,refDim>(id, this, &T::template ex_grad_pd<TElem, TFVGeom>);
 
 }
 

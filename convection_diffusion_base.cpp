@@ -277,6 +277,38 @@ set_MassFractionWc(LuaFunctionHandle fct)
 }
 #endif
 
+//////// PressurePn
+
+template<typename TDomain>
+void ConvectionDiffusionBase<TDomain>::
+set_PressurePn(SmartPtr<CplUserData<number, dim> > user)
+{
+	m_imPressurePn.set_data(user);
+	m_imPressurePn.set_comp_lin_defect(false);
+}
+
+template<typename TDomain>
+void ConvectionDiffusionBase<TDomain>::
+set_PressurePn(number val)
+{
+	if(val == 0.0) set_PressurePn(SmartPtr<CplUserData<number, dim> >());
+	else set_PressurePn(make_sp(new ConstUserNumber<dim>(val)));
+}
+
+#ifdef UG_FOR_LUA
+template<typename TDomain>
+void ConvectionDiffusionBase<TDomain>::
+set_PressurePn(const char* fctName)
+{
+	set_PressurePn(LuaUserDataFactory<number,dim>::create(fctName));
+}
+template<typename TDomain>
+void ConvectionDiffusionBase<TDomain>::
+set_PressurePn(LuaFunctionHandle fct)
+{
+	set_PressurePn(make_sp(new LuaUserData<number,dim>(fct)));
+}
+#endif
 
 
 //////// Permeability
@@ -311,6 +343,40 @@ set_permeability(LuaFunctionHandle fct)
 	set_permeability(make_sp(new LuaUserData<number,dim>(fct)));
 }
 #endif
+
+//////// Porosity
+
+template<typename TDomain>
+void ConvectionDiffusionBase<TDomain>::
+set_porosity(SmartPtr<CplUserData<number, dim> > user)
+{
+	m_imPorosity.set_data(user);
+	m_imPorosity.set_comp_lin_defect(false);
+}
+
+template<typename TDomain>
+void ConvectionDiffusionBase<TDomain>::
+set_porosity(number val)
+{
+	if(val == 0.0) set_porosity(SmartPtr<CplUserData<number, dim> >());
+	else set_porosity(make_sp(new ConstUserNumber<dim>(val)));
+}
+
+#ifdef UG_FOR_LUA
+template<typename TDomain>
+void ConvectionDiffusionBase<TDomain>::
+set_porosity(const char* fctName)
+{
+	set_porosity(LuaUserDataFactory<number,dim>::create(fctName));
+}
+template<typename TDomain>
+void ConvectionDiffusionBase<TDomain>::
+set_porosity(LuaFunctionHandle fct)
+{
+	set_porosity(make_sp(new LuaUserData<number,dim>(fct)));
+}
+#endif
+
 
 //////// MinPd
 
@@ -678,6 +744,11 @@ typename ConvectionDiffusionBase<TDomain>::GradExport
 ConvectionDiffusionBase<TDomain>::
 gradient() {return m_exGrad;}
 
+template <typename TDomain>
+typename ConvectionDiffusionBase<TDomain>::GradExport
+ConvectionDiffusionBase<TDomain>::
+gradient_pd() {return m_exGrad_pd;}
+
 ////////////////////////////////////////////////////////////////////////////////
 //	Constructor
 ////////////////////////////////////////////////////////////////////////////////
@@ -695,8 +766,10 @@ init_imports()
 		this->register_import(m_imSaturationW);
 		this->register_import(m_imDiffusion_Sw);
 		this->register_import(m_imMassFractionWc);
+		this->register_import(m_imPressurePn);
 		
 		this->register_import(m_imPermeability);
+		this->register_import(m_imPorosity);
 		this->register_import(m_imMinPd);
 		
 		this->register_import(m_imFlux);
@@ -725,7 +798,8 @@ ConvectionDiffusionBase(const char* functions, const char* subsets)
  : IElemDisc<TDomain>(functions,subsets),
    m_exModifiedValue(new DataExport<number, dim>(functions)),
    m_exValue(new DataExport<number, dim>(functions)),
-   m_exGrad(new DataExport<MathVector<dim>, dim>(functions))
+   m_exGrad(new DataExport<MathVector<dim>, dim>(functions)),
+   m_exGrad_pd(new DataExport<MathVector<dim>, dim>(functions))
 {
 //	check number of functions
 	if(this->num_fct() != 1)

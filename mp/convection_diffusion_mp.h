@@ -289,8 +289,10 @@ class ConvectionDiffusionMP : public ConvectionDiffusionBase<TDomain>
 		using base_type::m_imSaturationW;
 		using base_type::m_imDiffusion_Sw;
 		using base_type::m_imMassFractionWc;
+		using base_type::m_imPressurePn;
 		
 		using base_type::m_imPermeability;
+		using base_type::m_imPorosity;
 		using base_type::m_imMinPd;
 		
 		using base_type::m_imFlux;
@@ -305,6 +307,8 @@ class ConvectionDiffusionMP : public ConvectionDiffusionBase<TDomain>
 		using base_type::m_imMass;
 
 		using base_type::m_exModifiedValue;
+		using base_type::m_exGrad_pd;
+		
 		using base_type::m_exGrad;
 		using base_type::m_exValue;
 
@@ -345,6 +349,20 @@ class ConvectionDiffusionMP : public ConvectionDiffusionBase<TDomain>
 	///	computes the gradient of the concentration
 		template <typename TElem, typename TFVGeom>
 		void ex_grad(MathVector<dim> vValue[],
+		             const MathVector<dim> vGlobIP[],
+		             number time, int si,
+		             const LocalVector& u,
+		             GridObject* elem,
+		             const MathVector<dim> vCornerCoords[],
+		             const MathVector<TFVGeom::dim> vLocIP[],
+		             const size_t nip,
+		             bool bDeriv,
+		             std::vector<std::vector<MathVector<dim> > > vvvDeriv[]);
+					 			 
+					 
+	///	computes the gradient of the concentration
+		template <typename TElem, typename TFVGeom>
+		void ex_grad_pd(MathVector<dim> vValue[],
 		             const MathVector<dim> vGlobIP[],
 		             number time, int si,
 		             const LocalVector& u,
