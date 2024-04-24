@@ -1,0 +1,34 @@
+\hypertarget{structug_1_1ConvectionDiffusionPlugin_1_1Functionality2d3d}{}\doxysection{ug\+::Convection\+Diffusion\+Plugin\+::Functionality2d3d Struct Reference}
+\label{structug_1_1ConvectionDiffusionPlugin_1_1Functionality2d3d}\index{ug::ConvectionDiffusionPlugin::Functionality2d3d@{ug::ConvectionDiffusionPlugin::Functionality2d3d}}
+\doxysubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+{\footnotesize template$<$typename TDomain , typename TRegistry  = ug\+::bridge\+::\+Registry$>$ }\\static void \mbox{\hyperlink{structug_1_1ConvectionDiffusionPlugin_1_1Functionality2d3d_a7d888195eb619b749a58c3eaa3829473}{Domain}} (TRegistry \&reg, string grp)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Class exporting the functionality of the plugin restricted to 2 and 3 spatial dimensions. All functionality that is to be used in scripts or visualization only in 2d and 3d must be registered here. 
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{structug_1_1ConvectionDiffusionPlugin_1_1Functionality2d3d_a7d888195eb619b749a58c3eaa3829473}\label{structug_1_1ConvectionDiffusionPlugin_1_1Functionality2d3d_a7d888195eb619b749a58c3eaa3829473}} 
+\index{ug::ConvectionDiffusionPlugin::Functionality2d3d@{ug::ConvectionDiffusionPlugin::Functionality2d3d}!Domain@{Domain}}
+\index{Domain@{Domain}!ug::ConvectionDiffusionPlugin::Functionality2d3d@{ug::ConvectionDiffusionPlugin::Functionality2d3d}}
+\doxysubsubsection{\texorpdfstring{Domain()}{Domain()}}
+{\footnotesize\ttfamily template$<$typename TDomain , typename TRegistry  = ug\+::bridge\+::\+Registry$>$ \\
+static void ug\+::\+Convection\+Diffusion\+Plugin\+::\+Functionality2d3d\+::\+Domain (\begin{DoxyParamCaption}\item[{TRegistry \&}]{reg,  }\item[{string}]{grp }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+Function called for the registration of Domain dependent parts of the plugin. All Functions and Classes depending on the Domain are to be placed here when registering. The method is called for all available Domain types, based on the current build options.
+
+
+\begin{DoxyParams}{Parameters}
+{\em reg} & registry \\
+\hline
+{\em parent\+Group} & group for sorting of functionality \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+convection\+\_\+diffusion\+\_\+plugin.\+cpp\end{DoxyCompactItemize}

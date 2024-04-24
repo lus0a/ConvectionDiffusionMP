@@ -1,0 +1,208 @@
+\hypertarget{convection__diffusion__base_8h_source}{}\doxysection{convection\+\_\+diffusion\+\_\+base.\+h}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{1 \textcolor{comment}{/*}}
+\DoxyCodeLine{2 \textcolor{comment}{ * Copyright (c) 2010-\/2015:  G-\/CSC, Goethe University Frankfurt}}
+\DoxyCodeLine{3 \textcolor{comment}{ * Author: Andreas Vogel}}
+\DoxyCodeLine{4 \textcolor{comment}{ * }}
+\DoxyCodeLine{5 \textcolor{comment}{ * This file is part of UG4.}}
+\DoxyCodeLine{6 \textcolor{comment}{ * }}
+\DoxyCodeLine{7 \textcolor{comment}{ * UG4 is free software: you can redistribute it and/or modify it under the}}
+\DoxyCodeLine{8 \textcolor{comment}{ * terms of the GNU Lesser General Public License version 3 (as published by the}}
+\DoxyCodeLine{9 \textcolor{comment}{ * Free Software Foundation) with the following additional attribution}}
+\DoxyCodeLine{10 \textcolor{comment}{ * requirements (according to LGPL/GPL v3 §7):}}
+\DoxyCodeLine{11 \textcolor{comment}{ * }}
+\DoxyCodeLine{12 \textcolor{comment}{ * (1) The following notice must be displayed in the Appropriate Legal Notices}}
+\DoxyCodeLine{13 \textcolor{comment}{ * of covered and combined works: "{}Based on UG4 (www.ug4.org/license)"{}.}}
+\DoxyCodeLine{14 \textcolor{comment}{ * }}
+\DoxyCodeLine{15 \textcolor{comment}{ * (2) The following notice must be displayed at a prominent place in the}}
+\DoxyCodeLine{16 \textcolor{comment}{ * terminal output of covered works: "{}Based on UG4 (www.ug4.org/license)"{}.}}
+\DoxyCodeLine{17 \textcolor{comment}{ * }}
+\DoxyCodeLine{18 \textcolor{comment}{ * (3) The following bibliography is recommended for citation and must be}}
+\DoxyCodeLine{19 \textcolor{comment}{ * preserved in all covered files:}}
+\DoxyCodeLine{20 \textcolor{comment}{ * "{}Reiter, S., Vogel, A., Heppner, I., Rupp, M., and Wittum, G. A massively}}
+\DoxyCodeLine{21 \textcolor{comment}{ *   parallel geometric multigrid solver on hierarchically distributed grids.}}
+\DoxyCodeLine{22 \textcolor{comment}{ *   Computing and visualization in science 16, 4 (2013), 151-\/164"{}}}
+\DoxyCodeLine{23 \textcolor{comment}{ * "{}Vogel, A., Reiter, S., Rupp, M., Nägel, A., and Wittum, G. UG4 -\/-\/ a novel}}
+\DoxyCodeLine{24 \textcolor{comment}{ *   flexible software system for simulating pde based models on high performance}}
+\DoxyCodeLine{25 \textcolor{comment}{ *   computers. Computing and visualization in science 16, 4 (2013), 165-\/179"{}}}
+\DoxyCodeLine{26 \textcolor{comment}{ * }}
+\DoxyCodeLine{27 \textcolor{comment}{ * This program is distributed in the hope that it will be useful,}}
+\DoxyCodeLine{28 \textcolor{comment}{ * but WITHOUT ANY WARRANTY; without even the implied warranty of}}
+\DoxyCodeLine{29 \textcolor{comment}{ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the}}
+\DoxyCodeLine{30 \textcolor{comment}{ * GNU Lesser General Public License for more details.}}
+\DoxyCodeLine{31 \textcolor{comment}{ */}}
+\DoxyCodeLine{32 }
+\DoxyCodeLine{33 \textcolor{preprocessor}{\#ifndef \_\_H\_\_UG\_\_LIB\_DISC\_\_CONVECTION\_DIFFUSION\_\_CONVECTION\_DIFFUSION\_BASE\_\_}}
+\DoxyCodeLine{34 \textcolor{preprocessor}{\#define \_\_H\_\_UG\_\_LIB\_DISC\_\_CONVECTION\_DIFFUSION\_\_CONVECTION\_DIFFUSION\_BASE\_\_}}
+\DoxyCodeLine{35 }
+\DoxyCodeLine{36 \textcolor{comment}{// other ug4 modules}}
+\DoxyCodeLine{37 \textcolor{preprocessor}{\#include "{}common/common.h"{}}}
+\DoxyCodeLine{38 \textcolor{preprocessor}{\#include "{}lib\_grid/lg\_base.h"{}}}
+\DoxyCodeLine{39 }
+\DoxyCodeLine{40 \textcolor{comment}{// library intern headers}}
+\DoxyCodeLine{41 \textcolor{preprocessor}{\#include "{}lib\_disc/spatial\_disc/elem\_disc/elem\_disc\_interface.h"{}}}
+\DoxyCodeLine{42 \textcolor{preprocessor}{\#include "{}lib\_disc/spatial\_disc/user\_data/data\_export.h"{}}}
+\DoxyCodeLine{43 \textcolor{preprocessor}{\#include "{}lib\_disc/spatial\_disc/user\_data/data\_import.h"{}}}
+\DoxyCodeLine{44 }
+\DoxyCodeLine{45 \textcolor{keyword}{namespace }ug\{}
+\DoxyCodeLine{46 \textcolor{keyword}{namespace }ConvectionDiffusionPlugin\{}
+\DoxyCodeLine{47 }
+\DoxyCodeLine{50 }
+\DoxyCodeLine{52 }
+\DoxyCodeLine{76 \textcolor{keyword}{template}<   \textcolor{keyword}{typename} TDomain>}
+\DoxyCodeLine{77 \textcolor{keyword}{class }\mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase}{ConvectionDiffusionBase}}}
+\DoxyCodeLine{78 : \textcolor{keyword}{public} IElemDisc<TDomain>}
+\DoxyCodeLine{79 \{}
+\DoxyCodeLine{80     \textcolor{keyword}{private}:}
+\DoxyCodeLine{82         \textcolor{keyword}{typedef} IElemDisc<TDomain> base\_type;}
+\DoxyCodeLine{83 }
+\DoxyCodeLine{84     \textcolor{keyword}{public}:}
+\DoxyCodeLine{86         \textcolor{keyword}{static} \textcolor{keyword}{const} \textcolor{keywordtype}{int} \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_af2084a0a706fa33d8723a2b6f4d3faab}{dim}} = base\_type::dim;}
+\DoxyCodeLine{87 }
+\DoxyCodeLine{88     \textcolor{keyword}{public}:}
+\DoxyCodeLine{90         \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase}{ConvectionDiffusionBase}}(\textcolor{keyword}{const} \textcolor{keywordtype}{char}* functions, \textcolor{keyword}{const} \textcolor{keywordtype}{char}* subsets);}
+\DoxyCodeLine{91     \textcolor{keyword}{protected}:}
+\DoxyCodeLine{92         \textcolor{keywordtype}{void} init\_imports();}
+\DoxyCodeLine{93     \textcolor{keyword}{public}:}
+\DoxyCodeLine{95 }
+\DoxyCodeLine{100         \textcolor{keywordtype}{void} \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_a08c5f1883d6908f82f5ae48d27665f0c}{set\_diffusion}}(SmartPtr<CplUserData<MathMatrix<dim, dim>, \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_af2084a0a706fa33d8723a2b6f4d3faab}{dim}}> > user);}
+\DoxyCodeLine{101         \textcolor{keywordtype}{void} \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_a08c5f1883d6908f82f5ae48d27665f0c}{set\_diffusion}}(number val);}
+\DoxyCodeLine{102 \textcolor{preprocessor}{\#ifdef UG\_FOR\_LUA}}
+\DoxyCodeLine{103         \textcolor{keywordtype}{void} \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_a08c5f1883d6908f82f5ae48d27665f0c}{set\_diffusion}}(\textcolor{keyword}{const} \textcolor{keywordtype}{char}* fctName);}
+\DoxyCodeLine{104         \textcolor{keywordtype}{void} \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_a08c5f1883d6908f82f5ae48d27665f0c}{set\_diffusion}}(LuaFunctionHandle fct);}
+\DoxyCodeLine{105 \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{107 }
+\DoxyCodeLine{109 }
+\DoxyCodeLine{114         \textcolor{keywordtype}{void} \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_a8e5d997f603d14ab3bd84ef87195a272}{set\_velocity}}(SmartPtr<CplUserData<MathVector<dim>, \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_af2084a0a706fa33d8723a2b6f4d3faab}{dim}}> > user);}
+\DoxyCodeLine{115         \textcolor{keywordtype}{void} \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_a8e5d997f603d14ab3bd84ef87195a272}{set\_velocity}}(\textcolor{keyword}{const} std::vector<number>\& vVel);}
+\DoxyCodeLine{116 \textcolor{preprocessor}{\#ifdef UG\_FOR\_LUA}}
+\DoxyCodeLine{117         \textcolor{keywordtype}{void} \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_a8e5d997f603d14ab3bd84ef87195a272}{set\_velocity}}(\textcolor{keyword}{const} \textcolor{keywordtype}{char}* fctName);}
+\DoxyCodeLine{118         \textcolor{keywordtype}{void} \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_a8e5d997f603d14ab3bd84ef87195a272}{set\_velocity}}(LuaFunctionHandle fct);}
+\DoxyCodeLine{119 \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{121 }
+\DoxyCodeLine{123 }
+\DoxyCodeLine{128         \textcolor{keywordtype}{void} \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_a94f06c07b278ccf55ed95fb0645c9627}{set\_flux}}(SmartPtr<CplUserData<MathVector<dim>, \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_af2084a0a706fa33d8723a2b6f4d3faab}{dim}}> > user);}
+\DoxyCodeLine{129         \textcolor{keywordtype}{void} \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_a94f06c07b278ccf55ed95fb0645c9627}{set\_flux}}(\textcolor{keyword}{const} std::vector<number>\& vVel);}
+\DoxyCodeLine{130 \textcolor{preprocessor}{\#ifdef UG\_FOR\_LUA}}
+\DoxyCodeLine{131         \textcolor{keywordtype}{void} \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_a94f06c07b278ccf55ed95fb0645c9627}{set\_flux}}(\textcolor{keyword}{const} \textcolor{keywordtype}{char}* fctName);}
+\DoxyCodeLine{132         \textcolor{keywordtype}{void} \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_a94f06c07b278ccf55ed95fb0645c9627}{set\_flux}}(LuaFunctionHandle fct);}
+\DoxyCodeLine{133 \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{135 }
+\DoxyCodeLine{137 }
+\DoxyCodeLine{141         \textcolor{keywordtype}{void} \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_a41324e5e7178249f6237a3ab28c36c55}{set\_reaction\_rate}}(SmartPtr<CplUserData<number, dim> > user);}
+\DoxyCodeLine{142         \textcolor{keywordtype}{void} \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_a41324e5e7178249f6237a3ab28c36c55}{set\_reaction\_rate}}(number val);}
+\DoxyCodeLine{143 \textcolor{preprocessor}{\#ifdef UG\_FOR\_LUA}}
+\DoxyCodeLine{144         \textcolor{keywordtype}{void} \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_a41324e5e7178249f6237a3ab28c36c55}{set\_reaction\_rate}}(\textcolor{keyword}{const} \textcolor{keywordtype}{char}* fctName);}
+\DoxyCodeLine{145         \textcolor{keywordtype}{void} \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_a41324e5e7178249f6237a3ab28c36c55}{set\_reaction\_rate}}(LuaFunctionHandle fct);}
+\DoxyCodeLine{146 \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{148 }
+\DoxyCodeLine{150 }
+\DoxyCodeLine{154         \textcolor{keywordtype}{void} \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_a6b19b073129b62a309cd070f301c7029}{set\_reaction}}(SmartPtr<CplUserData<number, dim> > user);}
+\DoxyCodeLine{155         \textcolor{keywordtype}{void} \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_a6b19b073129b62a309cd070f301c7029}{set\_reaction}}(number val);}
+\DoxyCodeLine{156 \textcolor{preprocessor}{\#ifdef UG\_FOR\_LUA}}
+\DoxyCodeLine{157         \textcolor{keywordtype}{void} \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_a6b19b073129b62a309cd070f301c7029}{set\_reaction}}(\textcolor{keyword}{const} \textcolor{keywordtype}{char}* fctName);}
+\DoxyCodeLine{158         \textcolor{keywordtype}{void} \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_a6b19b073129b62a309cd070f301c7029}{set\_reaction}}(LuaFunctionHandle fct);}
+\DoxyCodeLine{159 \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{161 }
+\DoxyCodeLine{162         \textcolor{keywordtype}{void} set\_reaction\_rate\_explicit(SmartPtr<CplUserData<number, dim> > user);}
+\DoxyCodeLine{163         \textcolor{keywordtype}{void} set\_reaction\_rate\_explicit(number val);}
+\DoxyCodeLine{164 \textcolor{preprocessor}{\#ifdef UG\_FOR\_LUA}}
+\DoxyCodeLine{165         \textcolor{keywordtype}{void} set\_reaction\_rate\_explicit(\textcolor{keyword}{const} \textcolor{keywordtype}{char}* fctName);}
+\DoxyCodeLine{166 \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{167 }
+\DoxyCodeLine{168         \textcolor{keywordtype}{void} set\_reaction\_explicit(SmartPtr<CplUserData<number, dim> > user);}
+\DoxyCodeLine{169         \textcolor{keywordtype}{void} set\_reaction\_explicit(number val);}
+\DoxyCodeLine{170 \textcolor{preprocessor}{\#ifdef UG\_FOR\_LUA}}
+\DoxyCodeLine{171         \textcolor{keywordtype}{void} set\_reaction\_explicit(\textcolor{keyword}{const} \textcolor{keywordtype}{char}* fctName);}
+\DoxyCodeLine{172 \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{173 }
+\DoxyCodeLine{174         \textcolor{keywordtype}{void} set\_source\_explicit(SmartPtr<CplUserData<number, dim> > user);}
+\DoxyCodeLine{175         \textcolor{keywordtype}{void} set\_source\_explicit(number val);}
+\DoxyCodeLine{176 \textcolor{preprocessor}{\#ifdef UG\_FOR\_LUA}}
+\DoxyCodeLine{177         \textcolor{keywordtype}{void} set\_source\_explicit(\textcolor{keyword}{const} \textcolor{keywordtype}{char}* fctName);}
+\DoxyCodeLine{178 \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{179 }
+\DoxyCodeLine{181 }
+\DoxyCodeLine{186         \textcolor{keywordtype}{void} \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_a93d69a592c416b0cc92022dc9c3e1ac0}{set\_source}}(SmartPtr<CplUserData<number, dim> > user);}
+\DoxyCodeLine{187         \textcolor{keywordtype}{void} \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_a93d69a592c416b0cc92022dc9c3e1ac0}{set\_source}}(number val);}
+\DoxyCodeLine{188 \textcolor{preprocessor}{\#ifdef UG\_FOR\_LUA}}
+\DoxyCodeLine{189         \textcolor{keywordtype}{void} \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_a93d69a592c416b0cc92022dc9c3e1ac0}{set\_source}}(\textcolor{keyword}{const} \textcolor{keywordtype}{char}* fctName);}
+\DoxyCodeLine{190         \textcolor{keywordtype}{void} \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_a93d69a592c416b0cc92022dc9c3e1ac0}{set\_source}}(LuaFunctionHandle fct);}
+\DoxyCodeLine{191 \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{193 }
+\DoxyCodeLine{195 }
+\DoxyCodeLine{201         \textcolor{keywordtype}{void} \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_ab6d29d9a250a2d73c05a38f77db1f098}{set\_vector\_source}}(SmartPtr<CplUserData<MathVector<dim>, \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_af2084a0a706fa33d8723a2b6f4d3faab}{dim}}> > user);}
+\DoxyCodeLine{202         \textcolor{keywordtype}{void} \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_ab6d29d9a250a2d73c05a38f77db1f098}{set\_vector\_source}}(\textcolor{keyword}{const} std::vector<number>\& vVel);}
+\DoxyCodeLine{203 \textcolor{preprocessor}{\#ifdef UG\_FOR\_LUA}}
+\DoxyCodeLine{204         \textcolor{keywordtype}{void} \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_ab6d29d9a250a2d73c05a38f77db1f098}{set\_vector\_source}}(\textcolor{keyword}{const} \textcolor{keywordtype}{char}* fctName);}
+\DoxyCodeLine{205         \textcolor{keywordtype}{void} \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_ab6d29d9a250a2d73c05a38f77db1f098}{set\_vector\_source}}(LuaFunctionHandle fct);}
+\DoxyCodeLine{206 \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{208 }
+\DoxyCodeLine{210 }
+\DoxyCodeLine{214         \textcolor{keywordtype}{void} \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_a92e85c5f26d0eb772d95da0c4a47e420}{set\_mass\_scale}}(SmartPtr<CplUserData<number, dim> > user);}
+\DoxyCodeLine{215         \textcolor{keywordtype}{void} \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_a92e85c5f26d0eb772d95da0c4a47e420}{set\_mass\_scale}}(number val);}
+\DoxyCodeLine{216 \textcolor{preprocessor}{\#ifdef UG\_FOR\_LUA}}
+\DoxyCodeLine{217         \textcolor{keywordtype}{void} \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_a92e85c5f26d0eb772d95da0c4a47e420}{set\_mass\_scale}}(\textcolor{keyword}{const} \textcolor{keywordtype}{char}* fctName);}
+\DoxyCodeLine{218         \textcolor{keywordtype}{void} \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_a92e85c5f26d0eb772d95da0c4a47e420}{set\_mass\_scale}}(LuaFunctionHandle fct);}
+\DoxyCodeLine{219 \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{221 }
+\DoxyCodeLine{223 }
+\DoxyCodeLine{227         \textcolor{keywordtype}{void} \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_ab7c6a515bac338fc5ad68a1669190fae}{set\_mass}}(SmartPtr<CplUserData<number, dim> > user);}
+\DoxyCodeLine{228         \textcolor{keywordtype}{void} \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_ab7c6a515bac338fc5ad68a1669190fae}{set\_mass}}(number val);}
+\DoxyCodeLine{229 \textcolor{preprocessor}{\#ifdef UG\_FOR\_LUA}}
+\DoxyCodeLine{230         \textcolor{keywordtype}{void} \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_ab7c6a515bac338fc5ad68a1669190fae}{set\_mass}}(\textcolor{keyword}{const} \textcolor{keywordtype}{char}* fctName);}
+\DoxyCodeLine{231         \textcolor{keywordtype}{void} \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_ab7c6a515bac338fc5ad68a1669190fae}{set\_mass}}(LuaFunctionHandle fct);}
+\DoxyCodeLine{232 \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{234 }
+\DoxyCodeLine{235     \textcolor{keyword}{protected}:}
+\DoxyCodeLine{237         DataImport<MathMatrix<dim,dim>, \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_af2084a0a706fa33d8723a2b6f4d3faab}{dim}}> \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_a8ccbb71ce4481248f677f9a9f8db2162}{m\_imDiffusion}};}
+\DoxyCodeLine{238 }
+\DoxyCodeLine{240         DataImport<MathVector<dim>, \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_af2084a0a706fa33d8723a2b6f4d3faab}{dim}} > \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_ab1abc101b5995f0c78f0bb2f0c496582}{m\_imVelocity}};}
+\DoxyCodeLine{241 }
+\DoxyCodeLine{243         DataImport<MathVector<dim>, \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_af2084a0a706fa33d8723a2b6f4d3faab}{dim}} > \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_a8198dd51c91613d222dd55d80aea8871}{m\_imFlux}};}
+\DoxyCodeLine{244 }
+\DoxyCodeLine{246         DataImport<number, dim> \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_a024dceb0685d845bd892ff7b6dcfb2f7}{m\_imReactionRate}};}
+\DoxyCodeLine{247 }
+\DoxyCodeLine{249         DataImport<number, dim> \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_acbbcf1c765f6c4bbc7f30e4a236d04ea}{m\_imReaction}};}
+\DoxyCodeLine{250 }
+\DoxyCodeLine{252         DataImport<number, dim> \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_ae92c78aa1ed3ff4770c22b9461bdb1a7}{m\_imReactionRateExpl}};}
+\DoxyCodeLine{253 }
+\DoxyCodeLine{255         DataImport<number, dim> \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_a068b3f0fcbc80e8f11ff8209def6cc5a}{m\_imReactionExpl}};}
+\DoxyCodeLine{256 }
+\DoxyCodeLine{258         DataImport<number, dim> \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_a1068f20175ba5017f56dfdb44fedfef8}{m\_imSourceExpl}};}
+\DoxyCodeLine{259 }
+\DoxyCodeLine{261         DataImport<number, dim> \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_a0305ac4d19910090f4e1dca5a4b248de}{m\_imSource}};}
+\DoxyCodeLine{262 }
+\DoxyCodeLine{264         DataImport<MathVector<dim>, \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_af2084a0a706fa33d8723a2b6f4d3faab}{dim}} > \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_a3480b7de3952f6dc33879d31747a09c6}{m\_imVectorSource}};}
+\DoxyCodeLine{265 }
+\DoxyCodeLine{267         DataImport<number, dim> \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_ab9d19009ccdb63d9a60ddf5eb33ca262}{m\_imMassScale}};}
+\DoxyCodeLine{268 }
+\DoxyCodeLine{270         DataImport<number, dim> \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_a184ca451a713c47a04d47356397decad}{m\_imMass}};}
+\DoxyCodeLine{271 }
+\DoxyCodeLine{272     \textcolor{keyword}{private}:}
+\DoxyCodeLine{274         \textcolor{keyword}{virtual} \textcolor{keywordtype}{bool} requests\_local\_time\_series() \{\textcolor{keywordflow}{return} \textcolor{keyword}{false};\}}
+\DoxyCodeLine{275 }
+\DoxyCodeLine{276     \textcolor{keyword}{public}:}
+\DoxyCodeLine{277         \textcolor{keyword}{typedef} SmartPtr<CplUserData<number, dim> > NumberExport;}
+\DoxyCodeLine{278         \textcolor{keyword}{typedef} SmartPtr<CplUserData<MathVector<dim>, \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_af2084a0a706fa33d8723a2b6f4d3faab}{dim}}> > GradExport;}
+\DoxyCodeLine{279 }
+\DoxyCodeLine{281         \textcolor{keyword}{virtual} SmartPtr<CplUserData<number, dim> > \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_a609d6032d568655d9df107b67da41904}{value}}();}
+\DoxyCodeLine{282 }
+\DoxyCodeLine{284         \textcolor{keyword}{virtual} SmartPtr<CplUserData<MathVector<dim>, \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_af2084a0a706fa33d8723a2b6f4d3faab}{dim}}> > \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_a4297b533b66779c623b90401986d42a5}{gradient}}();}
+\DoxyCodeLine{285 }
+\DoxyCodeLine{286     \textcolor{keyword}{protected}:}
+\DoxyCodeLine{288         SmartPtr<DataExport<number, dim> > \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_a7b583f4df638ba32a347f9bf0e670feb}{m\_exValue}};}
+\DoxyCodeLine{289 }
+\DoxyCodeLine{291         SmartPtr<DataExport<MathVector<dim>, \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_af2084a0a706fa33d8723a2b6f4d3faab}{dim}}> > \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase_ad36d5d822d0be7d6fa6b7afcdac695fa}{m\_exGrad}};}
+\DoxyCodeLine{292 \};}
+\DoxyCodeLine{293 }
+\DoxyCodeLine{294 \textcolor{comment}{// end group convection\_diffusion}}
+\DoxyCodeLine{296 \textcolor{comment}{}}
+\DoxyCodeLine{297 \} \textcolor{comment}{// end ConvectionDiffusionPlugin}}
+\DoxyCodeLine{298 \} \textcolor{comment}{// end namespace ug}}
+\DoxyCodeLine{299 }
+\DoxyCodeLine{300 }
+\DoxyCodeLine{301 \textcolor{preprocessor}{\#endif }\textcolor{comment}{/*\_\_H\_\_UG\_\_LIB\_DISC\_\_CONVECTION\_DIFFUSION\_\_CONVECTION\_DIFFUSION\_BASE\_\_*/}\textcolor{preprocessor}{}}
+
+\end{DoxyCode}

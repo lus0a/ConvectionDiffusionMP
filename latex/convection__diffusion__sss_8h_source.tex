@@ -1,0 +1,182 @@
+\hypertarget{convection__diffusion__sss_8h_source}{}\doxysection{convection\+\_\+diffusion\+\_\+sss.\+h}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{1 \textcolor{comment}{/*}}
+\DoxyCodeLine{2 \textcolor{comment}{ * Copyright (c) 2019:  G-\/CSC, Goethe University Frankfurt}}
+\DoxyCodeLine{3 \textcolor{comment}{ * Author: Dmitry Logashenko / Michael Lampe}}
+\DoxyCodeLine{4 \textcolor{comment}{ * }}
+\DoxyCodeLine{5 \textcolor{comment}{ * This file is part of UG4.}}
+\DoxyCodeLine{6 \textcolor{comment}{ * }}
+\DoxyCodeLine{7 \textcolor{comment}{ * UG4 is free software: you can redistribute it and/or modify it under the}}
+\DoxyCodeLine{8 \textcolor{comment}{ * terms of the GNU Lesser General Public License version 3 (as published by the}}
+\DoxyCodeLine{9 \textcolor{comment}{ * Free Software Foundation) with the following additional attribution}}
+\DoxyCodeLine{10 \textcolor{comment}{ * requirements (according to LGPL/GPL v3 §7):}}
+\DoxyCodeLine{11 \textcolor{comment}{ * }}
+\DoxyCodeLine{12 \textcolor{comment}{ * (1) The following notice must be displayed in the Appropriate Legal Notices}}
+\DoxyCodeLine{13 \textcolor{comment}{ * of covered and combined works: "{}Based on UG4 (www.ug4.org/license)"{}.}}
+\DoxyCodeLine{14 \textcolor{comment}{ * }}
+\DoxyCodeLine{15 \textcolor{comment}{ * (2) The following notice must be displayed at a prominent place in the}}
+\DoxyCodeLine{16 \textcolor{comment}{ * terminal output of covered works: "{}Based on UG4 (www.ug4.org/license)"{}.}}
+\DoxyCodeLine{17 \textcolor{comment}{ * }}
+\DoxyCodeLine{18 \textcolor{comment}{ * (3) The following bibliography is recommended for citation and must be}}
+\DoxyCodeLine{19 \textcolor{comment}{ * preserved in all covered files:}}
+\DoxyCodeLine{20 \textcolor{comment}{ * "{}Reiter, S., Vogel, A., Heppner, I., Rupp, M., and Wittum, G. A massively}}
+\DoxyCodeLine{21 \textcolor{comment}{ *   parallel geometric multigrid solver on hierarchically distributed grids.}}
+\DoxyCodeLine{22 \textcolor{comment}{ *   Computing and visualization in science 16, 4 (2013), 151-\/164"{}}}
+\DoxyCodeLine{23 \textcolor{comment}{ * "{}Vogel, A., Reiter, S., Rupp, M., Nägel, A., and Wittum, G. UG4 -\/-\/ a novel}}
+\DoxyCodeLine{24 \textcolor{comment}{ *   flexible software system for simulating pde based models on high performance}}
+\DoxyCodeLine{25 \textcolor{comment}{ *   computers. Computing and visualization in science 16, 4 (2013), 165-\/179"{}}}
+\DoxyCodeLine{26 \textcolor{comment}{ * }}
+\DoxyCodeLine{27 \textcolor{comment}{ * This program is distributed in the hope that it will be useful,}}
+\DoxyCodeLine{28 \textcolor{comment}{ * but WITHOUT ANY WARRANTY; without even the implied warranty of}}
+\DoxyCodeLine{29 \textcolor{comment}{ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the}}
+\DoxyCodeLine{30 \textcolor{comment}{ * GNU Lesser General Public License for more details.}}
+\DoxyCodeLine{31 \textcolor{comment}{ */}}
+\DoxyCodeLine{32 }
+\DoxyCodeLine{33 \textcolor{comment}{/*}}
+\DoxyCodeLine{34 \textcolor{comment}{ * Singular (point and line) sources and sinks in ConvectionDiffusion.}}
+\DoxyCodeLine{35 \textcolor{comment}{ */}}
+\DoxyCodeLine{36 \textcolor{preprocessor}{\#ifndef \_\_H\_\_UG\_\_PLUGINS\_\_CD\_\_SINGULAR\_SOURCES\_AND\_SINKS\_\_}}
+\DoxyCodeLine{37 \textcolor{preprocessor}{\#define \_\_H\_\_UG\_\_PLUGINS\_\_CD\_\_SINGULAR\_SOURCES\_AND\_SINKS\_\_}}
+\DoxyCodeLine{38 }
+\DoxyCodeLine{39 \textcolor{preprocessor}{\#include <vector>}}
+\DoxyCodeLine{40 }
+\DoxyCodeLine{41 \textcolor{comment}{// ug4 headers}}
+\DoxyCodeLine{42 \textcolor{preprocessor}{\#include "{}lib\_disc/spatial\_disc/disc\_util/fv1\_sss.h"{}}}
+\DoxyCodeLine{43 \textcolor{preprocessor}{\#include "{}lib\_disc/spatial\_disc/user\_data/user\_data.h"{}}}
+\DoxyCodeLine{44 }
+\DoxyCodeLine{45 \textcolor{preprocessor}{\#ifdef UG\_FOR\_LUA}}
+\DoxyCodeLine{46 \textcolor{preprocessor}{\#include "{}bindings/lua/lua\_user\_data.h"{}}}
+\DoxyCodeLine{47 \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{48 }
+\DoxyCodeLine{49 \textcolor{keyword}{namespace }ug \{}
+\DoxyCodeLine{50 \textcolor{keyword}{namespace }ConvectionDiffusionPlugin \{}
+\DoxyCodeLine{51 }
+\DoxyCodeLine{53 \textcolor{keyword}{template} <\textcolor{keywordtype}{int} dim>}
+\DoxyCodeLine{54 \textcolor{keyword}{class }\mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1cd__sss__data}{cd\_sss\_data}}}
+\DoxyCodeLine{55 \{}
+\DoxyCodeLine{56 \textcolor{keyword}{public}:}
+\DoxyCodeLine{57     \textcolor{keyword}{typedef} SmartPtr<CplUserData<number, dim> > user\_data\_type;}
+\DoxyCodeLine{61 \textcolor{keyword}{protected}:}
+\DoxyCodeLine{62     \textcolor{comment}{//MathVector<1> m\_values;}}
+\DoxyCodeLine{63     number \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1cd__sss__data_a117f1ddc68369551fd68f15ae0a3ee69}{m\_values}};}
+\DoxyCodeLine{64     }
+\DoxyCodeLine{65     user\_data\_type \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1cd__sss__data_a26fa9aabfbfa53f5c410c651eb490475}{m\_spData}}; }
+\DoxyCodeLine{66     }
+\DoxyCodeLine{67 \textcolor{keyword}{public}:}
+\DoxyCodeLine{68     }
+\DoxyCodeLine{70     \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1cd__sss__data_a47461cc115cf0cb4616359dfc827aa36}{cd\_sss\_data}} () \{\mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1cd__sss__data_a117f1ddc68369551fd68f15ae0a3ee69}{m\_values}} = 0;\}}
+\DoxyCodeLine{71     }
+\DoxyCodeLine{73     number \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1cd__sss__data_a76b184d076012eb58687324ec767ed95}{flux}} () \{\textcolor{keywordflow}{return} \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1cd__sss__data_a117f1ddc68369551fd68f15ae0a3ee69}{m\_values}} ;\}}
+\DoxyCodeLine{74     }
+\DoxyCodeLine{76     \textcolor{keywordtype}{void} \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1cd__sss__data_a07f5e82db5c3b46a42a1cccfc386fa8c}{compute}}}
+\DoxyCodeLine{77     (}
+\DoxyCodeLine{78         \textcolor{keyword}{const} MathVector<dim>\& x, }
+\DoxyCodeLine{79         number time, }
+\DoxyCodeLine{80         \textcolor{keywordtype}{int} si }
+\DoxyCodeLine{81     )}
+\DoxyCodeLine{82     \{}
+\DoxyCodeLine{83         \textcolor{keywordflow}{if} (\mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1cd__sss__data_a26fa9aabfbfa53f5c410c651eb490475}{m\_spData}}.valid ())}
+\DoxyCodeLine{84             (* m\_spData) (\mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1cd__sss__data_a117f1ddc68369551fd68f15ae0a3ee69}{m\_values}}, x, time, si);}
+\DoxyCodeLine{85     \}}
+\DoxyCodeLine{86     }
+\DoxyCodeLine{88     \textcolor{keywordtype}{void} \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1cd__sss__data_ab6c28228fff5a356ad66fd90888ff803}{set}} (number \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1cd__sss__data_a76b184d076012eb58687324ec767ed95}{flux}})}
+\DoxyCodeLine{89     \{}
+\DoxyCodeLine{90         \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1cd__sss__data_a117f1ddc68369551fd68f15ae0a3ee69}{m\_values}} = \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1cd__sss__data_a76b184d076012eb58687324ec767ed95}{flux}};}
+\DoxyCodeLine{91         \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1cd__sss__data_a26fa9aabfbfa53f5c410c651eb490475}{m\_spData}} = SPNULL;}
+\DoxyCodeLine{92     \}}
+\DoxyCodeLine{93     }
+\DoxyCodeLine{95     \textcolor{keywordtype}{void} \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1cd__sss__data_a7ba4eb10419a89bb6fd4ed3ba8caa9c6}{set}} (user\_data\_type spData)}
+\DoxyCodeLine{96     \{}
+\DoxyCodeLine{97         \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1cd__sss__data_a26fa9aabfbfa53f5c410c651eb490475}{m\_spData}} = spData;}
+\DoxyCodeLine{98     \}}
+\DoxyCodeLine{99 }
+\DoxyCodeLine{100 \textcolor{preprocessor}{\#ifdef UG\_FOR\_LUA}}
+\DoxyCodeLine{102     \textcolor{keywordtype}{void} \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1cd__sss__data_ab6c28228fff5a356ad66fd90888ff803}{set}} (LuaFunctionHandle func)}
+\DoxyCodeLine{103     \{ \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1cd__sss__data_a26fa9aabfbfa53f5c410c651eb490475}{m\_spData}} = make\_sp (\textcolor{keyword}{new} LuaUserData<number, dim> (func)); \}}
+\DoxyCodeLine{104 \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{105 }
+\DoxyCodeLine{106 \};}
+\DoxyCodeLine{107 }
+\DoxyCodeLine{112 \textcolor{keyword}{class }\mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1point__sss__marker}{point\_sss\_marker}}}
+\DoxyCodeLine{113 \{}
+\DoxyCodeLine{114     GridObject * m\_elem; }
+\DoxyCodeLine{115     \textcolor{keywordtype}{size\_t} m\_co; }
+\DoxyCodeLine{116     }
+\DoxyCodeLine{117 \textcolor{keyword}{public}:}
+\DoxyCodeLine{118 }
+\DoxyCodeLine{120     \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1point__sss__marker_a77a0bcc593b75beea534d84982dfbfd3}{point\_sss\_marker}} () : m\_elem (NULL), m\_co (0) \{\};}
+\DoxyCodeLine{121     }
+\DoxyCodeLine{123     \textcolor{keywordtype}{void} \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1point__sss__marker_abc3472e624ae40a444710e936d41c129}{init}} () \{m\_elem = NULL; m\_co = 0;\}}
+\DoxyCodeLine{124     }
+\DoxyCodeLine{126     \textcolor{keywordtype}{bool} \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1point__sss__marker_a7b40446b56eec3d35d2019202263a821}{marked\_for}} (GridObject * elem, \textcolor{keywordtype}{size\_t} co)}
+\DoxyCodeLine{127     \{}
+\DoxyCodeLine{128         \textcolor{keywordflow}{if} (m\_elem == NULL)}
+\DoxyCodeLine{129         \{}
+\DoxyCodeLine{130             m\_elem = elem; m\_co = co;}
+\DoxyCodeLine{131             \textcolor{keywordflow}{return} \textcolor{keyword}{true};}
+\DoxyCodeLine{132         \}}
+\DoxyCodeLine{133         \textcolor{keywordflow}{return} m\_elem == elem \&\& m\_co == co;}
+\DoxyCodeLine{134     \}}
+\DoxyCodeLine{135 \};}
+\DoxyCodeLine{136 }
+\DoxyCodeLine{142 \textcolor{keyword}{class }\mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1line__sss__marker}{line\_sss\_marker}}}
+\DoxyCodeLine{143 \{}
+\DoxyCodeLine{144 \textcolor{comment}{// All the members are used in the fractures only!}}
+\DoxyCodeLine{145 }
+\DoxyCodeLine{147     \textcolor{keyword}{struct }t\_fract\_elem}
+\DoxyCodeLine{148     \{}
+\DoxyCodeLine{149         IVertexGroup * fract\_face;}
+\DoxyCodeLine{150         \textcolor{keywordtype}{size\_t} fract\_co;}
+\DoxyCodeLine{151         }
+\DoxyCodeLine{152         t\_fract\_elem (IVertexGroup * face, \textcolor{keywordtype}{size\_t} co) : fract\_face (face), fract\_co (co) \{\};}
+\DoxyCodeLine{153     \};}
+\DoxyCodeLine{154     }
+\DoxyCodeLine{156     std::vector<t\_fract\_elem> m\_intersections;}
+\DoxyCodeLine{157     }
+\DoxyCodeLine{158 \textcolor{keyword}{public}:}
+\DoxyCodeLine{159 }
+\DoxyCodeLine{161     \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1line__sss__marker_aa65f6e87d497ca8c6f37a237f676f7af}{line\_sss\_marker}} () \{\};}
+\DoxyCodeLine{162     }
+\DoxyCodeLine{164     \textcolor{keywordtype}{void} \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1line__sss__marker_acac51ae950b2cabfaf9c5e88fb268295}{init}} () \{m\_intersections.clear ();\}}
+\DoxyCodeLine{165     }
+\DoxyCodeLine{167     \textcolor{keywordtype}{bool} \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1line__sss__marker_a51d11292c8a0e81a5de0a8831fab6916}{marked\_for}} (IVertexGroup * elem, \textcolor{keywordtype}{size\_t} co)}
+\DoxyCodeLine{168     \{}
+\DoxyCodeLine{169     \textcolor{comment}{//  is the fracture already processed?}}
+\DoxyCodeLine{170         \textcolor{keywordflow}{for} (\textcolor{keywordtype}{size\_t} i = 0; i < m\_intersections.size (); i++)}
+\DoxyCodeLine{171         \{}
+\DoxyCodeLine{172         \textcolor{comment}{//  check if we have already registered this mark}}
+\DoxyCodeLine{173             t\_fract\_elem\& intersection = m\_intersections[i];}
+\DoxyCodeLine{174             \textcolor{keywordflow}{if} (intersection.fract\_face == elem)}
+\DoxyCodeLine{175                 \textcolor{keywordflow}{return} intersection.fract\_co == co;}
+\DoxyCodeLine{176             }
+\DoxyCodeLine{177         \textcolor{comment}{//  check if a different corner is meant (i.e. this is the same fracture)}}
+\DoxyCodeLine{178             Vertex * vrt = elem-\/>vertex (co);}
+\DoxyCodeLine{179             \textcolor{keywordflow}{for} (\textcolor{keywordtype}{size\_t} j = 0; j < intersection.fract\_face-\/>num\_vertices (); j++)}
+\DoxyCodeLine{180                 \textcolor{keywordflow}{if} (vrt == intersection.fract\_face-\/>vertex (j))}
+\DoxyCodeLine{181                     \textcolor{keywordflow}{return} \textcolor{keyword}{false}; \textcolor{comment}{// in this fracture, we use a different corner}}
+\DoxyCodeLine{182         \}}
+\DoxyCodeLine{183     \textcolor{comment}{// no, register this fracture, too}}
+\DoxyCodeLine{184         m\_intersections.push\_back (t\_fract\_elem (elem, co));}
+\DoxyCodeLine{185         \textcolor{keywordflow}{return} \textcolor{keyword}{true};}
+\DoxyCodeLine{186     \}}
+\DoxyCodeLine{187 \};}
+\DoxyCodeLine{188 }
+\DoxyCodeLine{189 \textcolor{keyword}{template} <\textcolor{keywordtype}{int} dim> \textcolor{keyword}{class }\mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1cd__point__sss__data}{cd\_point\_sss\_data}} : \textcolor{keyword}{public} \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1cd__sss__data}{cd\_sss\_data}}<dim>, \textcolor{keyword}{public} \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1point__sss__marker}{point\_sss\_marker}} \{\};}
+\DoxyCodeLine{190 \textcolor{keyword}{template} <\textcolor{keywordtype}{int} dim> \textcolor{keyword}{class }\mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1cd__line__sss__data}{cd\_line\_sss\_data}} : \textcolor{keyword}{public} \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1cd__sss__data}{cd\_sss\_data}}<dim>, \textcolor{keyword}{public} \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1line__sss__marker}{line\_sss\_marker}} \{\};}
+\DoxyCodeLine{191 \textcolor{keyword}{template} <\textcolor{keywordtype}{int} dim>}
+\DoxyCodeLine{192 \textcolor{keyword}{class }\mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1CDSingularSourcesAndSinks}{CDSingularSourcesAndSinks}}}
+\DoxyCodeLine{193     : \textcolor{keyword}{public} FVSingularSourcesAndSinks<dim, cd\_point\_sss\_data<dim>, cd\_line\_sss\_data<dim> >}
+\DoxyCodeLine{194 \{}
+\DoxyCodeLine{195 \textcolor{keyword}{public}:}
+\DoxyCodeLine{196     \textcolor{keyword}{typedef} \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1cd__point__sss__data}{cd\_point\_sss\_data<dim>}} \mbox{\hyperlink{classug_1_1ConvectionDiffusionPlugin_1_1cd__point__sss__data}{user\_data\_type}};}
+\DoxyCodeLine{197 \};}
+\DoxyCodeLine{198 }
+\DoxyCodeLine{199 \} \textcolor{comment}{// namespace ConvectionDiffusionPlugin}}
+\DoxyCodeLine{200 \} \textcolor{comment}{// end namespace ug}}
+\DoxyCodeLine{201 }
+\DoxyCodeLine{202 \textcolor{preprocessor}{\#endif }\textcolor{comment}{// \_\_H\_\_UG\_\_PLUGINS\_\_CD\_\_SINGULAR\_SOURCES\_AND\_SINKS\_\_}}
+\DoxyCodeLine{203 }
+\DoxyCodeLine{204 \textcolor{comment}{/* End of File */}}
+
+\end{DoxyCode}

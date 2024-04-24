@@ -1,0 +1,14 @@
+\_form#0=339x24:\[
+    \partial_t (m_1 c + m_2) - \nabla \cdot \left ( D \nabla c - \vec{v} c - \vec{F} \right )
+        + r_1 \cdot c + r_2 = f + \nabla \cdot \vec{f}_2
+\]
+\_form#1=5x6:$ c $
+\_form#2=76x14:$ m_1 \equiv m_1(\vec{x},t) $
+\_form#3=76x14:$ m_2 \equiv m_1(\vec{x},t) $
+\_form#4=64x14:$ D \equiv D(\vec{x},t) $
+\_form#5=56x14:$ v \equiv \vec{v}(\vec{x},t) $
+\_form#6=63x16:$ F \equiv \vec{F}(\vec{x},t) $
+\_form#7=66x14:$ r_1 \equiv r_1(\vec{x},t) $
+\_form#8=66x14:$ r_2 \equiv r_2(\vec{x},t) $
+\_form#9=58x14:$ f \equiv f(\vec{x},t) $
+\_form#10=66x16:$ \vec{f}_2 \equiv \vec{f}_2(\vec{x},t) $

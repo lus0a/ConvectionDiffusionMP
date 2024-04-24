@@ -1,0 +1,19 @@
+var searchData=
+[
+  ['m_5fexgrad_0',['m_exGrad',['../classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase.html#ad36d5d822d0be7d6fa6b7afcdac695fa',1,'ug::ConvectionDiffusionPlugin::ConvectionDiffusionBase']]],
+  ['m_5fexvalue_1',['m_exValue',['../classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase.html#a7b583f4df638ba32a347f9bf0e670feb',1,'ug::ConvectionDiffusionPlugin::ConvectionDiffusionBase']]],
+  ['m_5fimdiffusion_2',['m_imDiffusion',['../classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase.html#a8ccbb71ce4481248f677f9a9f8db2162',1,'ug::ConvectionDiffusionPlugin::ConvectionDiffusionBase']]],
+  ['m_5fimflux_3',['m_imFlux',['../classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase.html#a8198dd51c91613d222dd55d80aea8871',1,'ug::ConvectionDiffusionPlugin::ConvectionDiffusionBase']]],
+  ['m_5fimmass_4',['m_imMass',['../classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase.html#a184ca451a713c47a04d47356397decad',1,'ug::ConvectionDiffusionPlugin::ConvectionDiffusionBase']]],
+  ['m_5fimmassscale_5',['m_imMassScale',['../classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase.html#ab9d19009ccdb63d9a60ddf5eb33ca262',1,'ug::ConvectionDiffusionPlugin::ConvectionDiffusionBase']]],
+  ['m_5fimreaction_6',['m_imReaction',['../classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase.html#acbbcf1c765f6c4bbc7f30e4a236d04ea',1,'ug::ConvectionDiffusionPlugin::ConvectionDiffusionBase']]],
+  ['m_5fimreactionexpl_7',['m_imReactionExpl',['../classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase.html#a068b3f0fcbc80e8f11ff8209def6cc5a',1,'ug::ConvectionDiffusionPlugin::ConvectionDiffusionBase']]],
+  ['m_5fimreactionrate_8',['m_imReactionRate',['../classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase.html#a024dceb0685d845bd892ff7b6dcfb2f7',1,'ug::ConvectionDiffusionPlugin::ConvectionDiffusionBase']]],
+  ['m_5fimreactionrateexpl_9',['m_imReactionRateExpl',['../classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase.html#ae92c78aa1ed3ff4770c22b9461bdb1a7',1,'ug::ConvectionDiffusionPlugin::ConvectionDiffusionBase']]],
+  ['m_5fimsource_10',['m_imSource',['../classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase.html#a0305ac4d19910090f4e1dca5a4b248de',1,'ug::ConvectionDiffusionPlugin::ConvectionDiffusionBase']]],
+  ['m_5fimsourceexpl_11',['m_imSourceExpl',['../classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase.html#a1068f20175ba5017f56dfdb44fedfef8',1,'ug::ConvectionDiffusionPlugin::ConvectionDiffusionBase']]],
+  ['m_5fimvectorsource_12',['m_imVectorSource',['../classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase.html#a3480b7de3952f6dc33879d31747a09c6',1,'ug::ConvectionDiffusionPlugin::ConvectionDiffusionBase']]],
+  ['m_5fimvelocity_13',['m_imVelocity',['../classug_1_1ConvectionDiffusionPlugin_1_1ConvectionDiffusionBase.html#ab1abc101b5995f0c78f0bb2f0c496582',1,'ug::ConvectionDiffusionPlugin::ConvectionDiffusionBase']]],
+  ['m_5fspdata_14',['m_spData',['../classug_1_1ConvectionDiffusionPlugin_1_1cd__sss__data.html#a26fa9aabfbfa53f5c410c651eb490475',1,'ug::ConvectionDiffusionPlugin::cd_sss_data']]],
+  ['m_5fvalues_15',['m_values',['../classug_1_1ConvectionDiffusionPlugin_1_1cd__sss__data.html#a117f1ddc68369551fd68f15ae0a3ee69',1,'ug::ConvectionDiffusionPlugin::cd_sss_data']]]
+];
