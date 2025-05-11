@@ -60,6 +60,7 @@ template<	typename TDomain>
 class ConvectionDiffusionMP : public ConvectionDiffusionBase<TDomain>
 {
 	private:
+
 	///	Base class type
 		typedef ConvectionDiffusionBase<TDomain> base_type;
 
@@ -75,7 +76,7 @@ class ConvectionDiffusionMP : public ConvectionDiffusionBase<TDomain>
 
 	public:
 	///	Constructor
-		ConvectionDiffusionMP(const char* functions, const char* subsets);
+		ConvectionDiffusionMP(const char* functions, const char* subsets, const size_t FormulationIndex);
 
 	///	set the upwind method
 	/**
@@ -146,7 +147,7 @@ class ConvectionDiffusionMP : public ConvectionDiffusionBase<TDomain>
 	///	assembles the local right hand side
 		template <typename TElem, typename TFVGeom>
 		void add_rhs_elem(LocalVector& d, GridObject* elem, const MathVector<dim> vCornerCoords[]);
-
+/*
 	///	prepares the loop over all elements of one type for the computation of the error estimator
 		template <typename TElem, typename TFVGeom>
 		void prep_err_est_elem_loop(const ReferenceObjectID roid, const int si);
@@ -170,6 +171,7 @@ class ConvectionDiffusionMP : public ConvectionDiffusionBase<TDomain>
 	///	postprocesses the loop over all elements of one type in the computation of the error estimator
 		template <typename TElem, typename TFVGeom>
 		void fsh_err_est_elem_loop();
+*/
 
     private:
 
@@ -277,7 +279,7 @@ class ConvectionDiffusionMP : public ConvectionDiffusionBase<TDomain>
 	private:
 	///	abbreviation for the local solution
 		static const size_t _C_ = 0;
-
+		
     /// singular sources and sinks manager
 		SmartPtr<CDSingularSourcesAndSinks<dim> > m_sss_mngr;
 
@@ -287,13 +289,23 @@ class ConvectionDiffusionMP : public ConvectionDiffusionBase<TDomain>
 		using base_type::m_imDarcyW;
 		using base_type::m_imDarcyN;
 		using base_type::m_imSaturationW;
+		using base_type::m_imModifiedSaturationW;
+		using base_type::m_imUpwindSaturationW;
+		using base_type::m_imUpwindModifiedSaturationW;
 		using base_type::m_imDiffusion_Sw;
 		using base_type::m_imMassFractionWc;
 		using base_type::m_imPressurePn;
 		
 		using base_type::m_imPermeability;
 		using base_type::m_imPorosity;
+		using base_type::m_imEntryPressure;
+		using base_type::m_imResidualAqueous;
+		using base_type::m_imResidualCarbonic;
+		using base_type::m_imBrooksCoreyNumber;
 		using base_type::m_imMinPd;
+		using base_type::m_imMinSwr;
+		using base_type::m_imMinSnr;
+		using base_type::m_imMinLambda;
 		
 		using base_type::m_imFlux;
 		using base_type::m_imSource;
@@ -305,9 +317,12 @@ class ConvectionDiffusionMP : public ConvectionDiffusionBase<TDomain>
 		using base_type::m_imReactionExpl;
 		using base_type::m_imMassScale;
 		using base_type::m_imMass;
-
+		
+		using base_type::m_exUpwindModifiedValue;
+		using base_type::m_exUpwindValue;
 		using base_type::m_exModifiedValue;
 		using base_type::m_exGrad_pd;
+		using base_type::m_exGrad_pd2;
 		
 		using base_type::m_exGrad;
 		using base_type::m_exValue;
@@ -319,6 +334,33 @@ class ConvectionDiffusionMP : public ConvectionDiffusionBase<TDomain>
 	///	returns the updated convection shapes
 		typedef IConvectionShapes<dim> conv_shape_type;
 		const IConvectionShapes<dim>& get_updated_conv_shapes(const FVGeometryBase& geo, bool compute_deriv);
+
+	///	computes the upwinded value
+		template <typename TElem, typename TFVGeom>
+		void ex_upwind_modified_value(number vValue[],
+		              const MathVector<dim> vGlobIP[],
+		              number time, int si,
+		              const LocalVector& u,
+		              GridObject* elem,
+		              const MathVector<dim> vCornerCoords[],
+		              const MathVector<TFVGeom::dim> vLocIP[],
+		              const size_t nip,
+		              bool bDeriv,
+		              std::vector<std::vector<number> > vvvDeriv[]);
+
+
+	///	computes the upwinded value
+		template <typename TElem, typename TFVGeom>
+		void ex_upwind_value(number vValue[],
+		              const MathVector<dim> vGlobIP[],
+		              number time, int si,
+		              const LocalVector& u,
+		              GridObject* elem,
+		              const MathVector<dim> vCornerCoords[],
+		              const MathVector<TFVGeom::dim> vLocIP[],
+		              const size_t nip,
+		              bool bDeriv,
+		              std::vector<std::vector<number> > vvvDeriv[]);
 
 	///	computes the modified Sw
 		template <typename TElem, typename TFVGeom>
@@ -372,6 +414,19 @@ class ConvectionDiffusionMP : public ConvectionDiffusionBase<TDomain>
 		             const size_t nip,
 		             bool bDeriv,
 		             std::vector<std::vector<MathVector<dim> > > vvvDeriv[]);
+					 
+	///	computes the gradient of the concentration
+		template <typename TElem, typename TFVGeom>
+		void ex_grad_pd2(MathVector<dim> vValue[],
+		             const MathVector<dim> vGlobIP[],
+		             number time, int si,
+		             const LocalVector& u,
+		             GridObject* elem,
+		             const MathVector<dim> vCornerCoords[],
+		             const MathVector<TFVGeom::dim> vLocIP[],
+		             const size_t nip,
+		             bool bDeriv,
+		             std::vector<std::vector<MathVector<dim> > > vvvDeriv[]);
 
 	public:
 	///	type of trial space for each function used
@@ -379,6 +434,8 @@ class ConvectionDiffusionMP : public ConvectionDiffusionBase<TDomain>
 
 	///	returns if hanging nodes are needed
 		virtual bool use_hanging() const;
+					
+		size_t iFormulationIndex = 0;
 
 	protected:
 	///	current regular grid flag

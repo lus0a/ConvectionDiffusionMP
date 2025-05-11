@@ -46,28 +46,54 @@ DebugID DID_CONV_DIFF_MP("CONV_DIFF_MP");
 //	general
 ////////////////////////////////////////////////////////////////////////////////
 
-static number krw_max = 0.9;
-static number krn_max = 0.5;
-static number m = 2;
-static number n = 2;
+static size_t saturated_Node = 439; 
+
+//static number krw_max = 0.9;
+//static number krn_max = 0.5;
+
+static number krw_max = 1.0;
+static number krn_max = 1.0;
+
+//static number m = 1;
+static number m = 1;
+static number n = 1;
 //static number n = 1;
 
-//static number Permeability = 4.845e-13;
-static number ViscosityW = 1e-3;
+//static number m = 4;
+//static number n = 4;
 
-static number swr = 0.0;
-static number snr = 0.0;
+static number DensityH = 1000;
+//static number DensityC = 1000;
+//static number DensityC = 1.225;
+static number DensityC = 900;
+
+//static number Permeability = 4.845e-13;
+//static number ViscosityW = 1e-3;
+
+static number ViscosityW = 0.00047100526797888;
+static number ViscosityN = 0.00006019;
+
+//static number ViscosityW = 0.0004734;
+//static number ViscosityN = 0.00007755;
+
+//static number ViscosityW = 0.001;
+//static number ViscosityN = 0.001;
+//static number ViscosityN = 0.0000181;
+//static number ViscosityN = 0.00009;
+
+//static number swr = 0.0;
+//static number snr = 0.0;
 //static number swr = 0.2;
 //static number snr = 0.1;
 
 //static number lambda = 4.2;
 
-static number lambda = 2.0;
-
-/*
-static number krw(number sw)
+//static number lambda = 2.0;
+static number pc_max = 2000000;
+///*
+static number krw(number sw, number swr, number lambda)
 {
-	number sw_eff = (sw - swr) / (1-snr-swr);
+	number sw_eff = (sw - swr) / (1-swr);
 	if (sw_eff>0 && sw_eff<1)
 		return pow(sw_eff, 2/lambda+3);
 	else if (sw_eff<=0)
@@ -76,20 +102,20 @@ static number krw(number sw)
 		return 1;
 }
 
-static number D_krw(number sw)
+static number D_krw(number sw, number swr, number lambda)
 {
-	number sw_eff = (sw - swr) / (1-snr-swr);
+	number sw_eff = (sw - swr) / (1-swr);
 	if (sw_eff>0 && sw_eff<1)
-		return (2/lambda+3) * pow(sw_eff, 2/lambda+2) / (1-snr-swr);
+		return (2/lambda+3) * pow(sw_eff, 2/lambda+2) / (1-swr);
 	else if (sw_eff<=0)
 		return 0;
 	else
-		return (2/lambda+3) / (1-snr-swr);
+		return (2/lambda+3) / (1-swr);
 }
 
-static number krn(number sw)
+static number krn(number sw, number snr, number lambda)
 {
-    number sw_eff = (sw - swr) / (1-snr-swr);
+    number sw_eff = sw / (1-snr);
 	if (sw_eff>0 && sw_eff<1)
 		return (1-sw_eff)*(1-sw_eff) * (1-pow(sw_eff, 2/lambda+1));
 	else if (sw_eff>=1)
@@ -97,7 +123,18 @@ static number krn(number sw)
 	else
 		return 1;
 }
-*/
+
+static number D_krn(number sw, number snr, number lambda)
+{	
+	number sw_eff = sw / (1-snr);
+	if (sw_eff>0 && sw_eff<1)
+		return ( -2*(1-sw_eff)*(1-pow(sw_eff, 2/lambda+1))-(1-sw_eff)*(1-sw_eff)*(2/lambda+1)*pow(sw_eff, 2/lambda) )/ (1-snr);
+	else if (sw_eff>=1)
+		return 0;
+	else
+		return -2/(1-snr);
+}
+//*/
 
 /*
 // For Extended Buckley Leverett
@@ -168,13 +205,10 @@ static number krn2(number sw)
 }
 */
 
-
-
-
-///*
-static number krw(number sw)
+/*
+static number krw(number sw, number swr, number lambda)
 {
-	number sw_eff = (sw - swr) / (1-snr-swr);
+	number sw_eff = (sw - swr) / (1-swr);
 	if (sw_eff>0 && sw_eff<1)
 		return krw_max * pow(sw_eff, m);
 	else if (sw_eff<=0)
@@ -183,20 +217,21 @@ static number krw(number sw)
 		return krw_max;
 }
 
-static number D_krw(number sw)
+static number D_krw(number sw, number swr, number lambda)
 {
-	number sw_eff = (sw - swr) / (1-snr-swr);
+	number sw_eff = (sw - swr) / (1-swr);
 	if (sw_eff>0 && sw_eff<1)
-		return krw_max * m * pow(sw_eff, m-1) / (1-snr-swr);
+		return krw_max * m * pow(sw_eff, m-1) / (1-swr);
 	else if (sw_eff<=0)
-		return 0;
+		return krw_max * m / (1-swr);
+		//return 0;
 	else
-		return krw_max * m / (1-snr-swr);
+		return krw_max * m / (1-swr);
 }
 
-static number krn(number sw)
-{	
-	number sw_eff = (sw - swr) / (1-snr-swr);
+static number krn(number sw, number snr, number lambda)
+{
+    number sw_eff = sw / (1-snr);
 	if (sw_eff>0 && sw_eff<1)
 		return krn_max * pow(1-sw_eff, n);
 	else if (sw_eff>=1)
@@ -204,16 +239,121 @@ static number krn(number sw)
 	else
 		return krn_max;
 }
-//*/
 
+static number D_krn(number sw, number snr, number lambda)
+{	
+	number sw_eff = sw / (1-snr);
+	if (sw_eff>0 && sw_eff<1)
+		return -krn_max * n * pow(1-sw_eff, n-1) / (1-snr);
+	else if (sw_eff>=1)
+		return -krn_max * n / (1-snr);
+		//return 0;
+	else
+		return -krn_max * n / (1-snr);
+}
+*/
 
 ///*
 static number DensityW(number wC, number pN)
 {
 	pN=pN/10000000;
+	//pN = 4.5;
 	//int pN=5;
-	number result = (1005+307.5*wC-6.98*3
-		-589.8*wC*wC+52.53*wC*pN); //For Pn in [25,35]Mpa
+	//number result = (939.3+25.9*2-7.406*2*2);
+	//number result = 1000;
+	
+	number result = (956.9+408.3*wC+1.873*pN-723.1*wC*wC+6.93*wC*pN-0.02482*pN*pN+303*wC*wC*wC+13.51*wC*wC*pN-0.1472*wC*pN*pN-424.2*wC*wC*wC*wC+17.63*wC*wC*wC*pN-0.5314*wC*wC*pN*pN);
+	
+	//number result = (939.3+497.9*wC+25.9*pN-288.5*wC*wC-214.1*wC*pN-7.406*pN*pN-741.2*wC*wC*wC+94.47*wC*wC*pN+84.17*wC*pN*pN-345.2*wC*wC*wC*wC+510.9*wC*wC*wC*pN-137.3*wC*wC*pN*pN);
+
+	//number result = (939.3+497.9*wC+25.9*2-288.5*wC*wC-214.1*wC*2-7.406*2*2-741.2*wC*wC*wC+94.47*wC*wC*2+84.17*wC*2*2-345.2*wC*wC*wC*wC+510.9*wC*wC*wC*2-137.3*wC*wC*2*2);
+
+	//number result = (1005+307.5*wC-6.98*3
+	//	-589.8*wC*wC+52.53*wC*pN); //For Pn in [25,35]Mpa
+	//number result = (1000+259.3*wC
+	//	-446.8*wC*wC+30.83*wC*pN);
+	//number result = (1006+259.3*wC-2.853*pN
+	//	-446.8*wC*wC+30.83*wC*pN);
+	/*
+	number result = (988.1+473.2*wC-6.628*pN
+		-797.3*wC*wC+17.55*wC*pN+1.672*pN*pN
+		-82.44*wC*wC*wC+98.26*wC*wC*pN-8.403*wC*pN*pN);
+	*/
+	return result;
+}
+
+static number D_densityW_X(number wC, number pN)
+{
+	pN=pN/10000000;
+	//pN = 4.5;
+	//int pN=5;
+	//number result = (939.3+25.9*2-7.406*2*2);
+	//number result = 1000;
+	
+	//number result = 0;
+	number result = (408.3-723.1*2*wC+6.93*pN+303*3*wC*wC+13.51*2*wC*pN-0.1472*pN*pN-424.2*4*wC*wC*wC+17.63*3*wC*wC*pN-0.5314*2*wC*pN*pN);
+	//number result = (497.9-288.5*2*wC-214.1*pN-741.2*3*wC*wC+94.47*2*wC*pN+84.17*pN*pN-345.2*4*wC*wC*wC+510.9*3*wC*wC*pN-137.3*2*wC*pN*pN);
+
+	//number result = (497.9-288.5*2*wC-214.1*2-741.2*3*wC*wC+94.47*2*wC*2+84.17*2*2-345.2*4*wC*wC*wC+510.9*3*wC*wC*2-137.3*2*wC*2*2);
+
+	//number result = (307.5
+	//	-589.8*2*wC+52.53*pN); //For Pn in [25,35]Mpa
+	//number result = (1000+259.3*wC
+	//	-446.8*wC*wC+30.83*wC*pN);
+	//number result = (1006+259.3*wC-2.853*pN
+	//	-446.8*wC*wC+30.83*wC*pN);
+	/*
+	number result = (988.1+473.2*wC-6.628*pN
+		-797.3*wC*wC+17.55*wC*pN+1.672*pN*pN
+		-82.44*wC*wC*wC+98.26*wC*wC*pN-8.403*wC*pN*pN);
+	*/
+	return result;
+}
+
+static number D_densityW_P(number wC, number pN)
+{
+	pN=pN/10000000;
+	
+	number result = (1.873+6.93*wC-0.02482*2*pN+13.51*wC*wC-0.1472*wC*2*pN+17.63*wC*wC*wC-0.5314*wC*wC*2*pN)/10000000;
+	
+	return result;
+}
+
+
+static number DensityN(number pN)
+{
+	pN=pN/10000000;
+	//pN = 4.5;
+	//int pN=5;
+	//number result = (939.3+497.9+25.9*2-288.5-214.1*2-7.406*2*2-741.2+94.47*2+84.17*2*2-345.2+510.9*2-137.3*2*2);
+	//number result = 1000;
+	//number result = 1.225;
+	number result = (939.3+497.9+25.9*pN-288.5-214.1*pN-7.406*pN*pN-741.2+94.47*pN+84.17*pN*pN-345.2+510.9*pN-137.3*pN*pN);
+	
+	//number result = (1005+307.5*1-6.98*3
+	//	-589.8*1*1+52.53*1*pN); //For Pn in [25,35]Mpa
+	//number result = (1000+259.3*wC
+	//	-446.8*wC*wC+30.83*wC*pN);
+	//number result = (1006+259.3*wC-2.853*pN
+	//	-446.8*wC*wC+30.83*wC*pN);
+	/*
+	number result = (988.1+473.2*wC-6.628*pN
+		-797.3*wC*wC+17.55*wC*pN+1.672*pN*pN
+		-82.44*wC*wC*wC+98.26*wC*wC*pN-8.403*wC*pN*pN);
+	*/
+	return result;
+}
+
+static number D_densityN(number pN)
+{
+	pN=pN/10000000;
+	//pN = 4.5;
+	//int pN=5;
+	//number result = (939.3+497.9+25.9*2-288.5-214.1*2-7.406*2*2-741.2+94.47*2+84.17*2*2-345.2+510.9*2-137.3*2*2);
+	//number result = 1000;
+	//number result = 0;
+	number result = (25.9-214.1-7.406*2*pN+94.47+84.17*2*pN+510.9-137.3*2*pN)/10000000;
+	//number result = 52.53/10000000; //For Pn in [25,35]Mpa
 	//number result = (1000+259.3*wC
 	//	-446.8*wC*wC+30.83*wC*pN);
 	//number result = (1006+259.3*wC-2.853*pN
@@ -228,40 +368,176 @@ static number DensityW(number wC, number pN)
 //*/
 
 // Leverett J
-static number LeverJ(number sw_eff) {
+static number LeverJ(number sw_eff, number lambda) {
 	if (sw_eff>0 && sw_eff<1)
 		return pow(sw_eff, -1/lambda);
 	else if (sw_eff>=1)
 		return 1;
 	else
-		return pow(10,10);
+		return 100;
 }
 // Inverse Leverett J
-static number InverseLeverJ(number J) {
+static number InverseLeverJ(number J, number lambda) {
 	return pow(J, -lambda);
 }
 
 ///*
 static number Pd(number perm, number poro)
 {
-	return 7.37 * pow(poro/perm,0.43);
+	return 0.01*7.37 * pow(poro/perm,0.43);
+	
+	//return 0;
+	//return 7.37 * pow(poro/perm,0.43);
+	
+	//return 7.37 * pow(1/perm,0.43);
 }
-static number D_diffusion_Sw(number sw, number perm, number poro)
+
+static number Dpc(number sw, number swr, number snr, number lambda, number perm, number poro)
 {
 	number sw_eff = (sw - swr) / (1-snr-swr);
-	if (sw_eff>0 && sw_eff<1)
-		return -perm/ViscosityW *Pd(perm, poro)*(-1/lambda)*krw_max* (m-1/lambda-1) * pow(sw_eff, (m-1/lambda-2)) / pow(1-snr-swr, 2);
-	else if (sw_eff>=1)
-		return -perm/ViscosityW *Pd(perm, poro)*(-1/lambda)*krw_max* (m-1/lambda-1) / pow(1-snr-swr, 2);
+	number pd = Pd(perm, poro);
+	// get sw_max crossponding to pc_max
+	number pd0 = 10000;
+	number sw_max = pow(pc_max/pd0, -lambda) * (1-snr-swr) + swr;
+	number sw_star_eff = (pd < 1/pd0) ? sw_max : pow( (pc_max - pd)/sw_max * (1-snr-swr) * lambda /pd, -1/(1+1/lambda) );
+	number sw_star = sw_star_eff * (1-snr-swr) + swr;
+	
+	if (sw <= sw_star)
+		return perm * pd *(-1/lambda) * pow(sw_star_eff, (-1/lambda-1)) / (1-snr-swr);
+	else if (sw_eff <= 1)
+		return perm * pd *(-1/lambda) * pow(sw_eff, (-1/lambda-1)) / (1-snr-swr);
 	else
+		return perm * pd *(-1/lambda) / (1-snr-swr);
+}
+
+static number D_Dpc(number sw, number swr, number snr, number lambda, number perm, number poro)
+{
+	number sw_eff = (sw - swr) / (1-snr-swr);
+	number pd = Pd(perm, poro);
+	// get sw_max crossponding to pc_max
+	number pd0 = 10000;
+	number sw_max = pow(pc_max/pd0, -lambda) * (1-snr-swr) + swr;
+	number sw_star_eff = (pd < 1/pd0) ? sw_max : pow( (pc_max - pd)/sw_max * (1-snr-swr) * lambda /pd, -1/(1+1/lambda) );
+	number sw_star = sw_star_eff * (1-snr-swr) + swr;
+	
+	if (sw <= sw_star)
 		return 0;
+	else if (sw_eff <= 1)
+		return perm * pd *(-1/lambda) * (-1/lambda-1) * pow(sw_eff, (-1/lambda-2)) / pow(1-snr-swr, 2);
+	else
+		return perm * pd *(-1/lambda) * (-1/lambda-1) / pow(1-snr-swr, 2);
+}
+
+static number Dpc(number sw, number swr, number snr, number lambda, number perm, number poro, number pd)
+{
+	number sw_eff = (sw - swr) / (1-snr-swr);
+	// get sw_max crossponding to pc_max
+	number pd0 = 10000;
+	number sw_max = pow(pc_max/pd0, -lambda) * (1-snr-swr) + swr;
+	number sw_star_eff = (pd < 1/pd0) ? sw_max : pow( (pc_max - pd)/sw_max * (1-snr-swr) * lambda /pd, -1/(1+1/lambda) );
+	number sw_star = sw_star_eff * (1-snr-swr) + swr;
+	
+	//pd = 100*pd;
+	/*
+	sw_star = 0.1;
+	for (size_t i = 0; i < 4; ++i)
+	{
+		sw_star = swr / (lambda*log10(pc_max/pd)+log10(x)-log10(1-Swr)-1);
+	}
+	*/
+
+	if (sw <= sw_star)
+		return perm * pd *(-1/lambda) * pow(sw_star_eff, (-1/lambda-1)) / (1-snr-swr);
+	else if (sw_eff <= 1)
+		return perm * pd *(-1/lambda) * pow(sw_eff, (-1/lambda-1)) / (1-snr-swr);
+	else
+		return perm * pd *(-1/lambda) / (1-snr-swr);
+}
+
+		
+static number D_Dpc(number sw, number swr, number snr, number lambda, number perm, number poro, number pd)
+{
+	number sw_eff = (sw - swr) / (1-snr-swr);
+	// get sw_max crossponding to pc_max
+	number pd0 = 10000;
+	number sw_max = pow(pc_max/pd0, -lambda) * (1-snr-swr) + swr;
+	number sw_star_eff = (pd < 1/pd0) ? sw_max : pow( (pc_max - pd)/sw_max * (1-snr-swr) * lambda /pd, -1/(1+1/lambda) );
+	number sw_star = sw_star_eff * (1-snr-swr) + swr;
+	
+
+	//pd = 100*pd;
+	
+	/*
+	sw_star = 0.1;
+	for (size_t i = 0; i < 4; ++i)
+	{
+		sw_star = swr / (lambda*log10(pc_max/pd)+log10(x)-log10(1-Swr)-1);
+	}
+	*/
+	
+	if (sw <= sw_star)
+		return 0;
+	else if (sw_eff <= 1)
+		return perm * pd *(-1/lambda) * (-1/lambda-1) * pow(sw_eff, (-1/lambda-2)) / pow(1-snr-swr, 2);
+	else
+		return perm * pd *(-1/lambda) * (-1/lambda-1) / pow(1-snr-swr, 2);
+}
+		
+
+static number Diffusion_S(size_t FormulationIndex, number sw, number swr, number snr, number lambda, number perm, number poro)
+{	//Diffusion_S = kr*Dpc;
+	if (FormulationIndex == 1){
+		return -krw(sw, swr, lambda)*Dpc(sw, swr, snr, lambda, perm, poro)/ViscosityW;
+	}
+	else if (FormulationIndex == 2){
+		sw = 1-sw;
+		return -krn(sw, snr, lambda)*Dpc(sw, swr, snr, lambda, perm, poro)/ViscosityN;
+	}
+	
+}
+static number Diffusion_S(size_t FormulationIndex, number sw, number swr, number snr, number lambda, number perm, number poro, number pd)
+{	//Diffusion_S = kr*Dpc;
+	if (FormulationIndex == 1){
+		return -krw(sw, swr, lambda)*Dpc(sw, swr, snr, lambda, perm, poro, pd)/ViscosityW;
+	}
+	else if (FormulationIndex == 2){
+		sw = 1-sw;
+		return -krn(sw, snr, lambda)*Dpc(sw, swr, snr, lambda, perm, poro, pd)/ViscosityN;
+	}
+	
+}
+
+
+
+static number D_diffusion_S(size_t FormulationIndex, number sw, number swr, number snr, number lambda, number perm, number poro)
+{	//D_diffusion_S = dkr*Dpc+kr*D_Dpc;
+	if (FormulationIndex == 1){
+		return -(D_krw(sw, swr, lambda)*Dpc(sw, swr, snr, lambda, perm, poro)+krw(sw, swr, lambda)*D_Dpc(sw, swr, snr, lambda, perm, poro))/ViscosityW;
+	}
+	else if (FormulationIndex == 2){
+		sw = 1-sw;
+		return (D_krn(sw, snr, lambda)*Dpc(sw, swr, snr, lambda, perm, poro)+krn(sw, snr, lambda)*D_Dpc(sw, swr, snr, lambda, perm, poro))/ViscosityN;
+	}
+	
+}
+static number D_diffusion_S(size_t FormulationIndex, number sw, number swr, number snr, number lambda, number perm, number poro, number pd)
+{	//D_diffusion_S = dkr*Dpc+kr*D_Dpc;
+	if (FormulationIndex == 1){
+		return -(D_krw(sw, swr, lambda)*Dpc(sw, swr, snr, lambda, perm, poro, pd)+krw(sw, swr, lambda)*D_Dpc(sw, swr, snr, lambda, perm, poro, pd))/ViscosityW;
+	}
+	else if (FormulationIndex == 2){
+		sw = 1-sw;
+		return (D_krn(sw, snr, lambda)*Dpc(sw, swr, snr, lambda, perm, poro, pd)+krn(sw, snr, lambda)*D_Dpc(sw, swr, snr, lambda, perm, poro, pd))/ViscosityN;
+	}
+	
 }
 //*/
 
 /*
 static number Pd(number perm, number poro)
 {
-	return 1000;
+	//return 1000;
+	return 5000;
 	//return 0.10;
 	//return 7.37 * pow(1/perm,0.43);
 }
@@ -269,35 +545,74 @@ static number D_diffusion_Sw(number sw, number perm, number poro)
 {
 	number sw_eff = (sw - swr) / (1-snr-swr);
 	if (sw_eff>0 && sw_eff<1)
-		return -perm/ViscosityW *Pd(perm, poro)*(-1/lambda)* (1/lambda+2) * pow(sw_eff, (1/lambda+1)) / pow(1-snr-swr, 2);
+		return perm/ViscosityW *Pd(perm, poro)*(-1/lambda)* (1/lambda+2) * pow(sw_eff, (1/lambda+1)) / pow(1-snr-swr, 2);
 	else if (sw_eff>=1)
-		return -perm/ViscosityW *Pd(perm, poro)*(-1/lambda)* (1/lambda+2) / pow(1-snr-swr, 2);
+		return perm/ViscosityW *Pd(perm, poro)*(-1/lambda)* (1/lambda+2) / pow(1-snr-swr, 2);
 	else
 		return 0;
 		
 }
 */
 
-static number Modify_sw(number sw, number minPd, number perm, number poro)
+static number Modify_s(size_t FormulationIndex, number sw, number swr, number snr, number lambda, number minPd, number minSwr, number minSnr, number minLambda, number perm, number poro)
 {	
-	number elePd = Pd(perm, poro);
-	if ( abs(minPd - elePd) < 1 ){
-		return sw;
+	if (FormulationIndex == 2){
+		sw = 1-sw;
+		number elePd = Pd(perm, poro);
+
+		number refsw_eff = (sw - minSwr) / (1-minSnr-minSwr);
+		if ( elePd >= minPd*LeverJ(refsw_eff, minLambda) ){
+			return snr;
+		}
+		refsw_eff = InverseLeverJ( minPd*LeverJ(refsw_eff, minLambda)/elePd, lambda );	
+		return 1-(refsw_eff*(1-snr-swr)+swr);
 	}
-	number sw_eff = (sw - swr) / (1-snr-swr);
-	if ( elePd >= minPd*LeverJ(sw_eff) ){
+	
+	number elePd = Pd(perm, poro);
+
+	number refsw_eff = (sw - minSwr) / (1-minSnr-minSwr);
+	if ( elePd >= minPd*LeverJ(refsw_eff, minLambda) ){
 		return 1-snr;
 	}
-	sw_eff = InverseLeverJ( minPd*LeverJ(sw_eff)/elePd );	
-	return sw_eff*(1-snr-swr)+swr;
+	refsw_eff = InverseLeverJ( minPd*LeverJ(refsw_eff, minLambda)/elePd, lambda );	
+	return refsw_eff*(1-snr-swr)+swr;
+}
+
+static number Modify_s(size_t FormulationIndex, number sw, number swr, number snr, number lambda, number minPd, number minSwr, number minSnr, number minLambda, number pd)
+{	
+	if (FormulationIndex == 2){
+		sw = 1-sw;
+		number elePd = pd;
+
+		number refsw_eff = (sw - minSwr) / (1-minSnr-minSwr);
+		
+		//test pd
+		//if (elePd >10*minPd) return snr;		
+		
+		if ( elePd >= minPd*LeverJ(refsw_eff, minLambda) ){
+			return snr;
+		}
+
+		refsw_eff = pow( minPd*pow(refsw_eff, -1/minLambda)/elePd, -lambda );	
+		return 1-(refsw_eff*(1-snr-swr)+swr);
+	}
+	
+	number elePd = pd;
+
+	number refsw_eff = (sw - minSwr) / (1-minSnr-minSwr);
+	if ( elePd >= minPd*LeverJ(refsw_eff, minLambda) ){
+		return 1-snr;
+	}
+	refsw_eff = InverseLeverJ( minPd*LeverJ(refsw_eff, minLambda)/elePd, lambda );	
+	return refsw_eff*(1-snr-swr)+swr;
 }
 
 template<typename TDomain>
 ConvectionDiffusionMP<TDomain>::
-ConvectionDiffusionMP(const char* functions, const char* subsets)
+ConvectionDiffusionMP(const char* functions, const char* subsets, const size_t FormulationIndex)
  : ConvectionDiffusionBase<TDomain>(functions,subsets),
    m_spConvShape(new ConvectionShapesNoUpwind<dim>),
-   m_bNonRegularGrid(false), m_bCondensedFV(false)
+   m_bNonRegularGrid(false), m_bCondensedFV(false), iFormulationIndex(FormulationIndex)
 {
 	register_all_funcs(m_bNonRegularGrid);
 }
@@ -313,7 +628,10 @@ prepare_setting(const std::vector<LFEID>& vLfeID, bool bNonRegularGrid)
 
 	if(vLfeID[0].order() != 1 || vLfeID[0].type() != LFEID::LAGRANGE)
 		UG_THROW("ConvectionDiffusion FV Scheme only implemented for 1st order.");
-
+	
+	if(iFormulationIndex == 0)
+		UG_THROW("Please specify the FormulationIndex, ConvectionDiffusionMP(functions, subsets, FormulationIndex), 1:(Sw,Pn); 2:(Sn,Pw)");
+		
 //	remember
 	m_bNonRegularGrid = bNonRegularGrid;
 
@@ -368,13 +686,23 @@ prep_elem_loop(const ReferenceObjectID roid, const int si)
 		m_imDarcyW.template 		set_local_ips<refDim>(vSCVFip,numSCVFip, false);
 		m_imDarcyN.template 		set_local_ips<refDim>(vSCVFip,numSCVFip, false);
 		m_imSaturationW.template 	set_local_ips<refDim>(vSCVip,numSCVip, false);
+		m_imModifiedSaturationW.template 	set_local_ips<refDim>(vSCVip,numSCVip, false);
+		m_imUpwindSaturationW.template 	set_local_ips<refDim>(vSCVip,numSCVip, false);
+		m_imUpwindModifiedSaturationW.template 	set_local_ips<refDim>(vSCVip,numSCVip, false);
 		m_imDiffusion_Sw.template 	set_local_ips<refDim>(vSCVFip,numSCVFip, false);
-		m_imMassFractionWc.template set_local_ips<refDim>(vSCVip,numSCVip, false);
-		m_imPressurePn.template 	set_local_ips<refDim>(vSCVip,numSCVip, false);
+		m_imMassFractionWc.template set_local_ips<refDim>(vSCVFip,numSCVFip, false);
+		m_imPressurePn.template 	set_local_ips<refDim>(vSCVFip,numSCVFip, false);
 		
 		m_imPermeability.template 	set_local_ips<refDim>(vSCVip,numSCVip, false);
 		m_imPorosity.template 		set_local_ips<refDim>(vSCVip,numSCVip, false);
+		m_imEntryPressure.template 	set_local_ips<refDim>(vSCVip,numSCVip, false);
+		m_imResidualAqueous.template 	set_local_ips<refDim>(vSCVip,numSCVip, false);
+		m_imResidualCarbonic.template 	set_local_ips<refDim>(vSCVip,numSCVip, false);
+		m_imBrooksCoreyNumber.template 	set_local_ips<refDim>(vSCVip,numSCVip, false);
 		m_imMinPd.template 			set_local_ips<refDim>(vSCVip,numSCVip, false);
+		m_imMinSwr.template 			set_local_ips<refDim>(vSCVip,numSCVip, false);
+		m_imMinSnr.template 			set_local_ips<refDim>(vSCVip,numSCVip, false);
+		m_imMinLambda.template 			set_local_ips<refDim>(vSCVip,numSCVip, false);
 		
 		m_imFlux.template 			set_local_ips<refDim>(vSCVFip,numSCVFip, false);
 		m_imSource.template 		set_local_ips<refDim>(vSCVip,numSCVip, false);
@@ -457,13 +785,27 @@ prep_elem(const LocalVector& u, GridObject* elem, const ReferenceObjectID roid, 
 	m_imDarcyW.				set_global_ips(vSCVFip, numSCVFip);
 	m_imDarcyN.				set_global_ips(vSCVFip, numSCVFip);
 	m_imSaturationW.		set_global_ips(vSCVip, numSCVip);
+	m_imModifiedSaturationW.		set_global_ips(vSCVip, numSCVip);
+	m_imUpwindSaturationW.	set_global_ips(vSCVip, numSCVip);
+	m_imUpwindModifiedSaturationW.	set_global_ips(vSCVip, numSCVip);
 	m_imDiffusion_Sw.		set_global_ips(vSCVFip, numSCVFip);
-	m_imMassFractionWc.		set_global_ips(vSCVip, numSCVip);
-	m_imPressurePn.			set_global_ips(vSCVip, numSCVip);
+	m_imMassFractionWc.		set_global_ips(vSCVFip, numSCVFip);
+	m_imPressurePn.			set_global_ips(vSCVFip, numSCVFip);
 	
 	m_imPermeability.		set_global_ips(vSCVip, numSCVip);
 	m_imPorosity.			set_global_ips(vSCVip, numSCVip);
+	m_imEntryPressure.		set_global_ips(vSCVip, numSCVip);
+	m_imResidualAqueous.	set_global_ips(vSCVip, numSCVip);
+	m_imResidualCarbonic.	set_global_ips(vSCVip, numSCVip);
+	m_imBrooksCoreyNumber.	set_global_ips(vSCVip, numSCVip);
+	
+	
+	
 	m_imMinPd.				set_global_ips(vSCVip, numSCVip);
+	m_imMinSwr.				set_global_ips(vSCVip, numSCVip);
+	m_imMinSnr.				set_global_ips(vSCVip, numSCVip);
+	m_imMinLambda.			set_global_ips(vSCVip, numSCVip);
+	
 	
 	m_imFlux.				set_global_ips(vSCVFip, numSCVFip);
 	m_imSource.				set_global_ips(vSCVip, numSCVip);
@@ -538,9 +880,14 @@ add_jac_A_elem(LocalMatrix& J, const LocalVector& u, GridObject* elem, const Mat
 //	Consider capillary trapping	or not
 	number u_modified[convShape.num_sh()];
 	if ( m_imPermeability.data_given() && m_imMinPd.data_given() ){
-		for (size_t i = 0; i < convShape.num_sh(); ++i){
-			u_modified[i] = Modify_sw(u(_C_, i), m_imMinPd[i], m_imPermeability[i], m_imPorosity[i]);
-		}
+		if (m_imEntryPressure.data_given())
+			for (size_t i = 0; i < convShape.num_sh(); ++i){
+				u_modified[i] = Modify_s(iFormulationIndex, u(_C_, i), m_imResidualAqueous[i], m_imResidualCarbonic[i], m_imBrooksCoreyNumber[i], m_imMinPd[i], m_imMinSwr[i], m_imMinSnr[i], m_imMinLambda[i], m_imEntryPressure[i]);
+			}
+		else
+			for (size_t i = 0; i < convShape.num_sh(); ++i){
+				u_modified[i] = Modify_s(iFormulationIndex, u(_C_, i), m_imResidualAqueous[i], m_imResidualCarbonic[i], m_imBrooksCoreyNumber[i], m_imMinPd[i], m_imMinSwr[i], m_imMinSnr[i], m_imMinLambda[i], m_imPermeability[i], m_imPorosity[i]);
+			}
 	}
 	else{
 		//UG_THROW ("Permeability or MinPd is missing in some elements! "<<"Permeability:"<<m_imPermeability.data_given()<<" MinPd:"<<m_imMinPd.data_given());
@@ -593,9 +940,11 @@ add_jac_A_elem(LocalMatrix& J, const LocalVector& u, GridObject* elem, const Mat
 				UG_DLOG(DID_CONV_DIFF_MP, 2, "D_diff_flux_sum = " << D_diff_flux_sum << std::endl << std::endl);
 			}
 		////////////////////////////////////////////////////
-		// Diffusive_Sw Term
+		// Diffusive_Sw Term--There are two case: 1. in Sw equation or 2. in Wc equation. For case2, there is no contribution for jac matrix.
 		////////////////////////////////////////////////////
-			if(m_imDiffusion_Sw.data_given() && m_imPermeability.data_given())
+		
+			// For case1, since Sw is given in case2
+			if(m_imDiffusion_Sw.data_given() && !m_imModifiedSaturationW.data_given() && m_imPermeability.data_given())
 			{
 				#ifdef UG_ENABLE_DEBUG_LOGS
 				//	DID_CONV_DIFF_MP
@@ -605,51 +954,82 @@ add_jac_A_elem(LocalMatrix& J, const LocalVector& u, GridObject* elem, const Mat
 			// 	loop shape functions
 				for(size_t sh = 0; sh < scvf.num_sh(); ++sh)
 				{
-					MathMatrix<dim,dim> Real_Diffusion_Sw;
-					MatScale(Real_Diffusion_Sw, m_imPermeability[0]*Pd(m_imPermeability[0], m_imPorosity[0]), m_imDiffusion_Sw[ip]);
-				// 	Compute Diffusion Tensor times Gradient
-					MatVecMult(Dgrad, Real_Diffusion_Sw, scvf.global_grad(sh));
-					
-				//  Compute D_diffusion * lambda_c * sum( sw_i*grad(lambda_i))
 					MathVector<dim> sum; VecSet(sum, 0.0);
-					number sw_integ = 0.0;
+					number s_integ = 0.0;
 					MathVector<dim> Dgrad2;
 					
 					for (size_t i = 0; i < scvf.num_sh(); ++i)
 					{
 						VecScaleAppend(sum, u_modified[i], scvf.global_grad(i));
-						sw_integ += u_modified[i]*scvf.shape(i);
+						s_integ += u_modified[i]*scvf.shape(i);
 					}
 					VecScale(sum, sum, scvf.shape(sh));
-					MathMatrix<dim,dim> D_diffusion_Sw_Mat;
+					
+					MathMatrix<dim,dim> Real_Diffusion_Sw;
+					if (m_imEntryPressure.data_given())
+						MatScale(Real_Diffusion_Sw, Diffusion_S(iFormulationIndex, s_integ, m_imResidualAqueous[0], m_imResidualCarbonic[0], m_imBrooksCoreyNumber[0], m_imPermeability[0], m_imPorosity[0], m_imEntryPressure[0])
+, m_imDiffusion_Sw[ip]);
+					else
+						MatScale(Real_Diffusion_Sw, Diffusion_S(iFormulationIndex, s_integ, m_imResidualAqueous[0], m_imResidualCarbonic[0], m_imBrooksCoreyNumber[0], m_imPermeability[0], m_imPorosity[0])
+, m_imDiffusion_Sw[ip]);
+				
+				// 	Compute Diffusion Tensor times Gradient
+					MatVecMult(Dgrad, Real_Diffusion_Sw, scvf.global_grad(sh));
+					
+				//  Compute D_diffusion * sum( s_i*grad(lambda_i))
+
+					MathMatrix<dim,dim> D_diffusion_S_Mat;
 					for (size_t j = 0; j < dim; ++j)
 						for (size_t k = 0; k < dim; ++k)
 						{
 							if (j == k)
-							{
+							{	
+								number D_diffusion_S_value;
+								if (m_imEntryPressure.data_given())
+									D_diffusion_S_value = D_diffusion_S(iFormulationIndex, s_integ, m_imResidualAqueous[0], m_imResidualCarbonic[0], m_imBrooksCoreyNumber[0], m_imPermeability[0], m_imPorosity[0], m_imEntryPressure[0]);
+								else
+									D_diffusion_S_value = D_diffusion_S(iFormulationIndex, s_integ, m_imResidualAqueous[0], m_imResidualCarbonic[0], m_imBrooksCoreyNumber[0], m_imPermeability[0], m_imPorosity[0]);
+								
 								if (m_imMassFractionWc.data_given() && m_imPressurePn.data_given())
-									D_diffusion_Sw_Mat(j,k) = DensityW(m_imMassFractionWc[ip], m_imPressurePn[ip]) * D_diffusion_Sw(sw_integ, m_imPermeability[0], m_imPorosity[0]);
-									//D_diffusion_Sw_Mat(j,k) = DensityW(m_imMassFractionWc[ip]) * D_diffusion_Sw(sw_integ, m_imPermeability[0], m_imPorosity[0]);
-								else if (m_imPressurePn.data_given())
-									D_diffusion_Sw_Mat(j,k) = DensityW(0, m_imPressurePn[ip]) * D_diffusion_Sw(sw_integ, m_imPermeability[0], m_imPorosity[0]);
-									//D_diffusion_Sw_Mat(j,k) = DensityW(0) * D_diffusion_Sw(sw_integ, m_imPermeability[0], m_imPorosity[0]);
-								else //immiscible & incompressible, densityW=1000
-									D_diffusion_Sw_Mat(j,k) = 1000 * D_diffusion_Sw(sw_integ, m_imPermeability[0], m_imPorosity[0]);
-								/*
-								//Shuai, Debug
-								if (D_diffusion_Sw_Mat(j,k)<0)
 								{
-									number xxxx= 0;
-									xxxx =D_diffusion_Sw_Mat(j,k);
+									if (iFormulationIndex == 1)
+										D_diffusion_S_Mat(j,k) = DensityW(m_imMassFractionWc[ip], m_imPressurePn[ip]) * D_diffusion_S_value;
+									else if (iFormulationIndex == 2)
+										D_diffusion_S_Mat(j,k) = DensityN(m_imPressurePn[ip]) * D_diffusion_S_value;
+									//D_diffusion_Sw_Mat(j,k) = DensityW(m_imMassFractionWc[ip]) * D_diffusion_Sw(sw_integ, m_imPermeability[0], m_imPorosity[0]);
 								}
-								*/
+								else if (m_imPressurePn.data_given())
+								{
+									if (iFormulationIndex == 1)
+										D_diffusion_S_Mat(j,k) = DensityW(0, m_imPressurePn[ip]) * D_diffusion_S_value;
+									else if (iFormulationIndex == 2)
+										D_diffusion_S_Mat(j,k) = DensityN(m_imPressurePn[ip]) * D_diffusion_S_value;
+									//D_diffusion_Sw_Mat(j,k) = DensityW(0) * D_diffusion_Sw(sw_integ, m_imPermeability[0], m_imPorosity[0]);
+								
+								}
+								else //immiscible & incompressible, densityW=1000
+								{
+									if (iFormulationIndex == 1)
+										D_diffusion_S_Mat(j,k) = DensityH * D_diffusion_S_value;
+									else if (iFormulationIndex == 2)
+										D_diffusion_S_Mat(j,k) = DensityC * D_diffusion_S_value;
+								}
 							}
 							else
-								D_diffusion_Sw_Mat(j,k) = 0.0;
+								D_diffusion_S_Mat(j,k) = 0.0;
+							//Shuai debug , here the D_diffusion_S_Mat is set to 0 in the SnPw formulation
+							//if (iFormulationIndex == 2)
+							//	D_diffusion_S_Mat(j,k) = 0.0;
+							//debug end
 						}
-					MatVecMult(Dgrad2, D_diffusion_Sw_Mat, sum);
+					MatVecMult(Dgrad2, D_diffusion_S_Mat, sum);
 					
 					VecAdd(Dgrad, Dgrad, Dgrad2);
+					
+					//Shuai debug , here the D_diffusion_S_Mat is set to 0 in the SnPw formulation
+					//	if (iFormulationIndex == 2)
+					//		VecSet(Dgrad, 0.0);
+					//debug end
 					
 				//	Compute flux at IP
 					const number D_diff_flux_Sw = VecDot(Dgrad, scvf.normal());
@@ -672,22 +1052,27 @@ add_jac_A_elem(LocalMatrix& J, const LocalVector& u, GridObject* elem, const Mat
 
 				UG_DLOG(DID_CONV_DIFF_MP, 2, "D_diff_flux_Sw_sum = " << D_diff_flux_Sw_sum << std::endl << std::endl);
 			}
+			
 
 		////////////////////////////////////////////////////
 		// Convective Term
 		////////////////////////////////////////////////////
+			
 			if(m_imVelocity.data_given())
 			{
 			//	Add Flux contribution
 				for(size_t sh = 0; sh < convShape.num_sh(); ++sh)
 				{
-					const number D_conv_flux = convShape(ip, sh);
-
+					//const number D_conv_flux = convShape(ip, sh);
+					const number D_conv_flux = (D_densityW_X(u_modified[sh], m_imPressurePn[ip])/DensityW(u_modified[sh], m_imPressurePn[ip])*u_modified[sh]+1)*convShape(ip, sh);
+					
+					//const number D_conv_flux = krw( m_imSaturationW[sh] ) * convShape(ip, sh);
 				//	Add flux term to local matrix
 					J(_C_, scvf.from(), _C_, sh) += D_conv_flux;
 					J(_C_, scvf.to(),   _C_, sh) -= D_conv_flux;
 				}
 			}
+			
 			
 			if(m_imDarcyW.data_given())
 			{
@@ -719,8 +1104,78 @@ add_jac_A_elem(LocalMatrix& J, const LocalVector& u, GridObject* elem, const Mat
 					}
 					const number D_conv_flux = D_krw_value * convShape(ip, sh);
 					*/
+					number D_kr_value = 0.0;
+					if (iFormulationIndex == 1)
+						D_kr_value = D_krw( u_modified[sh], m_imResidualAqueous[0], m_imBrooksCoreyNumber[0] );
+					else if (iFormulationIndex == 2)
+						D_kr_value = -D_krn( 1-u_modified[sh], m_imResidualCarbonic[0], m_imBrooksCoreyNumber[0] );
 					
-					const number D_conv_flux = D_krw( u_modified[sh] ) * convShape(ip, sh);
+					/*
+					//Shuai debug
+					if ( u_modified[sh]>0.999 )//For each ip, find the saturated node
+					{ 	
+						//check the node is related to the subcontrol faces(from or to)
+						//the upwind node must be from or to
+						// 1. avoid inflow to the (downwind && saturated) node
+						// 2. avoid outflow from the (upwind && saturated) node
+						
+						//the saturated node is inside the subcontrolvolume //flow in, the upwind node is scvf.to()
+						if ( ( sh==scvf.from() ) && ( convShape(ip, scvf.to())<0 ) ) 
+						{
+								D_kr_value = 0;
+						}
+						//the saturated node is outside the subcontrolvolume //flow out, the upwind node is scvf.from()
+						else if ( ( sh==scvf.to() ) && ( convShape(ip, scvf.from())>0 ) )
+						{
+								D_kr_value = 0;	
+						}
+					}
+					//Shuai debug end
+					*/
+					
+					const number D_conv_flux = D_kr_value * convShape(ip, sh);
+					
+				//	Add flux term to local matrix
+					J(_C_, scvf.from(), _C_, sh) += D_conv_flux;
+					J(_C_, scvf.to(),   _C_, sh) -= D_conv_flux;
+				}
+			}
+			
+			if( m_imDarcyN.data_given() && m_imMassFractionWc.data_given() )
+			{	
+				
+				for(size_t sh = 0; sh < convShape.num_sh(); ++sh)
+				{
+					number D_kr_value = 0.0;
+					if (iFormulationIndex == 1)
+						D_kr_value = D_densityN(u_modified[sh])/DensityN(u_modified[sh]);
+					else if (iFormulationIndex == 2)
+						D_kr_value = D_densityW_P(m_imMassFractionWc[ip], u_modified[sh])/DensityW(m_imMassFractionWc[ip], u_modified[sh]);
+					
+					/*
+					//Shuai debug
+					if ( u_modified[sh]>0.999 )//For each ip, find the saturated node
+					{ 	
+						//check the node is related to the subcontrol faces(from or to)
+						//the upwind node must be from or to
+						// 1. avoid inflow to the (downwind && saturated) node
+						// 2. avoid outflow from the (upwind && saturated) node
+						
+						//the saturated node is inside the subcontrolvolume //flow in, the upwind node is scvf.to()
+						if ( ( sh==scvf.from() ) && ( convShape(ip, scvf.to())<0 ) ) 
+						{
+								D_kr_value = 0;
+						}
+						//the saturated node is outside the subcontrolvolume //flow out, the upwind node is scvf.from()
+						else if ( ( sh==scvf.to() ) && ( convShape(ip, scvf.from())>0 ) )
+						{
+								D_kr_value = 0;	
+						}
+					}
+					//Shuai debug end
+					*/
+					
+					const number D_conv_flux = D_kr_value * convShape(ip, sh);
 					
 	
 				//	Add flux term to local matrix
@@ -848,7 +1303,10 @@ add_sss_def_elem
 	//	Consider capillary trapping	or not
 	number u_modified;
 	if ( m_imPermeability.data_given() && m_imMinPd.data_given() ){
-		u_modified = Modify_sw(u(_C_, co), m_imMinPd[co], m_imPermeability[co], m_imPorosity[co]);
+		if (m_imEntryPressure.data_given())
+			u_modified = Modify_s(iFormulationIndex, u(_C_, co), m_imResidualAqueous[co], m_imResidualCarbonic[co], m_imBrooksCoreyNumber[co], m_imMinPd[co], m_imMinSwr[co], m_imMinSnr[co], m_imMinLambda[co], m_imEntryPressure[co]);
+		else
+			u_modified = Modify_s(iFormulationIndex, u(_C_, co), m_imResidualAqueous[co], m_imResidualCarbonic[co], m_imBrooksCoreyNumber[co], m_imMinPd[co], m_imMinSwr[co], m_imMinSnr[co], m_imMinLambda[co], m_imPermeability[co], m_imPorosity[co]);
 	}
 	else{
 		u_modified = u(_C_, co);
@@ -880,9 +1338,15 @@ add_def_A_elem(LocalVector& d, const LocalVector& u, GridObject* elem, const Mat
 	
 	//	Consider capillary trapping	or not
 	number u_modified[convShape.num_sh()];
-	if ( m_imPermeability.data_given() && m_imMinPd.data_given() ){
-		for (size_t i = 0; i < convShape.num_sh(); ++i)
-			u_modified[i] = Modify_sw(u(_C_, i), m_imMinPd[i], m_imPermeability[i], m_imPorosity[i]);
+	if ( m_imPermeability.data_given() && m_imMinPd.data_given() && !m_imModifiedSaturationW.data_given() ){
+		if (m_imEntryPressure.data_given())
+			for (size_t i = 0; i < convShape.num_sh(); ++i){
+				u_modified[i] = Modify_s(iFormulationIndex, u(_C_, i), m_imResidualAqueous[i], m_imResidualCarbonic[i], m_imBrooksCoreyNumber[i], m_imMinPd[i], m_imMinSwr[i], m_imMinSnr[i], m_imMinLambda[i], m_imEntryPressure[i]);
+			}
+		else
+			for (size_t i = 0; i < convShape.num_sh(); ++i){
+				u_modified[i] = Modify_s(iFormulationIndex, u(_C_, i), m_imResidualAqueous[i], m_imResidualCarbonic[i], m_imBrooksCoreyNumber[i], m_imMinPd[i], m_imMinSwr[i], m_imMinSnr[i], m_imMinLambda[i], m_imPermeability[i], m_imPorosity[i]);
+			}
 	}
 	else{
 		for (size_t i = 0; i < convShape.num_sh(); ++i)
@@ -890,7 +1354,7 @@ add_def_A_elem(LocalVector& d, const LocalVector& u, GridObject* elem, const Mat
 	}
 	
 
-	if(m_imDiffusion.data_given() || m_imDiffusion_Sw.data_given() || m_imVelocity.data_given() || m_imFlux.data_given() || m_imDarcyW.data_given() || (m_imDarcyN.data_given() && m_imSaturationW.data_given()))
+	if(m_imDiffusion.data_given() || m_imDiffusion_Sw.data_given() || m_imVelocity.data_given() || m_imFlux.data_given() || m_imDarcyW.data_given() || (m_imDarcyN.data_given() && m_imModifiedSaturationW.data_given()))
 	{
 	// 	loop Sub Control Volume Faces (SCVF)
 		for(size_t ip = 0; ip < geo.num_scvf(); ++ip)
@@ -925,19 +1389,23 @@ add_def_A_elem(LocalVector& d, const LocalVector& u, GridObject* elem, const Mat
 		/////////////////////////////////////////////////////
 		// Diffusive_Sw Term
 		/////////////////////////////////////////////////////
-			if(m_imDiffusion_Sw.data_given())
+		
+		/*
+		    // In Wc equation
+			if(m_imDiffusion_Sw.data_given() && m_imSaturationW.data_given())
 			{
 			//	to compute D \nabla c
 				MathVector<dim> Dgrad_c, grad_c;
 
-			// 	compute gradient and shape at ip
+			// 	compute Sw gradient and shape at ip
 				VecSet(grad_c, 0.0);
 				for(size_t sh = 0; sh < scvf.num_sh(); ++sh)
-					VecScaleAppend(grad_c, u_modified[sh], scvf.global_grad(sh));
-
+					VecScaleAppend(grad_c, m_imSaturationW[sh], scvf.global_grad(sh));
+				
 				MathMatrix<dim,dim> Real_Diffusion_Sw;
 				if (m_imPermeability.data_given())
 					MatScale(Real_Diffusion_Sw, m_imPermeability[0]*Pd(m_imPermeability[0], m_imPorosity[0]), m_imDiffusion_Sw[ip]);
+					
 				else
 					MatScale(Real_Diffusion_Sw, 1, m_imDiffusion_Sw[ip]);
 			//	scale by diffusion tensor
@@ -949,19 +1417,86 @@ add_def_A_elem(LocalVector& d, const LocalVector& u, GridObject* elem, const Mat
 			// 	Add to local defect
 				d(_C_, scvf.from()) -= diff_flux_Sw;
 				d(_C_, scvf.to()  ) += diff_flux_Sw;
+				
+				number conv_flux = 0.0;
+				for(size_t sh = 0; sh < convShape.num_sh(); ++sh)
+				{
+					////For Extended Buckley Leverett
+					//if (m_imPermeability.data_given())
+					//{
+					//	if (m_imPermeability[0]>5*pow(10,-14))
+					//		conv_flux += krw1( u_modified[sh] ) * convShape(ip, sh);
+					//	else
+					//		conv_flux += krw2( u_modified[sh] ) * convShape(ip, sh);
+					//}
+					//
+					
+					conv_flux += krw( u_modified[sh] ) * convShape(ip, sh);
+						
+				}
+				
+				d(_C_, scvf.from()) += conv_flux;
+				d(_C_, scvf.to()  ) -= conv_flux;
+			}
+			
+		*/	
+			// In Sw equation
+			if(m_imDiffusion_Sw.data_given() && !m_imModifiedSaturationW.data_given())
+			{
+			//	to compute D \nabla c
+				MathVector<dim> Dgrad_c, grad_c;
+
+			// 	compute gradient and shape at ip
+				VecSet(grad_c, 0.0);
+				for(size_t sh = 0; sh < scvf.num_sh(); ++sh)
+					VecScaleAppend(grad_c, u_modified[sh], scvf.global_grad(sh));
+				
+				number s_integ = 0.0;
+				for (size_t i = 0; i < scvf.num_sh(); ++i)
+				{
+					s_integ += u_modified[i]*scvf.shape(i);
+				}
+				
+				MathMatrix<dim,dim> Real_Diffusion_Sw;
+				if (m_imPermeability.data_given())
+				{
+					if (m_imEntryPressure.data_given())
+						MatScale(Real_Diffusion_Sw, Diffusion_S(iFormulationIndex, s_integ, m_imResidualAqueous[0], m_imResidualCarbonic[0], m_imBrooksCoreyNumber[0], m_imPermeability[0], m_imPorosity[0], m_imEntryPressure[0])
+, m_imDiffusion_Sw[ip]);
+					else
+						MatScale(Real_Diffusion_Sw, Diffusion_S(iFormulationIndex, s_integ, m_imResidualAqueous[0], m_imResidualCarbonic[0], m_imBrooksCoreyNumber[0], m_imPermeability[0], m_imPorosity[0])
+, m_imDiffusion_Sw[ip]);
+				}
+				else
+					MatScale(Real_Diffusion_Sw, 1, m_imDiffusion_Sw[ip]);
+			//	scale by diffusion tensor
+				MatVecMult(Dgrad_c, Real_Diffusion_Sw, grad_c);
+
+			//Shuai debug
+			//	if (iFormulationIndex == 2)
+			//		VecSet(Dgrad_c, 0.0);
+			//debug end
+
+
+			// 	Compute flux
+				const number diff_flux_Sw = VecDot(Dgrad_c, scvf.normal());
+				
+			// 	Add to local defect
+				d(_C_, scvf.from()) -= diff_flux_Sw;
+				d(_C_, scvf.to()  ) += diff_flux_Sw;
 			}
 
 		/////////////////////////////////////////////////////
 		// Convective Term
 		/////////////////////////////////////////////////////
-			if(m_imVelocity.data_given())
+			if(m_imVelocity.data_given() && m_imModifiedSaturationW.data_given())
 			{
 			//	sum up convective flux using convection shapes
 				number conv_flux = 0.0;
 				for(size_t sh = 0; sh < convShape.num_sh(); ++sh)
 				{
+					//conv_flux += krw( m_imSaturationW[sh] ) * u_modified[sh] * convShape(ip, sh);
 					conv_flux += u_modified[sh] * convShape(ip, sh);
-
 				}
 					
 
@@ -975,6 +1510,8 @@ add_def_A_elem(LocalVector& d, const LocalVector& u, GridObject* elem, const Mat
 				
 			//	sum up convective flux using convection shapes
 				number conv_flux = 0.0;
+				bool saturated = false;
+				
 				for(size_t sh = 0; sh < convShape.num_sh(); ++sh)
 				{
 					/*//For Extended Buckley Leverett
@@ -987,10 +1524,93 @@ add_def_A_elem(LocalVector& d, const LocalVector& u, GridObject* elem, const Mat
 					}
 					*/
 					
-					conv_flux += krw( u_modified[sh] ) * convShape(ip, sh);
+					///*
+					//Shuai debug
+					size_t xx = ((TElem*) elem)->vertex(sh)->grid_data_index();
+					// find node
+					//if ( u(_C_, sh)>0.65 &&  m_imEntryPressure[sh]>200)
+					//{
+					//	int sss;
+					//	sss=xx;
+					//}
+					if ( u(_C_, sh)>0.755 && xx==saturated_Node )
+					//if ( (u(_C_, sh)>0.69) && (m_imEntryPressure[0]>1999) )
+					{
+						saturated = true;
+						//saturated_Node = xx;
+						//UG_LOG("BadNode"<<saturated_Node);
+					}
+						//UG_THROW("DataImport::set_roid: Setting unknown ReferenceObjectId.");
+						//
+					//UG_ASSERT( u(_C_, sh)<0.01 || m_imEntryPressure[0]<9, "BadNode "<<xx<<' '<<u(_C_, sh)<<' '<<m_imEntryPressure[0]);
 						
-				}
 					
+						
+					/*
+					if ( u(_C_, sh)>0.999 || xx==saturated_Node )//For each ip, find the saturated node
+					{ 	
+						//check the node is related to the subcontrol faces(from or to)
+						//the upwind node must be from or to
+						// 1. avoid inflow to the (downwind && saturated) node
+						// 2. avoid outflow from the (upwind && saturated) node
+						
+						if (saturated_Node==-1)
+						{
+							saturated_Node = xx;
+						}
+						if ( ( (sh==scvf.from()) || (sh==scvf.to()) ) && (xx==saturated_Node) )
+						{
+								saturated = true;
+						}
+						
+						
+						//the saturated node is inside the subcontrolvolume //flow in, the upwind node is scvf.to()
+						if ( ( sh==scvf.from() ) && ( convShape(ip, scvf.to())<0 ) ) 
+						{
+								saturated = true;
+						}
+						//the saturated node is outside the subcontrolvolume //flow out, the upwind node is scvf.from()
+						else if ( ( sh==scvf.to() ) && ( convShape(ip, scvf.from())>0 ) )
+						{
+							saturated = true;
+						}
+						
+					}
+					//Shuai debug end
+					*/
+					
+					if (iFormulationIndex == 1)
+						conv_flux += krw( u(_C_, sh), m_imMinSwr[sh], m_imMinLambda[sh] ) * convShape(ip, sh);
+					else if (iFormulationIndex == 2)
+						conv_flux += krn( 1-u_modified[sh], m_imResidualCarbonic[0], m_imBrooksCoreyNumber[0] ) * convShape(ip, sh);
+
+	
+				}
+				///*
+				if (saturated){
+					
+					size_t node_from = ((TElem*) elem)->vertex(scvf.from())->grid_data_index();
+					size_t node_to = ((TElem*) elem)->vertex(scvf.to())->grid_data_index();
+					size_t ele_index = elem->grid_data_index();
+					UG_LOGN("             "<<"at Ip# "<<ip<<" "<<"Normal: node# "<<node_from<<"--> node# "<<node_to);
+					
+					double Sum_convShape=0.0;
+					size_t upwind_node=scvf.from();
+					for (size_t i=0; i<convShape.num_sh(); i++)
+					{
+						Sum_convShape += convShape(ip, i);
+						if (fabs(convShape(ip, i))>0.000000000001)
+							upwind_node = i;
+					}
+					Sum_convShape = (fabs(Sum_convShape)>0)? Sum_convShape : 1;
+					size_t node_upwind = ((TElem*) elem)->vertex(upwind_node)->grid_data_index();
+					
+					UG_LOGN("  Flux of Sn-Eq. : "<<conv_flux<<"  krn : "<<conv_flux/Sum_convShape<<"   Modified_Sn : "<<u_modified[upwind_node]<<"   Sn : "<<u(_C_, upwind_node)<<"       Upwind_node : "<<node_upwind<<'\n');
+
+					//conv_flux =0;
+				}
+				//*/
+				
 			//  add to local defect
 				d(_C_, scvf.from()) += conv_flux;
 				d(_C_, scvf.to()  ) -= conv_flux;
@@ -998,10 +1618,13 @@ add_def_A_elem(LocalVector& d, const LocalVector& u, GridObject* elem, const Mat
 
 
 		//Flux Term - krn(sW)*DarcyN
-			if(m_imDarcyN.data_given() && m_imSaturationW.data_given())
+			if(m_imDarcyN.data_given() && m_imModifiedSaturationW.data_given())
 			{
 			//	sum up convective flux using convection shapes
 				number conv_flux = 0.0;
+				
+				bool saturated = false;
+				
 				for(size_t sh = 0; sh < convShape.num_sh(); ++sh)
 				{
 					/*//For Extended Buckley Leverett
@@ -1014,10 +1637,114 @@ add_def_A_elem(LocalVector& d, const LocalVector& u, GridObject* elem, const Mat
 					}
 					*/
 					
-					// Nothing to change, since m_imSaturationW is modified before import
-					conv_flux += krn( m_imSaturationW[sh] ) * convShape(ip, sh);
+					///*
+					//Shuai debug
+					size_t xx = ((TElem*) elem)->vertex(sh)->grid_data_index();
 					
+					if ( (1-m_imSaturationW[sh])>0.755 && xx==saturated_Node )
+					//if ( (1-m_imSaturationW[sh])>0.65 && m_imEntryPressure[0]>99999 )
+						saturated = true;
+					/*
+					if ( (1-m_imUpwindModifiedSaturationW[sh])>0.999 || xx==saturated_Node )//For each ip, find the saturated node
+					{ 	
+						//check the node is related to the subcontrol faces(from or to)
+						//the upwind node must be from or to
+						// 1. avoid inflow to the (downwind && saturated) node
+						// 2. avoid outflow from the (upwind && saturated) node
+						if (saturated_Node==-1)
+						{
+							saturated_Node = xx;
+						}
+						if ( ( (sh==scvf.from()) || (sh==scvf.to()) ) && (xx==saturated_Node) )
+						{
+								saturated = true;
+						}
+					*/	
+					/*
+						//the saturated node is inside the subcontrolvolume //flow in, the upwind node is scvf.to()
+						if ( ( sh==scvf.from() ) && ( convShape(ip, scvf.to())<0 ) ) 
+						{
+								saturated = true;
+						}
+						//the saturated node is outside the subcontrolvolume //flow out, the upwind node is scvf.from()
+						else if ( ( sh==scvf.to() ) && ( convShape(ip, scvf.from())>0 ) )
+						{
+							saturated = true;
+						}
+						
+					}
+					*/
+					
+					
+					// Nothing to change, since m_imSaturationW is modified before import
+					
+					//Shuai debug
+					/*
+					if (iFormulationIndex == 1)
+						conv_flux += krn( m_imUpwindModifiedSaturationW[sh], m_imResidualCarbonic[0], m_imBrooksCoreyNumber[0] ) * convShape(ip, sh);
+					else if (iFormulationIndex == 2)
+						conv_flux += krw( m_imUpwindModifiedSaturationW[sh], m_imResidualAqueous[0], m_imBrooksCoreyNumber[0] ) * convShape(ip, sh);
+					*/
+					
+					if (iFormulationIndex == 1)
+						conv_flux += krn( m_imModifiedSaturationW[sh], m_imResidualCarbonic[0], m_imBrooksCoreyNumber[0] ) * convShape(ip, sh);
+					else if (iFormulationIndex == 2)
+						conv_flux += krw( m_imSaturationW[sh], m_imMinSwr[sh], m_imMinLambda[sh] ) * convShape(ip, sh);
+						//conv_flux += krw( m_imUpwindSaturationW[sh], m_imResidualAqueous[0], m_imBrooksCoreyNumber[0] ) * convShape(ip, sh);
+					//Shuai debug end 
+					
+					
+					
+					//conv_flux += krn( m_imSaturationW[sh] ) * convShape(ip, sh);
+					
+					/*
+					//Shuai debug
+					if ( (1-m_imSaturationW[sh])>0.999 )//For each ip, find the saturated node
+					{ 	
+						//check the node is related to the subcontrol faces(from or to)
+						//the upwind node must be from or to
+						// 1. avoid inflow to the (downwind && saturated) node
+						// 2. avoid outflow from the (upwind && saturated) node
+						
+						//the saturated node is inside the subcontrolvolume //flow in, the upwind node is scvf.to()
+						if ( ( sh==scvf.from() ) && ( convShape(ip, scvf.to())<pow(10,-10) ) ) 
+						{
+								conv_flux = 0;
+						}
+						//the saturated node is outside the subcontrolvolume //flow out, the upwind node is scvf.from()
+						else if ( ( sh==scvf.to() ) && ( convShape(ip, scvf.from())>-pow(10,-10) ) )
+						{
+								conv_flux = 0;	
+						}
+					}
+					//Shuai debug end
+					*/
 				}
+				
+				///*
+				if (saturated){
+					
+					size_t node_from = ((TElem*) elem)->vertex(scvf.from())->grid_data_index();
+					size_t node_to = ((TElem*) elem)->vertex(scvf.to())->grid_data_index();
+					size_t ele_index = elem->grid_data_index();
+					UG_LOGN("             "<<"at Ip# "<<ip<<" "<<"Normal: node# "<<node_from<<"--> node# "<<node_to);
+					
+					double Sum_convShape=0.0;
+					size_t upwind_node=scvf.from();
+					for (size_t i=0; i<convShape.num_sh(); i++)
+					{
+						Sum_convShape += convShape(ip, i);
+						if (fabs(convShape(ip, i))>0.000000000001)
+							upwind_node = i;
+					}
+					Sum_convShape = (fabs(Sum_convShape)>0)? Sum_convShape : 1;
+					
+					size_t node_upwind = ((TElem*) elem)->vertex(upwind_node)->grid_data_index();
+					UG_LOGN("  Flux of Pw-Eq. : "<<conv_flux<<"  krw : "<<conv_flux/Sum_convShape<<"   UpwindModified_Sn : "<<1-m_imModifiedSaturationW[upwind_node]<<"   UpwindSn : "<<1-m_imSaturationW[upwind_node]<<"       Upwind_node : "<<node_upwind<<"     Swr_upwindnode : "<<m_imMinSwr[upwind_node]<<"     Swr_ele : "<<m_imResidualAqueous[0]<<'\n');
+
+					//conv_flux =0;
+				}	
+				//*/
 					
 				//  add to local defect
 				d(_C_, scvf.from()) += conv_flux;
@@ -1145,7 +1872,10 @@ add_def_A_expl_elem(LocalVector& d, const LocalVector& u, GridObject* elem, cons
 		//	Consider capillary trapping	or not
 			number u_modified;
 			if ( m_imPermeability.data_given() && m_imMinPd.data_given() ){
-				u_modified = Modify_sw(u(_C_, co), m_imMinPd[co], m_imPermeability[co], m_imPorosity[co]);
+				if (m_imEntryPressure.data_given())
+					u_modified = Modify_s(iFormulationIndex, u(_C_, co), m_imResidualAqueous[co], m_imResidualCarbonic[co], m_imBrooksCoreyNumber[co], m_imMinPd[co], m_imMinSwr[co], m_imMinSnr[co], m_imMinLambda[co], m_imEntryPressure[co]);
+				else
+					u_modified = Modify_s(iFormulationIndex, u(_C_, co), m_imResidualAqueous[co], m_imResidualCarbonic[co], m_imBrooksCoreyNumber[co], m_imMinPd[co], m_imMinSwr[co], m_imMinSnr[co], m_imMinLambda[co], m_imPermeability[co], m_imPorosity[co]);
 			}
 			else{
 				u_modified = u(_C_, co);
@@ -1212,7 +1942,10 @@ add_def_M_elem(LocalVector& d, const LocalVector& u, GridObject* elem, const Mat
 	//	Consider capillary trapping	or not
 		number u_modified;
 		if ( m_imPermeability.data_given() && m_imMinPd.data_given() ){
-			u_modified = Modify_sw(u(_C_, co), m_imMinPd[co], m_imPermeability[co], m_imPorosity[co]);
+			if (m_imEntryPressure.data_given())
+				u_modified = Modify_s(iFormulationIndex, u(_C_, co), m_imResidualAqueous[co], m_imResidualCarbonic[co], m_imBrooksCoreyNumber[co], m_imMinPd[co], m_imMinSwr[co], m_imMinSnr[co], m_imMinLambda[co], m_imEntryPressure[co]);
+			else
+				u_modified = Modify_s(iFormulationIndex, u(_C_, co), m_imResidualAqueous[co], m_imResidualCarbonic[co], m_imBrooksCoreyNumber[co], m_imMinPd[co], m_imMinSwr[co], m_imMinSnr[co], m_imMinLambda[co], m_imPermeability[co], m_imPorosity[co]);	
 		}
 		else{
 			u_modified = u(_C_, co);
@@ -1224,6 +1957,42 @@ add_def_M_elem(LocalVector& d, const LocalVector& u, GridObject* elem, const Mat
 	//	multiply by scaling
 		if(m_imMassScale.data_given())
 			val += m_imMassScale[ip] * u_modified;
+		
+		/*
+		
+		bool saturated = false;		
+								
+		size_t xx = ((TElem*) elem)->vertex(ip)->grid_data_index();
+		
+		if ( ( m_imUpwindModifiedSaturationW.data_given() && (1-m_imUpwindModifiedSaturationW[ip])>0.999 ) || xx==saturated_Node )//For each ip, find the saturated node
+		{ 	
+			//check the node is related to the subcontrol faces(from or to)
+			//the upwind node must be from or to
+			// 1. avoid inflow to the (downwind && saturated) node
+			// 2. avoid outflow from the (upwind && saturated) node
+			if (saturated_Node==-1)
+			{
+				saturated_Node = xx;
+			}			
+			
+			if (xx==saturated_Node)
+			{
+				saturated = true;
+			}
+
+		}
+		
+		
+		if (saturated && m_imMass.data_given()){
+			size_t node = ((TElem*) elem)->vertex(ip)->grid_data_index();
+			size_t ele_index = elem->grid_data_index();
+			UG_LOGN("In ele# "<<ele_index<<"  "<<"at node# "<<node);
+			UG_LOGN("  Mass of Pw-Eq. : "<<m_imMass[ip]<<"   UpwindModified_Sn = "<<1-m_imUpwindModifiedSaturationW[ip]<<"   UpwindSn = "<<1-m_imUpwindSaturationW[ip]<<'\n');
+			//conv_flux =0;
+		}
+		
+		*/
+		
 
 	//	add mass
 		if(m_imMass.data_given())
@@ -1273,479 +2042,6 @@ add_rhs_elem(LocalVector& d, GridObject* elem, const MathVector<dim> vCornerCoor
 }
 
 
-// ////////////////////////////////
-//   error estimation (begin)   ///
-
-//	prepares the loop over all elements of one type for the computation of the error estimator
-template<typename TDomain>
-template<typename TElem, typename TFVGeom>
-void ConvectionDiffusionMP<TDomain>::
-prep_err_est_elem_loop(const ReferenceObjectID roid, const int si)
-{
-	//	get the error estimator data object and check that it is of the right type
-	//	we check this at this point in order to be able to dispense with this check later on
-	//	(i.e. in prep_err_est_elem and compute_err_est_A_elem())
-	if (this->m_spErrEstData.get() == NULL)
-	{
-		UG_THROW("No ErrEstData object has been given to this ElemDisc!");
-	}
-
-	err_est_type* err_est_data = dynamic_cast<err_est_type*>(this->m_spErrEstData.get());
-
-	if (!err_est_data)
-	{
-		UG_THROW("Dynamic cast to SideAndElemErrEstData failed."
-				<< std::endl << "Make sure you handed the correct type of ErrEstData to this discretization.");
-	}
-
-
-//	check that upwind has been set
-	if (m_spConvShape.invalid())
-		UG_THROW("ConvectionDiffusionMP::prep_err_est_elem_loop: "
-				 "Upwind has not been set.");
-
-//	set local positions
-	if (!TFVGeom::usesHangingNodes)
-	{
-		static const int refDim = TElem::dim;
-
-		// get local IPs
-		size_t numSideIPs, numElemIPs;
-		const MathVector<refDim>* sideIPs;
-		const MathVector<refDim>* elemIPs;
-		try
-		{
-			numSideIPs = err_est_data->num_all_side_ips(roid);
-			numElemIPs = err_est_data->num_elem_ips(roid);
-			sideIPs = err_est_data->template side_local_ips<refDim>(roid);
-			elemIPs = err_est_data->template elem_local_ips<refDim>(roid);
-
-			if (!sideIPs || !elemIPs) return;	// are NULL if TElem is not of the same dim as TDomain
-		}
-		UG_CATCH_THROW("Integration points for error estimator cannot be set.");
-
-		// set local IPs in imports
-		m_imDiffusion.template 		set_local_ips<refDim>(sideIPs, numSideIPs, false);
-		m_imVelocity.template 		set_local_ips<refDim>(sideIPs, numSideIPs, false);
-		
-		m_imDarcyW.template 		set_local_ips<refDim>(sideIPs, numSideIPs, false);
-		m_imDarcyN.template 		set_local_ips<refDim>(sideIPs, numSideIPs, false);
-		
-		m_imFlux.template 			set_local_ips<refDim>(sideIPs, numSideIPs, false);
-		m_imSource.template 		set_local_ips<refDim>(elemIPs, numElemIPs, false);
-		m_imVectorSource.template 	set_local_ips<refDim>(sideIPs, numSideIPs, false);
-		m_imReactionRate.template 	set_local_ips<refDim>(elemIPs, numElemIPs, false);
-		m_imReaction.template 		set_local_ips<refDim>(elemIPs, numElemIPs, false);
-		m_imMassScale.template 		set_local_ips<refDim>(elemIPs, numElemIPs, false);
-		m_imMass.template 			set_local_ips<refDim>(elemIPs, numElemIPs, false);
-
-		//	init upwind for element type
-		TFVGeom& geo = GeomProvider<TFVGeom>::get();
-		if (!m_spConvShape->template set_geometry_type<TFVGeom>(geo))
-			UG_THROW("ConvectionDiffusionMP::prep_err_est_elem_loop: "
-					 "Cannot init upwind for element type.");
-
-		// store values of shape functions in local IPs
-		LagrangeP1<typename reference_element_traits<TElem>::reference_element_type> trialSpace
-					= Provider<LagrangeP1<typename reference_element_traits<TElem>::reference_element_type> >::get();
-
-		m_shapeValues.resize(numElemIPs, numSideIPs, trialSpace.num_sh());
-		for (size_t ip = 0; ip < numElemIPs; ip++)
-			trialSpace.shapes(m_shapeValues.shapesAtElemIP(ip), elemIPs[ip]);
-		for (size_t ip = 0; ip < numSideIPs; ip++)
-			trialSpace.shapes(m_shapeValues.shapesAtSideIP(ip), sideIPs[ip]);
-	}
-}
-
-template<typename TDomain>
-template<typename TElem, typename TFVGeom>
-void ConvectionDiffusionMP<TDomain>::
-prep_err_est_elem(const LocalVector& u, GridObject* elem, const MathVector<dim> vCornerCoords[])
-{
-	err_est_type* err_est_data = dynamic_cast<err_est_type*>(this->m_spErrEstData.get());
-
-// 	update geometry for this element
-	static TFVGeom& geo = GeomProvider<TFVGeom>::get();
-	try
-	{
-		geo.update(elem, vCornerCoords, &(this->subset_handler()));
-	}
-	UG_CATCH_THROW("ConvectionDiffusionMP::prep_err_est_elem: Cannot update Finite Volume Geometry.");
-
-//	roid
-	ReferenceObjectID roid = elem->reference_object_id();
-
-//	set local positions
-	if (TFVGeom::usesHangingNodes)
-	{
-		static const int refDim = TElem::dim;
-
-		size_t numSideIPs, numElemIPs;
-		const MathVector<refDim>* sideIPs;
-		const MathVector<refDim>* elemIPs;
-		try
-		{
-			numSideIPs = err_est_data->num_all_side_ips(roid);
-			numElemIPs = err_est_data->num_elem_ips(roid);
-			sideIPs = err_est_data->template side_local_ips<refDim>(roid);
-			elemIPs = err_est_data->template elem_local_ips<refDim>(roid);
-
-			if (!sideIPs || !elemIPs) return;	// are NULL if TElem is not of the same dim as TDomain
-		}
-		UG_CATCH_THROW("Integration points for error estimator cannot be set.");
-
-		m_imDiffusion.template 		set_local_ips<refDim>(sideIPs, numSideIPs);
-		m_imVelocity.template 		set_local_ips<refDim>(sideIPs, numSideIPs);
-		
-		m_imDarcyW.template 		set_local_ips<refDim>(sideIPs, numSideIPs);
-		m_imDarcyN.template 		set_local_ips<refDim>(sideIPs, numSideIPs);
-		
-		m_imFlux.template 			set_local_ips<refDim>(sideIPs, numSideIPs);
-		m_imSource.template 		set_local_ips<refDim>(elemIPs, numElemIPs);
-		m_imVectorSource.template 	set_local_ips<refDim>(sideIPs, numSideIPs);
-		m_imReactionRate.template 	set_local_ips<refDim>(elemIPs, numElemIPs);
-		m_imReaction.template 		set_local_ips<refDim>(elemIPs, numElemIPs);
-		m_imMassScale.template 		set_local_ips<refDim>(elemIPs, numElemIPs);
-		m_imMass.template 			set_local_ips<refDim>(elemIPs, numElemIPs);
-
-		//	init upwind for element type
-		TFVGeom& geo = GeomProvider<TFVGeom>::get();
-		if (!m_spConvShape->template set_geometry_type<TFVGeom>(geo))
-			UG_THROW("ConvectionDiffusionMP::prep_err_est_elem_loop: "
-					 "Cannot init upwind for element type.");
-
-		// store values of shape functions in local IPs
-		LagrangeP1<typename reference_element_traits<TElem>::reference_element_type> trialSpace
-					= Provider<LagrangeP1<typename reference_element_traits<TElem>::reference_element_type> >::get();
-
-		m_shapeValues.resize(numElemIPs, numSideIPs, trialSpace.num_sh());
-		for (size_t ip = 0; ip < numElemIPs; ip++)
-			trialSpace.shapes(m_shapeValues.shapesAtElemIP(ip), elemIPs[ip]);
-		for (size_t ip = 0; ip < numSideIPs; ip++)
-			trialSpace.shapes(m_shapeValues.shapesAtSideIP(ip), sideIPs[ip]);
-	}
-
-//	set global positions
-	size_t numSideIPs, numElemIPs;
-	const MathVector<dim>* sideIPs;
-	const MathVector<dim>* elemIPs;
-
-	try
-	{
-		numSideIPs = err_est_data->num_all_side_ips(roid);
-		numElemIPs = err_est_data->num_elem_ips(roid);
-
-		sideIPs = err_est_data->all_side_global_ips(elem, vCornerCoords);
-		elemIPs = err_est_data->elem_global_ips(elem, vCornerCoords);
-	}
-	UG_CATCH_THROW("Global integration points for error estimator cannot be set.");
-
-	m_imDiffusion.			set_global_ips(&sideIPs[0], numSideIPs);
-	m_imVelocity.			set_global_ips(&sideIPs[0], numSideIPs);
-	
-	m_imDarcyW.				set_global_ips(&sideIPs[0], numSideIPs);
-	m_imDarcyN.				set_global_ips(&sideIPs[0], numSideIPs);
-	
-	m_imFlux.				set_global_ips(&sideIPs[0], numSideIPs);
-	m_imSource.				set_global_ips(&elemIPs[0], numElemIPs);
-	m_imVectorSource.		set_global_ips(&sideIPs[0], numSideIPs);
-	m_imReactionRate.		set_global_ips(&elemIPs[0], numElemIPs);
-	m_imReaction.			set_global_ips(&elemIPs[0], numElemIPs);
-	m_imMassScale.			set_global_ips(&elemIPs[0], numElemIPs);
-	m_imMass.				set_global_ips(&elemIPs[0], numElemIPs);
-}
-
-//	computes the error estimator contribution (stiffness part) for one element
-template<typename TDomain>
-template<typename TElem, typename TFVGeom>
-void ConvectionDiffusionMP<TDomain>::
-compute_err_est_A_elem(const LocalVector& u, GridObject* elem, const MathVector<dim> vCornerCoords[], const number& scale)
-{
-	typedef typename reference_element_traits<TElem>::reference_element_type ref_elem_type;
-
-	err_est_type* err_est_data = dynamic_cast<err_est_type*>(this->m_spErrEstData.get());
-
-	if (err_est_data->surface_view().get() == NULL) {UG_THROW("Error estimator has NULL surface view.");}
-	MultiGrid* pErrEstGrid = (MultiGrid*) (err_est_data->surface_view()->subset_handler()->multi_grid());
-
-//	request geometry
-	static const TFVGeom& geo = GeomProvider<TFVGeom>::get();
-
-
-// SIDE TERMS //
-
-//	get the sides of the element
-	//	We have to cast elem to a pointer of type SideAndElemErrEstData::elem_type
-	//	for the SideAndElemErrEstData::operator() to work properly.
-	//	This cannot generally be achieved by casting to TElem*, since this method is also registered for
-	//	lower-dimensional types TElem, and must therefore be compilable, even if it is never EVER to be executed.
-	//	The way we achieve this here, is by calling associated_elements_sorted() which has an implementation for
-	//	all possible types. Whatever comes out of it is of course complete nonsense if (and only if)
-	//	SideAndElemErrEstData::elem_type != TElem. To be on the safe side, we throw an error if the number of
-	//	entries in the list is not as it should be.
-
-	typename MultiGrid::traits<typename SideAndElemErrEstData<TDomain>::side_type>::secure_container side_list;
-	pErrEstGrid->associated_elements_sorted(side_list, (TElem*) elem);
-	if (side_list.size() != (size_t) ref_elem_type::numSides)
-		UG_THROW ("Mismatch of numbers of sides in 'ConvectionDiffusionMP::compute_err_est_elem'");
-
-// 	some help variables
-	MathVector<dim> fluxDensity, gradC, normal;
-
-	// FIXME: The computation of the gradient has to be reworked.
-	// In the case of P1 shape functions, it is valid. For Q1 shape functions, however,
-	// the gradient is not constant (but bilinear) on the element - and along the sides.
-	// We cannot use the FVGeom here. Instead, we need to calculate the gradient in each IP!
-
-	// calculate grad u (take grad from first scvf ip (grad u is constant on the entire element))
-/*	if (geo.num_scvf() < 1) {UG_THROW("Element has no SCVFs!");}
-	const typename TFVGeom::SCVF& scvf = geo.scvf(0);
-
-	VecSet(gradC, 0.0);
-	for (size_t j=0; j<m_shapeValues.num_sh(); j++)
-		VecScaleAppend(gradC, u(_C_,j), scvf.global_grad(j));*/
-
-	// calculate grad u as average (over scvf)
-	VecSet(gradC, 0.0);
-	for(size_t ii = 0; ii < geo.num_scvf(); ++ii)
-	{
-		const typename TFVGeom::SCVF& scvf = geo.scvf(ii);
-		for (size_t j=0; j<m_shapeValues.num_sh(); j++)
-				VecScaleAppend(gradC, u(_C_,j), scvf.global_grad(j));
-	}
-	VecScale(gradC, gradC, (1.0/geo.num_scvf()));
-
-	/*VecSet(gradC, 0.0);
-	for(size_t ii = 0; ii < geo.num_scv(); ++ii)
-	{
-		const typename TFVGeom::SCV& scv = geo.scv(ii);
-			for (size_t j=0; j<m_shapeValues.num_sh(); j++)
-					VecScaleAppend(gradC, u(_C_,j), scv.global_grad(j));
-	}
-	VecScale(gradC, gradC, (1.0/geo.num_scvf()));
-*/
-
-// calculate flux through the sides
-	size_t passedIPs = 0;
-	for (size_t side=0; side < (size_t) ref_elem_type::numSides; side++)
-	{
-		// normal on side
-		SideNormal<ref_elem_type,dim>(normal, side, vCornerCoords);
-		VecNormalize(normal, normal);
-
-		try
-		{
-			for (size_t sip = 0; sip < err_est_data->num_side_ips(side_list[side]); sip++)
-			{
-				size_t ip = passedIPs + sip;
-
-				VecSet(fluxDensity, 0.0);
-
-			// diffusion //
-				if (m_imDiffusion.data_given())
-					MatVecScaleMultAppend(fluxDensity, -1.0, m_imDiffusion[ip], gradC);
-
-			// convection //
-				if (m_imVelocity.data_given())
-				{
-					number val = 0.0;
-					for (size_t sh = 0; sh < m_shapeValues.num_sh(); sh++)
-						val += u(_C_,sh) * m_shapeValues.shapeAtSideIP(sh,sip);
-
-					VecScaleAppend(fluxDensity, val, m_imVelocity[ip]);
-				}
-
-			// general flux //
-				if (m_imFlux.data_given())
-					VecAppend(fluxDensity, m_imFlux[ip]);
-
-				(*err_est_data)(side_list[side],sip) += scale * VecDot(fluxDensity, normal);
-			}
-
-			passedIPs += err_est_data->num_side_ips(side_list[side]);
-		}
-		UG_CATCH_THROW("Values for the error estimator could not be assembled at every IP." << std::endl
-				<< "Maybe wrong type of ErrEstData object? This implementation needs: SideAndElemErrEstData.");
-	}
-
-// VOLUME TERMS //
-
-	typename MultiGrid::traits<typename SideAndElemErrEstData<TDomain>::elem_type>::secure_container elem_list;
-	pErrEstGrid->associated_elements_sorted(elem_list, (TElem*) elem);
-	if (elem_list.size() != 1)
-		UG_THROW ("Mismatch of numbers of sides in 'ConvectionDiffusionMP::compute_err_est_elem'");
-
-	try
-	{
-		for (size_t ip = 0; ip < err_est_data->num_elem_ips(elem->reference_object_id()); ip++)
-		{
-			number total = 0.0;
-
-		// diffusion //	TODO ONLY FOR (PIECEWISE) CONSTANT DIFFUSION TENSOR SO FAR!
-		// div(D*grad(c))
-		// nothing to do, as c is piecewise linear and div(D*grad(c)) disappears
-		// if D is diagonal and c bilinear, this should also vanish (confirm this!)
-
-		// convection // TODO ONLY FOR (PIECEWISE) CONSTANT OR DIVERGENCE-FREE
-					  //      VELOCITY FIELDS SO FAR!
-		// div(v*c) = div(v)*c + v*grad(c) -- gradC has been calculated above
-			if (m_imVelocity.data_given())
-				total += VecDot(m_imVelocity[ip], gradC);
-
-		// general flux // TODO ONLY FOR DIVERGENCE-FREE FLUX FIELD SO FAR!
-		// nothing to do
-
-		// reaction //
-			if (m_imReactionRate.data_given())
-			{
-				number val = 0.0;
-				for (size_t sh = 0; sh < geo.num_sh(); sh++)
-					val += u(_C_,sh) * m_shapeValues.shapeAtElemIP(sh,ip);
-
-				total += m_imReactionRate[ip] * val;
-			}
-
-			if (m_imReaction.data_given())
-			{
-				total += m_imReaction[ip];
-			}
-
-			(*err_est_data)(elem_list[0],ip) += scale * total;
-		}
-	}
-	UG_CATCH_THROW("Values for the error estimator could not be assembled at every IP." << std::endl
-			<< "Maybe wrong type of ErrEstData object? This implementation needs: SideAndElemErrEstData.");
-}
-
-//	computes the error estimator contribution (mass part) for one element
-template<typename TDomain>
-template<typename TElem, typename TFVGeom>
-void ConvectionDiffusionMP<TDomain>::
-compute_err_est_M_elem(const LocalVector& u, GridObject* elem, const MathVector<dim> vCornerCoords[], const number& scale)
-{
-// note: mass parts only enter volume term
-
-	err_est_type* err_est_data = dynamic_cast<err_est_type*>(this->m_spErrEstData.get());
-
-	if (err_est_data->surface_view().get() == NULL) {UG_THROW("Error estimator has NULL surface view.");}
-	MultiGrid* pErrEstGrid = (MultiGrid*) (err_est_data->surface_view()->subset_handler()->multi_grid());
-
-	typename MultiGrid::traits<typename SideAndElemErrEstData<TDomain>::elem_type>::secure_container elem_list;
-	pErrEstGrid->associated_elements_sorted(elem_list, (TElem*) elem);
-	if (elem_list.size() != 1)
-		UG_THROW ("Mismatch of numbers of sides in 'ConvectionDiffusionMP::compute_err_est_elem'");
-
-//	request geometry
-	static const TFVGeom& geo = GeomProvider<TFVGeom>::get();
-
-// 	loop integration points
-	try
-	{
-		for (size_t ip = 0; ip < err_est_data->num_elem_ips(elem->reference_object_id()); ip++)
-		{
-			number total = 0.0;
-
-		// mass scale //
-			if (m_imMassScale.data_given())
-			{
-				number val = 0.0;
-				for (size_t sh = 0; sh < geo.num_sh(); sh++)
-					val += u(_C_,sh) * m_shapeValues.shapeAtElemIP(sh,ip);
-
-				total += m_imMassScale[ip] * val;
-			}
-
-		// mass //
-			if (m_imMass.data_given())
-			{
-				total += m_imMass[ip];
-			}
-
-			(*err_est_data)(elem_list[0],ip) += scale * total;
-		}
-	}
-	UG_CATCH_THROW("Values for the error estimator could not be assembled at every IP." << std::endl
-			<< "Maybe wrong type of ErrEstData object? This implementation needs: SideAndElemErrEstData.");
-}
-
-//	computes the error estimator contribution (rhs part) for one element
-template<typename TDomain>
-template<typename TElem, typename TFVGeom>
-void ConvectionDiffusionMP<TDomain>::
-compute_err_est_rhs_elem(GridObject* elem, const MathVector<dim> vCornerCoords[], const number& scale)
-{
-	typedef typename reference_element_traits<TElem>::reference_element_type ref_elem_type;
-
-	err_est_type* err_est_data = dynamic_cast<err_est_type*>(this->m_spErrEstData.get());
-
-	if (err_est_data->surface_view().get() == NULL) {UG_THROW("Error estimator has NULL surface view.");}
-	MultiGrid* pErrEstGrid = (MultiGrid*) (err_est_data->surface_view()->subset_handler()->multi_grid());
-
-// SIDE TERMS //
-
-//	get the sides of the element
-	typename MultiGrid::traits<typename SideAndElemErrEstData<TDomain>::side_type>::secure_container side_list;
-	pErrEstGrid->associated_elements_sorted(side_list, (TElem*) elem);
-	if (side_list.size() != (size_t) ref_elem_type::numSides)
-		UG_THROW ("Mismatch of numbers of sides in 'ConvectionDiffusionMP::compute_err_est_elem'");
-
-// loop sides
-	size_t passedIPs = 0;
-	for (size_t side = 0; side < (size_t) ref_elem_type::numSides; side++)
-	{
-		// normal on side
-		MathVector<dim> normal;
-		SideNormal<ref_elem_type,dim>(normal, side, vCornerCoords);
-		VecNormalize(normal, normal);
-
-		try
-		{
-			for (size_t sip = 0; sip < err_est_data->num_side_ips(side_list[side]); sip++)
-			{
-				size_t ip = passedIPs + sip;
-
-			// vector source //
-				if (m_imVectorSource.data_given())
-					(*err_est_data)(side_list[side],sip) += scale * VecDot(m_imVectorSource[ip], normal);
-			}
-
-			passedIPs += err_est_data->num_side_ips(side_list[side]);
-		}
-		UG_CATCH_THROW("Values for the error estimator could not be assembled at every IP." << std::endl
-				<< "Maybe wrong type of ErrEstData object? This implementation needs: SideAndElemErrEstData.");
-	}
-
-// VOLUME TERMS //
-
-	if (!m_imSource.data_given()) return;
-
-	typename MultiGrid::traits<typename SideAndElemErrEstData<TDomain>::elem_type>::secure_container elem_list;
-	pErrEstGrid->associated_elements_sorted(elem_list, (TElem*) elem);
-	if (elem_list.size() != 1)
-		UG_THROW ("Mismatch of numbers of sides in 'ConvectionDiffusionMP::compute_err_est_elem'");
-
-// source //
-	try
-	{
-		for (size_t ip = 0; ip < err_est_data->num_elem_ips(elem->reference_object_id()); ip++)
-			(*err_est_data)(elem_list[0],ip) += scale * m_imSource[ip];
-	}
-	UG_CATCH_THROW("Values for the error estimator could not be assembled at every IP." << std::endl
-			<< "Maybe wrong type of ErrEstData object? This implementation needs: SideAndElemErrEstData.");
-}
-
-//	postprocesses the loop over all elements of one type in the computation of the error estimator
-template<typename TDomain>
-template<typename TElem, typename TFVGeom>
-void ConvectionDiffusionMP<TDomain>::
-fsh_err_est_elem_loop()
-{
-//	finish the element loop in the same way as the actual discretization
-	this->template fsh_elem_loop<TElem, TFVGeom> ();
-};
-
-//    error estimation (end)     ///
-// /////////////////////////////////
 
 //	computes the linearized defect w.r.t to the velocity
 template<typename TDomain>
@@ -1763,9 +2059,13 @@ lin_def_velocity(const LocalVector& u,
 	
 	//	Consider capillary trapping	or not
 	number u_modified[convShape.num_sh()];
-	if ( m_imPermeability.data_given() && m_imMinPd.data_given() ){
-		for (size_t i = 0; i < convShape.num_sh(); ++i)
-			u_modified[i] = Modify_sw(u(_C_, i), m_imMinPd[i], m_imPermeability[i], m_imPorosity[i]);
+	if ( m_imPermeability.data_given() && m_imMinPd.data_given() && !m_imModifiedSaturationW.data_given() ){
+		if (m_imEntryPressure.data_given())
+			for (size_t i = 0; i < convShape.num_sh(); ++i)
+				u_modified[i] = Modify_s(iFormulationIndex, u(_C_, i), m_imResidualAqueous[i], m_imResidualCarbonic[i], m_imBrooksCoreyNumber[i], m_imMinPd[i], m_imMinSwr[i], m_imMinSnr[i], m_imMinLambda[i], m_imEntryPressure[i]);
+		else
+			for (size_t i = 0; i < convShape.num_sh(); ++i)
+				u_modified[i] = Modify_s(iFormulationIndex, u(_C_, i), m_imResidualAqueous[i], m_imResidualCarbonic[i], m_imBrooksCoreyNumber[i], m_imMinPd[i], m_imMinSwr[i], m_imMinSnr[i], m_imMinLambda[i], m_imPermeability[i], m_imPorosity[i]);
 	}
 	else{
 		for (size_t i = 0; i < convShape.num_sh(); ++i)
@@ -1788,8 +2088,9 @@ lin_def_velocity(const LocalVector& u,
 		MathVector<dim> linDefect;
 		VecSet(linDefect, 0.0);
 		for(size_t sh = 0; sh < scvf.num_sh(); ++sh)
+			//VecScaleAppend(linDefect, krw( m_imSaturationW[sh] ) * u_modified[sh], convShape.D_vel(ip, sh));
 			VecScaleAppend(linDefect, u_modified[sh], convShape.D_vel(ip, sh));
-
+			
 	//	add parts for both sides of scvf
 		vvvLinDef[ip][_C_][scvf.from()] += linDefect;
 		vvvLinDef[ip][_C_][scvf.to()] -= linDefect;
@@ -1813,8 +2114,12 @@ lin_def_darcyW(const LocalVector& u,
 	//	Consider capillary trapping	or not
 	number u_modified[convShape.num_sh()];
 	if ( m_imPermeability.data_given() && m_imMinPd.data_given() ){
-		for (size_t i = 0; i < convShape.num_sh(); ++i)
-			u_modified[i] = Modify_sw(u(_C_, i), m_imMinPd[i], m_imPermeability[i], m_imPorosity[i]);
+		if (m_imEntryPressure.data_given())
+			for (size_t i = 0; i < convShape.num_sh(); ++i)
+				u_modified[i] = Modify_s(iFormulationIndex, u(_C_, i), m_imResidualAqueous[i], m_imResidualCarbonic[i], m_imBrooksCoreyNumber[i], m_imMinPd[i], m_imMinSwr[i], m_imMinSnr[i], m_imMinLambda[i], m_imEntryPressure[i]);
+		else
+			for (size_t i = 0; i < convShape.num_sh(); ++i)
+				u_modified[i] = Modify_s(iFormulationIndex, u(_C_, i), m_imResidualAqueous[i], m_imResidualCarbonic[i], m_imBrooksCoreyNumber[i], m_imMinPd[i], m_imMinSwr[i], m_imMinSnr[i], m_imMinLambda[i], m_imPermeability[i], m_imPorosity[i]);
 	}
 	else{
 		for (size_t i = 0; i < convShape.num_sh(); ++i)
@@ -1837,9 +2142,10 @@ lin_def_darcyW(const LocalVector& u,
 		MathVector<dim> linDefect;
 		VecSet(linDefect, 0.0);
 		
+		//bool saturated = false;
 		for(size_t sh = 0; sh < scvf.num_sh(); ++sh)
 		{
-			VecScaleAppend(linDefect, krw( u_modified[sh] ), convShape.D_vel(ip, sh));
+			
 		/*//For Extended Buckley Leverett
 		if (m_imPermeability.data_given())
 		{
@@ -1849,7 +2155,46 @@ lin_def_darcyW(const LocalVector& u,
 				VecScaleAppend(linDefect, krw2( u_modified[sh] ), convShape.D_vel(ip, sh));
 		}
 		*/
+		
+			/*		
+			//Shuai debug
+			if ( u_modified[sh]>0.999 )//For each ip, find the saturated node
+			{ 	
+				//check the node is related to the subcontrol faces(from or to)
+				//the upwind node must be from or to
+				// 1. avoid inflow to the (downwind && saturated) node
+				// 2. avoid outflow from the (upwind && saturated) node
+						
+				//the saturated node is inside the subcontrolvolume //flow in, the upwind node is scvf.to()
+				if ( ( sh==scvf.from() ) && ( convShape(ip, scvf.to())<0 ) ) 
+				{
+					saturated = true;
+					//continue;
+				}
+				//the saturated node is outside the subcontrolvolume //flow out, the upwind node is scvf.from()
+				else if ( ( sh==scvf.to() ) && ( convShape(ip, scvf.from())>0 ) )
+				{
+					saturated = true;
+					//continue;
+				}
+			}
+			//Shuai debug end
+			*/
+		
+			if (iFormulationIndex == 1)
+				VecScaleAppend(linDefect, krw( u(_C_, sh), m_imMinSwr[sh], m_imMinLambda[sh] ), convShape.D_vel(ip, sh));
+			else if (iFormulationIndex == 2)
+				VecScaleAppend(linDefect, krn( 1-u_modified[sh], m_imResidualCarbonic[0], m_imBrooksCoreyNumber[0] ), convShape.D_vel(ip, sh));
+						
+			//VecScaleAppend(linDefect, krw( u_modified[sh] ), convShape.D_vel(ip, sh));
+			
+			
 		}
+		/*
+		if (saturated){
+			VecSet(linDefect, 0.0);
+		}
+		*/
 		
 	//	add parts for both sides of scvf
 		vvvLinDef[ip][_C_][scvf.from()] += linDefect;
@@ -1889,7 +2234,35 @@ lin_def_darcyN(const LocalVector& u,
 		for(size_t sh = 0; sh < scvf.num_sh(); ++sh)
 		{
 			// 	m_imSaturationW is modified before import
-			VecScaleAppend(linDefect, krn( m_imSaturationW[sh] ), convShape.D_vel(ip, sh));
+			//Shuai debug
+			/*
+			if (iFormulationIndex == 1)
+				VecScaleAppend(linDefect, krn( m_imUpwindModifiedSaturationW[sh], m_imResidualCarbonic[0], m_imBrooksCoreyNumber[0] ), convShape.D_vel(ip, sh));
+			else if (iFormulationIndex == 2)
+				VecScaleAppend(linDefect, krw( m_imUpwindModifiedSaturationW[sh], m_imResidualAqueous[0], m_imBrooksCoreyNumber[0] ), convShape.D_vel(ip, sh));
+			*/
+			if (iFormulationIndex == 1)
+				VecScaleAppend(linDefect, krn( m_imModifiedSaturationW[sh], m_imResidualCarbonic[0], m_imBrooksCoreyNumber[0] ), convShape.D_vel(ip, sh));
+			else if (iFormulationIndex == 2)
+				VecScaleAppend(linDefect, krw( m_imSaturationW[sh], m_imMinSwr[sh], m_imMinLambda[sh] ), convShape.D_vel(ip, sh));
+				//VecScaleAppend(linDefect, krw( m_imUpwindSaturationW[sh], m_imResidualAqueous[0], m_imBrooksCoreyNumber[0] ), convShape.D_vel(ip, sh));
+			
+			/*
+			if (sh>0)
+			{
+				if ( abs(m_imMinSwr[sh]-m_imMinSwr[sh-1])>0.00000001 )
+				{
+					int xx;
+					xx = 0;
+					
+				}
+			}
+			*/
+			
+			//Shuai debug end
+			
+			
+			//VecScaleAppend(linDefect, krn(  ), convShape.D_vel(ip, sh));
 		
 		/*//For Extended Buckley Leverett
 		if (m_imPermeability.data_given())
@@ -1900,6 +2273,30 @@ lin_def_darcyN(const LocalVector& u,
 				VecScaleAppend(linDefect, krn2( m_imSaturationW[sh] ), convShape.D_vel(ip, sh));
 		}
 		*/
+		
+			/*
+			//Shuai debug
+			if ( (1-m_imSaturationW[sh])>0.999 )//For each ip, find the saturated node
+			{ 	
+				//check the node is related to the subcontrol faces(from or to)
+				//the upwind node must be from or to
+				// 1. avoid inflow to the (downwind && saturated) node
+				// 2. avoid outflow from the (upwind && saturated) node
+						
+				//the saturated node is inside the subcontrolvolume //flow in, the upwind node is scvf.to()
+				if ( ( sh==scvf.from() ) && ( convShape(ip, scvf.to())<pow(10,-10) ) ) 
+				{
+					VecSet(linDefect, 0.0);
+				}
+				//the saturated node is outside the subcontrolvolume //flow out, the upwind node is scvf.from()
+				else if ( ( sh==scvf.to() ) && ( convShape(ip, scvf.from())>-pow(10,-10) ) )
+				{
+					VecSet(linDefect, 0.0);
+				}
+			}
+			//Shuai debug end
+			*/
+			
 		}
 	//	add parts for both sides of scvf
 		vvvLinDef[ip][_C_][scvf.from()] += linDefect;
@@ -1926,8 +2323,12 @@ lin_def_diffusion(const LocalVector& u,
 	//	Consider capillary trapping	or not
 	number u_modified[convShape.num_sh()];
 	if ( m_imPermeability.data_given() && m_imMinPd.data_given() ){
-		for (size_t i = 0; i < convShape.num_sh(); ++i)
-			u_modified[i] = Modify_sw(u(_C_, i), m_imMinPd[i], m_imPermeability[i], m_imPorosity[i]);
+		if (m_imEntryPressure.data_given())
+			for (size_t i = 0; i < convShape.num_sh(); ++i)
+				u_modified[i] = Modify_s(iFormulationIndex, u(_C_, i), m_imResidualAqueous[i], m_imResidualCarbonic[i], m_imBrooksCoreyNumber[i], m_imMinPd[i], m_imMinSwr[i], m_imMinSnr[i], m_imMinLambda[i], m_imEntryPressure[i]);
+		else
+			for (size_t i = 0; i < convShape.num_sh(); ++i)
+				u_modified[i] = Modify_s(iFormulationIndex, u(_C_, i), m_imResidualAqueous[i], m_imResidualCarbonic[i], m_imBrooksCoreyNumber[i], m_imMinPd[i], m_imMinSwr[i], m_imMinSnr[i], m_imMinLambda[i], m_imPermeability[i], m_imPorosity[i]);
 	}
 	else{
 		for (size_t i = 0; i < convShape.num_sh(); ++i)
@@ -2021,7 +2422,10 @@ lin_def_reaction_rate(const LocalVector& u,
 	//	Consider capillary trapping	or not
 		number u_modified;
 		if ( m_imPermeability.data_given() && m_imMinPd.data_given() ){
-			u_modified = Modify_sw(u(_C_, co), m_imMinPd[co], m_imPermeability[co], m_imPorosity[co]);
+			if (m_imEntryPressure.data_given())
+				u_modified = Modify_s(iFormulationIndex, u(_C_, co), m_imResidualAqueous[co], m_imResidualCarbonic[co], m_imBrooksCoreyNumber[co], m_imMinPd[co], m_imMinSwr[co], m_imMinSnr[co], m_imMinLambda[co], m_imEntryPressure[co]);
+			else
+				u_modified = Modify_s(iFormulationIndex, u(_C_, co), m_imResidualAqueous[co], m_imResidualCarbonic[co], m_imBrooksCoreyNumber[co], m_imMinPd[co], m_imMinSwr[co], m_imMinSnr[co], m_imMinLambda[co], m_imPermeability[co], m_imPorosity[co]);
 		}
 		else{
 			u_modified = u(_C_, co);
@@ -2124,8 +2528,12 @@ lin_def_mass_scale(const LocalVector& u,
 	
 	number u_modified[geo.num_scv()];
 	if ( m_imPermeability.data_given() && m_imMinPd.data_given() ){
-		for (size_t i = 0; i < geo.num_scv(); ++i)
-			u_modified[i] = Modify_sw(u(_C_, i), m_imMinPd[i], m_imPermeability[i], m_imPorosity[i]);
+		if (m_imEntryPressure.data_given())
+			for (size_t i = 0; i < geo.num_scv(); ++i)
+				u_modified[i] = Modify_s(iFormulationIndex, u(_C_, i), m_imResidualAqueous[i], m_imResidualCarbonic[i], m_imBrooksCoreyNumber[i], m_imMinPd[i], m_imMinSwr[i], m_imMinSnr[i], m_imMinLambda[i], m_imEntryPressure[i]);
+		else
+			for (size_t i = 0; i < geo.num_scv(); ++i)
+				u_modified[i] = Modify_s(iFormulationIndex, u(_C_, i), m_imResidualAqueous[i], m_imResidualCarbonic[i], m_imBrooksCoreyNumber[i], m_imMinPd[i], m_imMinSwr[i], m_imMinSnr[i], m_imMinLambda[i], m_imPermeability[i], m_imPorosity[i]);
 	}
 	else{
 		for (size_t i = 0; i < geo.num_scv(); ++i)
@@ -2171,6 +2579,344 @@ lin_def_mass(const LocalVector& u,
 	}
 }
 
+
+template<typename TDomain>
+template <typename TElem, typename TFVGeom>
+void ConvectionDiffusionMP<TDomain>::
+ex_upwind_modified_value(number vValue[],
+         const MathVector<dim> vGlobIP[],
+         number time, int si,
+         const LocalVector& u,
+         GridObject* elem,
+         const MathVector<dim> vCornerCoords[],
+         const MathVector<TFVGeom::dim> vLocIP[],
+         const size_t nip,
+         bool bDeriv,
+         std::vector<std::vector<number> > vvvDeriv[])
+{
+//  get finite volume geometry
+	static const TFVGeom& geo = GeomProvider<TFVGeom>::get();
+
+//	reference element
+	typedef typename reference_element_traits<TElem>::reference_element_type
+			ref_elem_type;
+
+//	number of shape functions
+	static const size_t numSH =	ref_elem_type::numCorners;
+	
+	//	get conv shapes
+	const IConvectionShapes<dim>& convShape = get_updated_conv_shapes(geo, false);
+	
+	// calculate modified sw
+	//	Consider capillary trapping	or not
+	number u_modified[numSH];
+	if ( m_imPermeability.data_given() && m_imMinPd.data_given() && (nip != 1) ){
+		if (m_imEntryPressure.data_given())
+			for (size_t i = 0; i < numSH; ++i)
+				u_modified[i] = Modify_s(iFormulationIndex, u(_C_, i), m_imResidualAqueous[i], m_imResidualCarbonic[i], m_imBrooksCoreyNumber[i], m_imMinPd[i], m_imMinSwr[i], m_imMinSnr[i], m_imMinLambda[i], m_imEntryPressure[i]);
+		else
+			for (size_t i = 0; i < numSH; ++i)
+				u_modified[i] = Modify_s(iFormulationIndex, u(_C_, i), m_imResidualAqueous[i], m_imResidualCarbonic[i], m_imBrooksCoreyNumber[i], m_imMinPd[i], m_imMinSwr[i], m_imMinSnr[i], m_imMinLambda[i], m_imPermeability[i], m_imPorosity[i]);
+	}
+	else{
+		for (size_t i = 0; i < numSH; ++i)
+			u_modified[i] = u(_C_, i);
+	}
+
+			
+	
+//	MP SCVF ip
+	if(vLocIP == geo.scvf_local_ips())
+	{
+	//	Loop Sub Control Volume Faces (SCVF)
+		for(size_t ip = 0; ip < geo.num_scvf(); ++ip)
+		{
+		// 	Get current SCVF
+			const typename TFVGeom::SCVF& scvf = geo.scvf(ip);
+		
+		//consider about it !!!!!!! it means the order of vValue is the order of geo.scvf(), the order of u is the order of shape function
+		//	compute upwind value at ip
+			vValue[ip] = 0.0;
+			number sum_convShape = 0.0;
+			for(size_t sh = 0; sh < scvf.num_sh(); ++sh)
+			{
+				vValue[ip] += u_modified[sh] * convShape(ip, sh);
+				//sum_convShape += fabs(convShape(ip, sh));
+				sum_convShape += convShape(ip, sh);
+			}
+			// Sw will be 0 when velocity is 0
+			//if (sum_convShape > pow(10,-12))
+			if (fabs(sum_convShape)>0)
+				vValue[ip] = vValue[ip]/sum_convShape;
+			else
+				vValue[ip] = u_modified[0];
+			/*
+			else
+			{
+				vValue[ip] = 0.0;
+				for(size_t sh = 0; sh < scvf.num_sh(); ++sh)
+				{
+					vValue[ip] += u_modified[sh] * scvf.shape(sh);
+				}
+			}	
+			*/
+		//	compute derivative w.r.t. to unknowns iff needed
+			if(bDeriv)
+			{
+				for(size_t sh = 0; sh < scvf.num_sh(); ++sh)
+					vvvDeriv[ip][_C_][sh] = scvf.shape(sh);
+
+				// do not forget that number of DoFs (== vvvDeriv[ip][_C_])
+				// might be > scvf.num_sh() in case of hanging nodes!
+				size_t ndof = vvvDeriv[ip][_C_].size();
+				for (size_t sh = scvf.num_sh(); sh < ndof; ++sh)
+					vvvDeriv[ip][_C_][sh] = 0.0;
+			}
+		}
+	}
+//	MP SCV ip
+	else if(vLocIP == geo.scv_local_ips())
+	{
+	//	Loop Sub Control Volumes (SCV)
+		for(size_t ip = 0; ip < geo.num_scv(); ++ip)
+		{
+		// 	Get current SCV
+			const typename TFVGeom::SCV& scv = geo.scv(ip);
+
+		//	get corner of SCV
+			const size_t co = scv.node_id();
+			
+		//consider about it !!!!!!! it means the order of vValue is the order of geo.scv(), but the order of u is not the same as theirs
+		//	solution at ip
+			vValue[ip] = u_modified[co];
+
+		//	set derivatives if needed
+			if(bDeriv)
+			{
+				size_t ndof = vvvDeriv[ip][_C_].size();
+				for(size_t sh = 0; sh < ndof; ++sh)
+					vvvDeriv[ip][_C_][sh] = (sh==co) ? 1.0 : 0.0;
+			}
+		}
+	}
+// 	general case
+	else
+	{
+	//	get trial space
+		LagrangeP1<ref_elem_type>& rTrialSpace = Provider<LagrangeP1<ref_elem_type> >::get();
+
+	//	storage for shape function at ip
+		number vShape[numSH];
+
+	//	loop ips
+		for(size_t ip = 0; ip < nip; ++ip)
+		{
+		//	evaluate at shapes at ip
+			rTrialSpace.shapes(vShape, vLocIP[ip]);
+			
+		//	compute upwind value at ip
+			vValue[ip] = 0.0;
+			number sum_convShape = 0.0;
+			for(size_t sh = 0; sh < numSH; ++sh)
+			{
+				vValue[ip] += u_modified[sh] * convShape(ip, sh);
+				//sum_convShape += fabs(convShape(ip, sh));
+				sum_convShape += convShape(ip, sh);
+			}
+			// Sw will be 0 when velocity is 0
+			//if (sum_convShape > pow(10,-12))
+			if (fabs(sum_convShape)>0)
+				vValue[ip] = vValue[ip]/sum_convShape;
+			else
+				vValue[ip] = u_modified[0];
+			/*
+			else
+			{
+				vValue[ip] = 0.0;
+				for(size_t sh = 0; sh < numSH; ++sh)
+				{
+					vValue[ip] += u_modified[sh] * vShape[sh];
+				}
+			}
+			*/
+
+		//	compute derivative w.r.t. to unknowns iff needed
+		//	\todo: maybe store shapes directly in vvvDeriv
+			if(bDeriv)
+			{
+				for(size_t sh = 0; sh < numSH; ++sh)
+					vvvDeriv[ip][_C_][sh] = vShape[sh];
+
+				// beware of hanging nodes!
+				size_t ndof = vvvDeriv[ip][_C_].size();
+				for (size_t sh = numSH; sh < ndof; ++sh)
+					vvvDeriv[ip][_C_][sh] = 0.0;
+			}
+		}
+	}
+}
+
+
+
+template<typename TDomain>
+template <typename TElem, typename TFVGeom>
+void ConvectionDiffusionMP<TDomain>::
+ex_upwind_value(number vValue[],
+         const MathVector<dim> vGlobIP[],
+         number time, int si,
+         const LocalVector& u,
+         GridObject* elem,
+         const MathVector<dim> vCornerCoords[],
+         const MathVector<TFVGeom::dim> vLocIP[],
+         const size_t nip,
+         bool bDeriv,
+         std::vector<std::vector<number> > vvvDeriv[])
+{
+//  get finite volume geometry
+	static const TFVGeom& geo = GeomProvider<TFVGeom>::get();
+
+//	reference element
+	typedef typename reference_element_traits<TElem>::reference_element_type
+			ref_elem_type;
+
+//	number of shape functions
+	static const size_t numSH =	ref_elem_type::numCorners;
+	
+	//	get conv shapes
+	const IConvectionShapes<dim>& convShape = get_updated_conv_shapes(geo, false);
+	
+//	MP SCVF ip
+	if(vLocIP == geo.scvf_local_ips())
+	{
+	//	Loop Sub Control Volume Faces (SCVF)
+		for(size_t ip = 0; ip < geo.num_scvf(); ++ip)
+		{
+		// 	Get current SCVF
+			const typename TFVGeom::SCVF& scvf = geo.scvf(ip);
+		
+		//consider about it !!!!!!! it means the order of vValue is the order of geo.scvf(), the order of u is the order of shape function
+		//	compute upwind value at ip
+			vValue[ip] = 0.0;
+			number sum_convShape = 0.0;
+			for(size_t sh = 0; sh < scvf.num_sh(); ++sh)
+			{
+				vValue[ip] += u(_C_, sh) * convShape(ip, sh);
+				//sum_convShape += fabs(convShape(ip, sh));
+				sum_convShape += convShape(ip, sh);
+			}
+			// Sw will be 0 when velocity is 0
+			//if (sum_convShape > pow(10,-12))
+			if (fabs(sum_convShape)>0)
+				vValue[ip] = vValue[ip]/sum_convShape;
+			else
+				vValue[ip] = u(_C_, 0);
+			/*
+			else
+			{
+				vValue[ip] = 0.0;
+				for(size_t sh = 0; sh < scvf.num_sh(); ++sh)
+				{
+					vValue[ip] += u_modified[sh] * scvf.shape(sh);
+				}
+			}	
+			*/
+		//	compute derivative w.r.t. to unknowns iff needed
+			if(bDeriv)
+			{
+				for(size_t sh = 0; sh < scvf.num_sh(); ++sh)
+					vvvDeriv[ip][_C_][sh] = scvf.shape(sh);
+
+				// do not forget that number of DoFs (== vvvDeriv[ip][_C_])
+				// might be > scvf.num_sh() in case of hanging nodes!
+				size_t ndof = vvvDeriv[ip][_C_].size();
+				for (size_t sh = scvf.num_sh(); sh < ndof; ++sh)
+					vvvDeriv[ip][_C_][sh] = 0.0;
+			}
+		}
+	}
+//	MP SCV ip
+	else if(vLocIP == geo.scv_local_ips())
+	{
+	//	Loop Sub Control Volumes (SCV)
+		for(size_t ip = 0; ip < geo.num_scv(); ++ip)
+		{
+		// 	Get current SCV
+			const typename TFVGeom::SCV& scv = geo.scv(ip);
+
+		//	get corner of SCV
+			const size_t co = scv.node_id();
+			
+		//consider about it !!!!!!! it means the order of vValue is the order of geo.scv(), but the order of u is not the same as theirs
+		//	solution at ip
+			vValue[ip] = u(_C_, co);
+
+		//	set derivatives if needed
+			if(bDeriv)
+			{
+				size_t ndof = vvvDeriv[ip][_C_].size();
+				for(size_t sh = 0; sh < ndof; ++sh)
+					vvvDeriv[ip][_C_][sh] = (sh==co) ? 1.0 : 0.0;
+			}
+		}
+	}
+// 	general case
+	else
+	{
+	//	get trial space
+		LagrangeP1<ref_elem_type>& rTrialSpace = Provider<LagrangeP1<ref_elem_type> >::get();
+
+	//	storage for shape function at ip
+		number vShape[numSH];
+
+	//	loop ips
+		for(size_t ip = 0; ip < nip; ++ip)
+		{
+		//	evaluate at shapes at ip
+			rTrialSpace.shapes(vShape, vLocIP[ip]);
+			
+		//	compute upwind value at ip
+			vValue[ip] = 0.0;
+			number sum_convShape = 0.0;
+			for(size_t sh = 0; sh < numSH; ++sh)
+			{
+				vValue[ip] += u(_C_, sh) * convShape(ip, sh);
+				//sum_convShape += fabs(convShape(ip, sh));
+				sum_convShape += convShape(ip, sh);
+			}
+			// Sw will be 0 when velocity is 0
+			//if (sum_convShape > pow(10,-12))
+			if (fabs(sum_convShape)>0)
+				vValue[ip] = vValue[ip]/sum_convShape;
+			else
+				vValue[ip] = u(_C_, 0);
+			/*
+			else
+			{
+				vValue[ip] = 0.0;
+				for(size_t sh = 0; sh < numSH; ++sh)
+				{
+					vValue[ip] += u_modified[sh] * vShape[sh];
+				}
+			}
+			*/
+
+		//	compute derivative w.r.t. to unknowns iff needed
+		//	\todo: maybe store shapes directly in vvvDeriv
+			if(bDeriv)
+			{
+				for(size_t sh = 0; sh < numSH; ++sh)
+					vvvDeriv[ip][_C_][sh] = vShape[sh];
+
+				// beware of hanging nodes!
+				size_t ndof = vvvDeriv[ip][_C_].size();
+				for (size_t sh = numSH; sh < ndof; ++sh)
+					vvvDeriv[ip][_C_][sh] = 0.0;
+			}
+		}
+	}
+}
+
+
 template<typename TDomain>
 template <typename TElem, typename TFVGeom>
 void ConvectionDiffusionMP<TDomain>::
@@ -2200,8 +2946,12 @@ ex_modified_value(number vValue[],
 	//	Consider capillary trapping	or not
 	number u_modified[numSH];
 	if ( m_imPermeability.data_given() && m_imMinPd.data_given() && (nip != 1) ){
-		for (size_t i = 0; i < numSH; ++i)
-			u_modified[i] = Modify_sw(u(_C_, i), m_imMinPd[i], m_imPermeability[i], m_imPorosity[i]);
+		if (m_imEntryPressure.data_given())
+			for (size_t i = 0; i < numSH; ++i)
+				u_modified[i] = Modify_s(iFormulationIndex, u(_C_, i), m_imResidualAqueous[i], m_imResidualCarbonic[i], m_imBrooksCoreyNumber[i], m_imMinPd[i], m_imMinSwr[i], m_imMinSnr[i], m_imMinLambda[i], m_imEntryPressure[i]);
+		else
+			for (size_t i = 0; i < numSH; ++i)
+				u_modified[i] = Modify_s(iFormulationIndex, u(_C_, i), m_imResidualAqueous[i], m_imResidualCarbonic[i], m_imBrooksCoreyNumber[i], m_imMinPd[i], m_imMinSwr[i], m_imMinSnr[i], m_imMinLambda[i], m_imPermeability[i], m_imPorosity[i]);
 	}
 	else{
 		for (size_t i = 0; i < numSH; ++i)
@@ -2441,12 +3191,20 @@ ex_grad(MathVector<dim> vValue[],
 
 	number u_modified[numSH];
 	if ( m_imPermeability.data_given() && m_imMinPd.data_given() && (nip != 1) ){
-		for (size_t i = 0; i < numSH; ++i)
-			u_modified[i] = Modify_sw(u(_C_, i), m_imMinPd[i], m_imPermeability[i], m_imPorosity[i]);
+		if (m_imEntryPressure.data_given())
+			for (size_t i = 0; i < numSH; ++i)
+				u_modified[i] = Modify_s(iFormulationIndex, u(_C_, i), m_imResidualAqueous[i], m_imResidualCarbonic[i], m_imBrooksCoreyNumber[i], m_imMinPd[i], m_imMinSwr[i], m_imMinSnr[i], m_imMinLambda[i], m_imEntryPressure[i]);
+		else
+			for (size_t i = 0; i < numSH; ++i)
+				u_modified[i] = Modify_s(iFormulationIndex, u(_C_, i), m_imResidualAqueous[i], m_imResidualCarbonic[i], m_imBrooksCoreyNumber[i], m_imMinPd[i], m_imMinSwr[i], m_imMinSnr[i], m_imMinLambda[i], m_imPermeability[i], m_imPorosity[i]);
 	}
 	else{
 		for (size_t i = 0; i < numSH; ++i)
+		{
 			u_modified[i] = u(_C_, i);
+				
+		}
+			
 	}
 
 //	FV1 SCVF ip
@@ -2550,15 +3308,24 @@ ex_grad_pd(MathVector<dim> vValue[],
 //	number of shape functions
 	static const size_t numSH =	ref_elem_type::numCorners;
 
+	//	get conv shapes
+	const IConvectionShapes<dim>& convShape = get_updated_conv_shapes(geo, false);
+	
+	
 	number u_modified[numSH];
 	if ( m_imPermeability.data_given() && m_imMinPd.data_given() && (nip != 1) ){
-		for (size_t i = 0; i < numSH; ++i)
-			u_modified[i] = Pd(m_imPermeability[i], m_imPorosity[i]) * Modify_sw(u(_C_, i), m_imMinPd[i], m_imPermeability[i], m_imPorosity[i]);
+		if (m_imEntryPressure.data_given())
+			for (size_t i = 0; i < numSH; ++i)
+				u_modified[i] = Modify_s(iFormulationIndex, u(_C_, i), m_imResidualAqueous[i], m_imResidualCarbonic[i], m_imBrooksCoreyNumber[i], m_imMinPd[i], m_imMinSwr[i], m_imMinSnr[i], m_imMinLambda[i], m_imEntryPressure[i]);
+		else
+			for (size_t i = 0; i < numSH; ++i)
+				u_modified[i] = Modify_s(iFormulationIndex, u(_C_, i), m_imResidualAqueous[i], m_imResidualCarbonic[i], m_imBrooksCoreyNumber[i], m_imMinPd[i], m_imMinSwr[i], m_imMinSnr[i], m_imMinLambda[i], m_imPermeability[i], m_imPorosity[i]);
 	}
 	else{
 		for (size_t i = 0; i < numSH; ++i)
-			u_modified[i] = Pd(m_imPermeability[i], m_imPorosity[i]) * u(_C_, i);
+			u_modified[i] = u(_C_, i);
 	}
+			
 
 //	FV1 SCVF ip
 	if(vLocIP == geo.scvf_local_ips())
@@ -2568,17 +3335,67 @@ ex_grad_pd(MathVector<dim> vValue[],
 		{
 		// 	Get current SCVF
 			const typename TFVGeom::SCVF& scvf = geo.scvf(ip);
-
-			VecSet(vValue[ip], 0.0);
-
+			
+			//	to compute D \nabla Sw
+				MathVector<dim> grad_c;
+				VecSet(grad_c, 0.0);
+				
+			//gradient Sw
 			for(size_t sh = 0; sh < scvf.num_sh(); ++sh)
-				VecScaleAppend(vValue[ip], u_modified[sh], scvf.global_grad(sh));
-				//VecScaleAppend(vValue[ip], u(_C_, sh), scvf.global_grad(sh));
+				VecScaleAppend(grad_c, u_modified[sh], scvf.global_grad(sh));
+			
 
+			number s_integ = 0.0;
+			for (size_t i = 0; i < scvf.num_sh(); ++i)
+			{
+				s_integ += u_modified[i]*scvf.shape(i);
+			}
+				
+			MathMatrix<dim,dim> Real_Diffusion_Sw;
+			if (m_imPermeability.data_given())
+				if (m_imEntryPressure.data_given())
+					MatScale(Real_Diffusion_Sw, Diffusion_S(iFormulationIndex, s_integ, m_imResidualAqueous[0], m_imResidualCarbonic[0], m_imBrooksCoreyNumber[0], m_imPermeability[0], m_imPorosity[0], m_imEntryPressure[0])
+, m_imDiffusion_Sw[ip]);
+				else
+					MatScale(Real_Diffusion_Sw, Diffusion_S(iFormulationIndex, s_integ, m_imResidualAqueous[0], m_imResidualCarbonic[0], m_imBrooksCoreyNumber[0], m_imPermeability[0], m_imPorosity[0])
+, m_imDiffusion_Sw[ip]);
+			else
+				MatScale(Real_Diffusion_Sw, 1, m_imDiffusion_Sw[ip]);
+
+			
+			//diffusion_Sw part
+			MatVecMult(vValue[ip], Real_Diffusion_Sw, grad_c);
+					
+			
+			//	compute upwind relative permeability value at ip 
+			number krw_up = 0.0;
+			number sum_convShape = 0.0;
+			for(size_t sh = 0; sh < scvf.num_sh(); ++sh)
+			{
+				krw_up += krw( u(_C_, sh), m_imMinSwr[sh], m_imMinLambda[sh] ) * convShape(ip, sh);
+				//sum_convShape += fabs(convShape(ip, sh));
+				sum_convShape += convShape(ip, sh);
+			}
+			// Sw will be 0 when velocity is 0
+			//if (sum_convShape > pow(10,-12))
+			if (fabs(sum_convShape) > 0)
+				krw_up = krw_up/sum_convShape;
+			else
+				krw_up = krw( u(_C_, 0), m_imMinSwr[0], m_imMinLambda[0] );
+				
+			VecScaleAppend(vValue[ip], -krw_up, m_imDarcyW[ip]);
+			//VecScaleAppend(vValue[ip], -krw(Sw), m_imDarcyW[ip]);
+			
+
+			
 			if(bDeriv)
 			{
 				for(size_t sh = 0; sh < scvf.num_sh(); ++sh)
+				{
 					vvvDeriv[ip][_C_][sh] = scvf.global_grad(sh);
+					MatVecMult(vvvDeriv[ip][_C_][sh], Real_Diffusion_Sw, vvvDeriv[ip][_C_][sh]);
+				}
+					
 
 				// beware of hanging nodes!
 				size_t ndof = vvvDeriv[ip][_C_].size();
@@ -2631,6 +3448,138 @@ ex_grad_pd(MathVector<dim> vValue[],
 		}
 	}
 };
+
+
+// grad_Sw output is needed in Wc equation
+template<typename TDomain>
+template <typename TElem, typename TFVGeom>
+void ConvectionDiffusionMP<TDomain>::
+ex_grad_pd2(MathVector<dim> vValue[],
+        const MathVector<dim> vGlobIP[],
+        number time, int si,
+        const LocalVector& u,
+        GridObject* elem,
+        const MathVector<dim> vCornerCoords[],
+        const MathVector<TFVGeom::dim> vLocIP[],
+        const size_t nip,
+        bool bDeriv,
+        std::vector<std::vector<MathVector<dim> > > vvvDeriv[])
+{
+// 	Get finite volume geometry
+	static const TFVGeom& geo = GeomProvider<TFVGeom>::get();
+
+//	reference element
+	typedef typename reference_element_traits<TElem>::reference_element_type
+			ref_elem_type;
+
+//	reference dimension
+	static const int refDim = ref_elem_type::dim;
+
+//	number of shape functions
+	static const size_t numSH =	ref_elem_type::numCorners;
+
+	//	get conv shapes
+	const IConvectionShapes<dim>& convShape = get_updated_conv_shapes(geo, false);
+	
+	
+	number u_modified[numSH];
+	if ( m_imPermeability.data_given() && m_imMinPd.data_given() && (nip != 1) ){
+		if (m_imEntryPressure.data_given())
+			for (size_t i = 0; i < numSH; ++i)
+				u_modified[i] = Modify_s(iFormulationIndex, u(_C_, i), m_imResidualAqueous[i], m_imResidualCarbonic[i], m_imBrooksCoreyNumber[i], m_imMinPd[i], m_imMinSwr[i], m_imMinSnr[i], m_imMinLambda[i], m_imEntryPressure[i]);
+		else
+			for (size_t i = 0; i < numSH; ++i)
+				u_modified[i] = Modify_s(iFormulationIndex, u(_C_, i), m_imResidualAqueous[i], m_imResidualCarbonic[i], m_imBrooksCoreyNumber[i], m_imMinPd[i], m_imMinSwr[i], m_imMinSnr[i], m_imMinLambda[i], m_imPermeability[i], m_imPorosity[i]);
+	}
+	else{
+		for (size_t i = 0; i < numSH; ++i)
+			u_modified[i] = u(_C_, i);
+	}
+			
+
+//	FV1 SCVF ip
+	if(vLocIP == geo.scvf_local_ips())
+	{
+	//	Loop Sub Control Volume Faces (SCVF)
+		for(size_t ip = 0; ip < geo.num_scvf(); ++ip)
+		{
+		// 	Get current SCVF
+			const typename TFVGeom::SCVF& scvf = geo.scvf(ip);
+			
+			VecSet(vValue[ip], 0.0);
+			//+ convection_Sw part
+			//Shuai debug
+			//	compute upwind relative permeability value at ip 
+			number krw_up = 0.0;
+			number sum_convShape = 0.0;
+			for(size_t sh = 0; sh < scvf.num_sh(); ++sh)
+			{
+				krw_up += krw( m_imSaturationW[sh], m_imMinSwr[sh], m_imMinLambda[sh] ) * convShape(ip, sh);
+				//sum_convShape += fabs(convShape(ip, sh));
+				sum_convShape += convShape(ip, sh);
+			}
+			// Sw will be 0 when velocity is 0
+			//if (sum_convShape > pow(10,-12))
+			if (fabs(sum_convShape) > 0)
+				krw_up = krw_up/sum_convShape;
+			else
+				krw_up = krw( m_imSaturationW[0], m_imMinSwr[0], m_imMinLambda[0] );
+				
+			//VecScaleAppend(vValue[ip], -krw(m_imUpwindModifiedSaturationW[ip], m_imResidualAqueous[0], m_imBrooksCoreyNumber[0]), m_imDarcyN[ip]);
+			VecScaleAppend(vValue[ip], -krw_up, m_imDarcyN[ip]);
+			
+			//Shuai debug end
+		}
+	}
+// 	general case
+	else
+	{
+	//	get trial space
+		LagrangeP1<ref_elem_type>& rTrialSpace = Provider<LagrangeP1<ref_elem_type> >::get();
+
+	//	storage for shape function at ip
+		MathVector<refDim> vLocGrad[numSH];
+		MathVector<refDim> locGrad;
+
+	//	Reference Mapping
+		MathMatrix<dim, refDim> JTInv;
+		ReferenceMapping<ref_elem_type, dim> mapping(vCornerCoords);
+
+	//	loop ips
+		for(size_t ip = 0; ip < nip; ++ip)
+		{
+		///*
+		//	evaluate at shapes at ip
+			rTrialSpace.grads(vLocGrad, vLocIP[ip]);
+
+		//	compute grad at ip
+			VecSet(locGrad, 0.0);
+			for(size_t sh = 0; sh < numSH; ++sh)
+				
+				VecScaleAppend(locGrad, u_modified[sh], vLocGrad[sh]);
+				//VecScaleAppend(locGrad, u(_C_, sh), vLocGrad[sh]);
+
+		//	compute global grad
+			mapping.jacobian_transposed_inverse(JTInv, vLocIP[ip]);
+			MatVecMult(vValue[ip], JTInv, locGrad);
+		//*/
+		//	VecScaleAppend(vValue[ip], -krw(m_imSaturationW[ip], m_imResidualAqueous[0]), m_imDarcyN[ip]);
+			
+		//	compute derivative w.r.t. to unknowns iff needed
+			if(bDeriv)
+			{
+				for(size_t sh = 0; sh < numSH; ++sh)
+					MatVecMult(vvvDeriv[ip][_C_][sh], JTInv, vLocGrad[sh]);
+
+				// beware of hanging nodes!
+				size_t ndof = vvvDeriv[ip][_C_].size();
+				for (size_t sh = numSH; sh < ndof; ++sh)
+					vvvDeriv[ip][_C_][sh] = 0.0;
+			}
+		}
+	}
+};
+
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -2687,7 +3636,8 @@ get_updated_conv_shapes(const FVGeometryBase& geo, bool compute_deriv)
 	{
 	//	get diffusion at ips
 		const MathMatrix<dim, dim>* vDiffusion = NULL;
-		if(m_imDiffusion_Sw.data_given()) vDiffusion = m_imDiffusion_Sw.values();
+		if(m_imDiffusion.data_given()) vDiffusion = m_imDiffusion.values();
+		//if(m_imDiffusion_Sw.data_given()) vDiffusion = m_imDiffusion_Sw.values();
 
 	//	update convection shapes
 		if(!m_spConvShape->update(&geo, m_imDarcyW.values(), vDiffusion, compute_deriv))
@@ -2779,6 +3729,7 @@ register_func()
 	this->set_add_def_M_elem_fct(id, &T::template add_def_M_elem<TElem, TFVGeom>);
 	this->set_add_rhs_elem_fct(  id, &T::template add_rhs_elem<TElem, TFVGeom>);
 
+/*
 // error estimator parts
 	this->set_prep_err_est_elem_loop(id, &T::template prep_err_est_elem_loop<TElem, TFVGeom>);
 	this->set_prep_err_est_elem(id, &T::template prep_err_est_elem<TElem, TFVGeom>);
@@ -2786,6 +3737,7 @@ register_func()
 	this->set_compute_err_est_M_elem(id, &T::template compute_err_est_M_elem<TElem, TFVGeom>);
 	this->set_compute_err_est_rhs_elem(id, &T::template compute_err_est_rhs_elem<TElem, TFVGeom>);
 	this->set_fsh_err_est_elem_loop(id, &T::template fsh_err_est_elem_loop<TElem, TFVGeom>);
+*/
 
 //	set computation of linearized defect w.r.t velocity
 	m_imDiffusion.set_fct(id, this, &T::template lin_def_diffusion<TElem, TFVGeom>);
@@ -2804,10 +3756,13 @@ register_func()
 	m_imMass.	set_fct(id, this, &T::template lin_def_mass<TElem, TFVGeom>);
 
 //	exports
+	m_exUpwindModifiedValue->		template set_fct<T,refDim>(id, this, &T::template ex_upwind_modified_value<TElem, TFVGeom>);
+	m_exUpwindValue->		template set_fct<T,refDim>(id, this, &T::template ex_upwind_value<TElem, TFVGeom>);
 	m_exModifiedValue->		template set_fct<T,refDim>(id, this, &T::template ex_modified_value<TElem, TFVGeom>);
 	m_exValue->		template set_fct<T,refDim>(id, this, &T::template ex_value<TElem, TFVGeom>);
 	m_exGrad->		template set_fct<T,refDim>(id, this, &T::template ex_grad<TElem, TFVGeom>);
 	m_exGrad_pd->		template set_fct<T,refDim>(id, this, &T::template ex_grad_pd<TElem, TFVGeom>);
+	m_exGrad_pd2->		template set_fct<T,refDim>(id, this, &T::template ex_grad_pd2<TElem, TFVGeom>);
 
 }
 

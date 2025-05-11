@@ -133,6 +133,27 @@ static void Domain(TRegistry& reg, string grp)
 			.add_method("set_saturationW", static_cast<void (T::*)(LuaFunctionHandle)>(&T::set_saturationW), "", "SaturationW")
 #endif
 
+			.add_method("set_upwindsaturationW", static_cast<void (T::*)(SmartPtr<CplUserData<number, dim> >)>(&T::set_upwindsaturationW), "", "UpwindSaturationW")
+			.add_method("set_upwindsaturationW", static_cast<void (T::*)(number)>(&T::set_upwindsaturationW), "", "UpwindSaturationW")
+#ifdef UG_FOR_LUA
+			.add_method("set_upwindsaturationW", static_cast<void (T::*)(const char*)>(&T::set_upwindsaturationW), "", "UpwindSaturationW")
+			.add_method("set_upwindsaturationW", static_cast<void (T::*)(LuaFunctionHandle)>(&T::set_upwindsaturationW), "", "UpwindSaturationW")
+#endif
+
+			.add_method("set_modifiedsaturationW", static_cast<void (T::*)(SmartPtr<CplUserData<number, dim> >)>(&T::set_modifiedsaturationW), "", "ModifiedSaturationW")
+			.add_method("set_modifiedsaturationW", static_cast<void (T::*)(number)>(&T::set_modifiedsaturationW), "", "ModifiedSaturationW")
+#ifdef UG_FOR_LUA
+			.add_method("set_modifiedsaturationW", static_cast<void (T::*)(const char*)>(&T::set_modifiedsaturationW), "", "ModifiedSaturationW")
+			.add_method("set_modifiedsaturationW", static_cast<void (T::*)(LuaFunctionHandle)>(&T::set_modifiedsaturationW), "", "ModifiedSaturationW")
+#endif
+
+			.add_method("set_upwindmodifiedsaturationW", static_cast<void (T::*)(SmartPtr<CplUserData<number, dim> >)>(&T::set_upwindmodifiedsaturationW), "", "UpwindModifiedSaturationW")
+			.add_method("set_upwindmodifiedsaturationW", static_cast<void (T::*)(number)>(&T::set_upwindmodifiedsaturationW), "", "UpwindModifiedSaturationW")
+#ifdef UG_FOR_LUA
+			.add_method("set_upwindmodifiedsaturationW", static_cast<void (T::*)(const char*)>(&T::set_upwindmodifiedsaturationW), "", "UpwindModifiedSaturationW")
+			.add_method("set_upwindmodifiedsaturationW", static_cast<void (T::*)(LuaFunctionHandle)>(&T::set_upwindmodifiedsaturationW), "", "UpwindModifiedSaturationW")
+#endif
+
 			.add_method("set_MassFractionWc", static_cast<void (T::*)(SmartPtr<CplUserData<number, dim> >)>(&T::set_MassFractionWc), "", "MassFractionWc")
 			.add_method("set_MassFractionWc", static_cast<void (T::*)(number)>(&T::set_MassFractionWc), "", "MassFractionWc")
 #ifdef UG_FOR_LUA
@@ -159,12 +180,58 @@ static void Domain(TRegistry& reg, string grp)
 			.add_method("set_porosity", static_cast<void (T::*)(const char*)>(&T::set_porosity), "", "Porosity")
 			.add_method("set_porosity", static_cast<void (T::*)(LuaFunctionHandle)>(&T::set_porosity), "", "Porosity")
 #endif
+			.add_method("set_pd", static_cast<void (T::*)(SmartPtr<CplUserData<number, dim> >)>(&T::set_pd), "", "EntryPressure")
+			.add_method("set_pd", static_cast<void (T::*)(number)>(&T::set_pd), "", "EntryPressure")
+#ifdef UG_FOR_LUA
+			.add_method("set_pd", static_cast<void (T::*)(const char*)>(&T::set_pd), "", "EntryPressure")
+			.add_method("set_pd", static_cast<void (T::*)(LuaFunctionHandle)>(&T::set_pd), "", "EntryPressure")
+#endif
+
+			.add_method("set_swr", static_cast<void (T::*)(SmartPtr<CplUserData<number, dim> >)>(&T::set_swr), "", "ResidualAqueous")
+			.add_method("set_swr", static_cast<void (T::*)(number)>(&T::set_swr), "", "ResidualAqueous")
+#ifdef UG_FOR_LUA
+			.add_method("set_swr", static_cast<void (T::*)(const char*)>(&T::set_swr), "", "ResidualAqueous")
+			.add_method("set_swr", static_cast<void (T::*)(LuaFunctionHandle)>(&T::set_swr), "", "ResidualAqueous")
+#endif
+			.add_method("set_snr", static_cast<void (T::*)(SmartPtr<CplUserData<number, dim> >)>(&T::set_snr), "", "ResidualCarbonic")
+			.add_method("set_snr", static_cast<void (T::*)(number)>(&T::set_snr), "", "ResidualCarbonic")
+#ifdef UG_FOR_LUA
+			.add_method("set_snr", static_cast<void (T::*)(const char*)>(&T::set_snr), "", "ResidualCarbonic")
+			.add_method("set_snr", static_cast<void (T::*)(LuaFunctionHandle)>(&T::set_snr), "", "ResidualCarbonic")
+#endif
+			.add_method("set_lambda", static_cast<void (T::*)(SmartPtr<CplUserData<number, dim> >)>(&T::set_lambda), "", "BrooksCoreyNumber")
+			.add_method("set_lambda", static_cast<void (T::*)(number)>(&T::set_lambda), "", "BrooksCoreyNumber")
+#ifdef UG_FOR_LUA
+			.add_method("set_lambda", static_cast<void (T::*)(const char*)>(&T::set_lambda), "", "BrooksCoreyNumber")
+			.add_method("set_lambda", static_cast<void (T::*)(LuaFunctionHandle)>(&T::set_lambda), "", "BrooksCoreyNumber")
+#endif
 
 			.add_method("set_minPd", static_cast<void (T::*)(SmartPtr<CplUserData<number, dim> >)>(&T::set_minPd), "", "MinPd")
 			.add_method("set_minPd", static_cast<void (T::*)(number)>(&T::set_minPd), "", "MinPd")
 #ifdef UG_FOR_LUA
 			.add_method("set_minPd", static_cast<void (T::*)(const char*)>(&T::set_minPd), "", "MinPd")
 			.add_method("set_minPd", static_cast<void (T::*)(LuaFunctionHandle)>(&T::set_minPd), "", "MinPd")
+#endif
+
+			.add_method("set_minSwr", static_cast<void (T::*)(SmartPtr<CplUserData<number, dim> >)>(&T::set_minSwr), "", "MinSwr")
+			.add_method("set_minSwr", static_cast<void (T::*)(number)>(&T::set_minSwr), "", "MinSwr")
+#ifdef UG_FOR_LUA
+			.add_method("set_minSwr", static_cast<void (T::*)(const char*)>(&T::set_minSwr), "", "MinSwr")
+			.add_method("set_minSwr", static_cast<void (T::*)(LuaFunctionHandle)>(&T::set_minSwr), "", "MinSwr")
+#endif
+
+			.add_method("set_minSnr", static_cast<void (T::*)(SmartPtr<CplUserData<number, dim> >)>(&T::set_minSnr), "", "MinSnr")
+			.add_method("set_minSnr", static_cast<void (T::*)(number)>(&T::set_minSnr), "", "MinSnr")
+#ifdef UG_FOR_LUA
+			.add_method("set_minSnr", static_cast<void (T::*)(const char*)>(&T::set_minSnr), "", "MinSnr")
+			.add_method("set_minSnr", static_cast<void (T::*)(LuaFunctionHandle)>(&T::set_minSnr), "", "MinSnr")
+#endif
+
+			.add_method("set_minLambda", static_cast<void (T::*)(SmartPtr<CplUserData<number, dim> >)>(&T::set_minLambda), "", "MinLambda")
+			.add_method("set_minLambda", static_cast<void (T::*)(number)>(&T::set_minLambda), "", "MinLambda")
+#ifdef UG_FOR_LUA
+			.add_method("set_minLambda", static_cast<void (T::*)(const char*)>(&T::set_minLambda), "", "MinLambda")
+			.add_method("set_minLambda", static_cast<void (T::*)(LuaFunctionHandle)>(&T::set_minLambda), "", "MinLambda")
 #endif
 
 
@@ -234,10 +301,13 @@ static void Domain(TRegistry& reg, string grp)
 			.add_method("set_mass", static_cast<void (T::*)(LuaFunctionHandle)>(&T::set_mass), "", "Mass")
 #endif
 
+			.add_method("upwindmodifiedvalue", &T::upwindmodifiedvalue)
+			.add_method("upwindvalue", &T::upwindvalue)
 			.add_method("modifiedvalue", &T::modifiedvalue)
 			.add_method("value", &T::value)
 		  .add_method("gradient", &T::gradient)
-		  .add_method("gradient_pd", &T::gradient_pd);
+		  .add_method("gradient_pd", &T::gradient_pd)
+		  .add_method("gradient_pd2", &T::gradient_pd2);
 		  /*
 			.add_method("set_partial_velocity", &T::set_partial_velocity)
 			.add_method("set_partial_flux", &T::set_partial_flux)
@@ -267,7 +337,7 @@ static void Domain(TRegistry& reg, string grp)
 		typedef ConvectionDiffusionBase<TDomain> TBase;
 		string name = string("ConvectionDiffusionMP").append(suffix);
 		reg.template add_class_<T, TBase >(name, grp)
-			.template add_constructor<void (*)(const char*,const char*)>("Function(s)#Subset(s)")
+			.template add_constructor<void (*)(const char*,const char*,const int)>("Function(s)#Subset(s)#FormulationIndex")
 			.add_method("set_condensed_FV", &T::set_condensed_FV, "", "[De-]Activates the condensed FV scvf ip's")
 			.add_method("set_upwind", &T::set_upwind, "", "Sets the upwind type for the convective terms")
 			.add_method("set_singular_sources_and_sinks", &T::set_sss_manager, "", "Sets the singular sources and sinks manager")

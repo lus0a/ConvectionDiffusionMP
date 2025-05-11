@@ -174,6 +174,49 @@ class ConvectionDiffusionBase
 #endif
 	///	\}
 	
+	
+	///	sets upwind saturation
+	/**
+	 * This method sets the saturation value. The default value is 0.0.
+	 */
+	///	\{
+		void set_upwindsaturationW(SmartPtr<CplUserData<number, dim> > user);
+		void set_upwindsaturationW(number val);
+#ifdef UG_FOR_LUA
+		void set_upwindsaturationW(const char* fctName);
+		void set_upwindsaturationW(LuaFunctionHandle fct);
+#endif
+	///	\}
+	
+	
+		///	sets modified saturation
+	/**
+	 * This method sets the saturation value. The default value is 0.0.
+	 */
+	///	\{
+		void set_modifiedsaturationW(SmartPtr<CplUserData<number, dim> > user);
+		void set_modifiedsaturationW(number val);
+#ifdef UG_FOR_LUA
+		void set_modifiedsaturationW(const char* fctName);
+		void set_modifiedsaturationW(LuaFunctionHandle fct);
+#endif
+	///	\}
+
+
+	///	sets upwind modified saturation
+	/**
+	 * This method sets the saturation value. The default value is 0.0.
+	 */
+	///	\{
+		void set_upwindmodifiedsaturationW(SmartPtr<CplUserData<number, dim> > user);
+		void set_upwindmodifiedsaturationW(number val);
+#ifdef UG_FOR_LUA
+		void set_upwindmodifiedsaturationW(const char* fctName);
+		void set_upwindmodifiedsaturationW(LuaFunctionHandle fct);
+#endif
+	///	\}
+	
+	
 		///	sets mass fraction Wc
 	/**
 	 * This method sets the mass fraction Wc value. The default value is 0.0.
@@ -229,6 +272,62 @@ class ConvectionDiffusionBase
 	///	\}
 	
 	
+		///	sets pd
+	/**
+	 * This method sets the pd value. The default value is 0.0.
+	 */
+	///	\{
+		void set_pd(SmartPtr<CplUserData<number, dim> > user);
+		void set_pd(number val);
+#ifdef UG_FOR_LUA
+		void set_pd(const char* fctName);
+		void set_pd(LuaFunctionHandle fct);
+#endif
+	///	\}
+	
+	
+		///	sets swr
+	/**
+	 * This method sets the pd value. The default value is 0.0.
+	 */
+	///	\{
+		void set_swr(SmartPtr<CplUserData<number, dim> > user);
+		void set_swr(number val);
+#ifdef UG_FOR_LUA
+		void set_swr(const char* fctName);
+		void set_swr(LuaFunctionHandle fct);
+#endif
+	///	\}
+	
+		///	sets snr
+	/**
+	 * This method sets the pd value. The default value is 0.0.
+	 */
+	///	\{
+		void set_snr(SmartPtr<CplUserData<number, dim> > user);
+		void set_snr(number val);
+#ifdef UG_FOR_LUA
+		void set_snr(const char* fctName);
+		void set_snr(LuaFunctionHandle fct);
+#endif
+	///	\}
+	
+	
+		///	sets lambda
+	/**
+	 * This method sets the pd value. The default value is 0.0.
+	 */
+	///	\{
+		void set_lambda(SmartPtr<CplUserData<number, dim> > user);
+		void set_lambda(number val);
+#ifdef UG_FOR_LUA
+		void set_lambda(const char* fctName);
+		void set_lambda(LuaFunctionHandle fct);
+#endif
+	///	\}
+	
+	
+	
 		///	sets minPd
 	/**
 	 * This method sets the minPd value. The default value is 0.0.
@@ -243,6 +342,44 @@ class ConvectionDiffusionBase
 	///	\}
 	
 	
+		///	sets minSwr
+	/**
+	 * This method sets the minSwr value. The default value is 0.0.
+	 */
+	///	\{
+		void set_minSwr(SmartPtr<CplUserData<number, dim> > user);
+		void set_minSwr(number val);
+#ifdef UG_FOR_LUA
+		void set_minSwr(const char* fctName);
+		void set_minSwr(LuaFunctionHandle fct);
+#endif
+	///	\}
+	
+		///	sets minSnr
+	/**
+	 * This method sets the minSnr value. The default value is 0.0.
+	 */
+	///	\{
+		void set_minSnr(SmartPtr<CplUserData<number, dim> > user);
+		void set_minSnr(number val);
+#ifdef UG_FOR_LUA
+		void set_minSnr(const char* fctName);
+		void set_minSnr(LuaFunctionHandle fct);
+#endif
+	///	\}
+	
+		///	sets minLambda
+	/**
+	 * This method sets the minLambda value. The default value is 0.0.
+	 */
+	///	\{
+		void set_minLambda(SmartPtr<CplUserData<number, dim> > user);
+		void set_minLambda(number val);
+#ifdef UG_FOR_LUA
+		void set_minLambda(const char* fctName);
+		void set_minLambda(LuaFunctionHandle fct);
+#endif
+	///	\}
 	
 	///	sets the flux
 	/**
@@ -373,6 +510,15 @@ class ConvectionDiffusionBase
 		
 	///	Data import for the saturationW
 		DataImport<number, dim> m_imSaturationW;
+		
+	///	Data import for the upwind saturationW
+		DataImport<number, dim> m_imUpwindSaturationW;
+		
+	///	Data import for the upwind saturationW
+		DataImport<number, dim> m_imModifiedSaturationW;
+		
+	///	Data import for the upwind saturationW
+		DataImport<number, dim> m_imUpwindModifiedSaturationW;
 	
 	///	Data import for Diffusion_Sw
 		DataImport<MathMatrix<dim,dim>, dim> m_imDiffusion_Sw;
@@ -388,11 +534,29 @@ class ConvectionDiffusionBase
 		DataImport<number, dim> m_imPermeability;
 
 	///	Data import for the Porosity
-		DataImport<number, dim> m_imPorosity;	
+		DataImport<number, dim> m_imPorosity;
+
+	///	Data import for the EntryPressure
+		DataImport<number, dim> m_imEntryPressure;		
+		
+	///	Data import for the ResidualAqueous
+		DataImport<number, dim> m_imResidualAqueous;
+		
+	///	Data import for the ResidualCarbonic
+		DataImport<number, dim> m_imResidualCarbonic;
+		
+	///	Data import for the BrooksCoreyNumber
+		DataImport<number, dim> m_imBrooksCoreyNumber;
+		
 		
 	///	Data import for the MinPd
 		DataImport<number, dim> m_imMinPd;
-	
+	///	Data import for the MinSwr
+		DataImport<number, dim> m_imMinSwr;
+	///	Data import for the MinSnr
+		DataImport<number, dim> m_imMinSnr;
+	///	Data import for the MinLambda
+		DataImport<number, dim> m_imMinLambda;
 		
 	///	Data import for the Flux
 		DataImport<MathVector<dim>, dim > m_imFlux;
@@ -433,6 +597,12 @@ class ConvectionDiffusionBase
 		typedef SmartPtr<CplUserData<MathVector<dim>, dim> > GradExport;
 		
 	///	returns the export of the value of associated unknown function
+		virtual SmartPtr<CplUserData<number, dim> > upwindmodifiedvalue();
+		
+	///	returns the export of the value of associated unknown function
+		virtual SmartPtr<CplUserData<number, dim> > upwindvalue();	
+		
+	///	returns the export of the value of associated unknown function
 		virtual SmartPtr<CplUserData<number, dim> > modifiedvalue();
 		
 	///	returns the export of the value of associated unknown function
@@ -443,8 +613,17 @@ class ConvectionDiffusionBase
 		
 	///	returns the export of the gradient of associated unknown function
 		virtual SmartPtr<CplUserData<MathVector<dim>, dim> > gradient_pd();
+		
+	///	returns the export of the gradient of associated unknown function
+		virtual SmartPtr<CplUserData<MathVector<dim>, dim> > gradient_pd2();
 
 	protected:
+	///	Export for the concentration
+		SmartPtr<DataExport<number, dim> > m_exUpwindModifiedValue;
+
+	///	Export for the concentration
+		SmartPtr<DataExport<number, dim> > m_exUpwindValue;	
+	
 	///	Export for the concentration
 		SmartPtr<DataExport<number, dim> > m_exModifiedValue;
 
@@ -456,6 +635,9 @@ class ConvectionDiffusionBase
 		
 	///	Export for the gradient of concentration * pd
 		SmartPtr<DataExport<MathVector<dim>, dim> > m_exGrad_pd;
+		
+	///	Export for the gradient of concentration * pd
+		SmartPtr<DataExport<MathVector<dim>, dim> > m_exGrad_pd2;
 };
 
 // end group convection_diffusion
